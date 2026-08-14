@@ -1,15 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@600&display=swap');
+/* Chakra Petch: font hỗ trợ đầy đủ tiếng Việt */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
 
 
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Rubik', sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
 }
 section{
     position: relative;
@@ -243,4 +240,8 @@ section .container.active .signinBx .imgBx{
         top: -100%;
     }
 }
+
+
+/* In dam toan bo chu */
+* { font-weight: 700 !important; }
 

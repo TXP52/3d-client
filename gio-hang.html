@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Giỏ hàng - IN3D Shop</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
+    <link href="assets/css/order.css?v=7" rel="stylesheet">
+    <style>
+        * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Chakra Petch', sans-serif; }
+        body { background-color: #eee; }
+
+        .dau-trang {
+            background-color: #151720;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .dau-trang a { color: #fff; text-decoration: none; }
+        .dau-trang a:hover { color: #a3ff12; }
+        .dau-trang .logo img { height: 56px; vertical-align: middle; }
+
+        .khung-gio {
+            max-width: 720px;
+            margin: 34px auto;
+            padding: 0 14px;
+        }
+        .khung-gio h1 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: #151720;
+        }
+        .bang-gio {
+            background: #1b1b1b;
+            color: #eee;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 560px) {
+            .khung-gio h1 { font-size: 22px; }
+            .bang-gio { padding: 14px; }
+        }
+
+        * { font-weight: 700 !important; }
+    </style>
+</head>
+<body>
+
+    <header class="dau-trang">
+        <a class="logo" href="index.html"><img src="assets/logo/logo.png" alt="IN3D Shop"></a>
+        <nav class="nav-bar-home-page" style="margin:0;">
+            <ul style="display:flex; gap:4px; list-style:none; margin:0; padding:0; flex-wrap:wrap;">
+                <li><a href="Home.html" style="padding:9px 12px;">TRANG CHỦ</a></li>
+                <li><a href="Home.html#list1-topgames" style="padding:9px 12px;">SẢN PHẨM</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="khung-gio">
+        <h1>🛒 Giỏ hàng của bạn</h1>
+        <div class="bang-gio">
+            <div id="gio-than">Đang tải giỏ hàng...</div>
+        </div>
+    </div>
+
+    <script src="assets/js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/order.js?v=7"></script>
+</body>
+</html>

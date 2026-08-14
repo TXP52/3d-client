@@ -1,58 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/Login.css">
-    <title>Login in GameOver</title>
+    <link rel="stylesheet" href="assets/css/Login.css?v=3">
+    <title>Đăng nhập - IN3D Shop</title>
+    <style>
+        .thong-bao-auth {
+            width: 100%;
+            font-size: 13px;
+            margin: 6px 0 0 0;
+            min-height: 18px;
+            text-align: center;
+        }
+        .thong-bao-auth.loi { color: #d63031; }
+        .thong-bao-auth.ok { color: #27ae60; }
+    </style>
 </head>
 <body>
-    
+
     <section>
-        
-    
+
+
         <div class="container">
 
 
             <div class="user signinBx">
                 <div class="imgBx"><img src="assets/img/p1-game.jpg" class="p1"></div>
                 <div class="formBx">
-                    <form>
-                        
-                        <h2>Log In</h2>
-                        <input type="text" placeholder="Username">
-                        <input type="password" placeholder="Password">
-                        <input type="submit" value="Login">
-                        <p class="signup">don't have an account ? <a href="#" onclick="toggleForm();">Registr.</a></p>
+                    <form id="form-dang-nhap">
+
+                        <h2>Đăng nhập</h2>
+                        <input type="email" id="dn-email" placeholder="Địa chỉ email" required>
+                        <input type="password" id="dn-mat-khau" placeholder="Mật khẩu" required>
+                        <input type="submit" value="Đăng nhập">
+                        <p class="thong-bao-auth" id="dn-thong-bao"></p>
+                        <p class="signup">Chưa có tài khoản? <a href="#" onclick="toggleForm();">Đăng ký.</a></p>
                     </form>
                 </div>
             </div>
-            
-            
+
+
 
             <div class="user signupBx">
-                
+
                 <div class="formBx">
-                    <form>
-                        
-                        <h2>Create an account </h2>
-                        <input type="text" placeholder="Username">
-                        <input type="text" placeholder="Email Address">
-                        <input type="password" placeholder="Create Password">
-                        <input type="password" placeholder="Confim Password">
-                        <input type="submit" value="sign up">
-                        <p class="signup">Already have an account ? <a href="#" onclick="toggleForm();">Login.</a></p>
+                    <form id="form-dang-ky">
+
+                        <h2>Tạo tài khoản </h2>
+                        <input type="text" id="dk-ho-ten" placeholder="Họ và tên" required>
+                        <input type="email" id="dk-email" placeholder="Địa chỉ email" required>
+                        <input type="password" id="dk-mat-khau" placeholder="Mật khẩu (ít nhất 6 ký tự)" required>
+                        <input type="password" id="dk-mat-khau2" placeholder="Nhập lại mật khẩu" required>
+                        <input type="submit" value="Đăng ký">
+                        <p class="thong-bao-auth" id="dk-thong-bao"></p>
+                        <p class="signup">Đã có tài khoản? <a href="#" onclick="toggleForm();">Đăng nhập.</a></p>
                     </form>
                 </div>
                 <div class="imgBx"><img src="assets/img/p4.jpg"></div>
-            </div> 
+            </div>
 
 
         </div>
-    
+
     </section>
-    
+
     <script>
         function toggleForm(){
             section = document.querySelector('section');
@@ -61,6 +74,80 @@
             section.classList.toggle('active');
 
         }
+
+        // ---------- Đăng nhập / Đăng ký qua BACKEND JAVA (tài khoản lưu trong database) ----------
+        var JAVA_API = 'http://localhost:8090/api';
+
+        function baoDN(chu, ok) {
+            var o = document.getElementById('dn-thong-bao');
+            o.textContent = chu;
+            o.className = 'thong-bao-auth ' + (ok ? 'ok' : 'loi');
+        }
+        function baoDK(chu, ok) {
+            var o = document.getElementById('dk-thong-bao');
+            o.textContent = chu;
+            o.className = 'thong-bao-auth ' + (ok ? 'ok' : 'loi');
+        }
+
+        async function goiAuth(duongDan, duLieu) {
+            var resp = await fetch(JAVA_API + duongDan, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(duLieu)
+            });
+            var kq = await resp.json();
+            if (!resp.ok) throw new Error(kq.loi || ('Lỗi HTTP ' + resp.status));
+            return kq;
+        }
+
+        function luuPhien(kq) {
+            localStorage.setItem('in3d_phien', JSON.stringify({
+                token: kq.token, hoTen: kq.hoTen, email: kq.email, vaiTro: kq.vaiTro
+            }));
+        }
+
+        document.getElementById('form-dang-nhap').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            baoDN('Đang đăng nhập...', true);
+            try {
+                var kq = await goiAuth('/auth/dang-nhap', {
+                    email: document.getElementById('dn-email').value.trim(),
+                    matKhau: document.getElementById('dn-mat-khau').value
+                });
+                luuPhien(kq);
+                baoDN('Xin chào ' + kq.hoTen + '! Đang chuyển vào cửa hàng...', true);
+                setTimeout(function () { window.location.href = 'Home.html'; }, 700);
+            } catch (loi) {
+                baoDN(/fetch/i.test(loi.message) ? 'Không kết nối được backend Java. Hãy chạy backend (cổng 8090) rồi thử lại.' : loi.message, false);
+            }
+        });
+
+        document.getElementById('form-dang-ky').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var mk = document.getElementById('dk-mat-khau').value;
+            var mk2 = document.getElementById('dk-mat-khau2').value;
+            if (mk.length < 6) { baoDK('Mật khẩu phải có ít nhất 6 ký tự.', false); return; }
+            if (mk !== mk2) { baoDK('Mật khẩu nhập lại không khớp.', false); return; }
+
+            baoDK('Đang tạo tài khoản...', true);
+            try {
+                await goiAuth('/auth/dang-ky', {
+                    hoTen: document.getElementById('dk-ho-ten').value.trim(),
+                    email: document.getElementById('dk-email').value.trim(),
+                    matKhau: mk
+                });
+                // Đăng ký xong tự đăng nhập luôn
+                var kq = await goiAuth('/auth/dang-nhap', {
+                    email: document.getElementById('dk-email').value.trim(),
+                    matKhau: mk
+                });
+                luuPhien(kq);
+                baoDK('Đăng ký thành công! Đang chuyển vào cửa hàng...', true);
+                setTimeout(function () { window.location.href = 'Home.html'; }, 700);
+            } catch (loi) {
+                baoDK(/fetch/i.test(loi.message) ? 'Không kết nối được backend Java. Hãy chạy backend (cổng 8090) rồi thử lại.' : loi.message, false);
+            }
+        });
     </script>
 </body>
 </html>

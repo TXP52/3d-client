@@ -1232,7 +1232,7 @@ a.text-dark:hover {
 }
 
 body {
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     font-size: .875rem;
     font-weight: 400;
     line-height: 1.71428571;
@@ -1258,7 +1258,7 @@ h4,
 h5,
 h6 {
     margin-bottom: 1.125rem;
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     font-weight: 700;
     line-height: .875;
     text-transform: uppercase;
@@ -2014,7 +2014,7 @@ body:not(.cursor-is--active) .accordion-item__link {
 .button {
     display: inline-block;
     font-weight: 700;
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     text-align: center;
     text-transform: uppercase;
     white-space: nowrap;
@@ -4780,7 +4780,7 @@ body:not(.cursor-is--active) .select-wrapper select {
 }
 
 .header-logo .header-logo__heading {
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     font-size: 1em;
     line-height: 1em;
     letter-spacing: -.05em;
@@ -4802,7 +4802,7 @@ body:not(.cursor-is--active) .select-wrapper select {
 }
 
 .header-logo .header-logo__tagline {
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     font-size: .625rem;
     line-height: 1em;
     letter-spacing: -.05em;
@@ -4891,7 +4891,7 @@ body:not(.cursor-is--active) .select-wrapper select {
 
 .gm-map .gm-style .gm-style-iw-d {
     overflow: hidden !important;
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     font-weight: 700;
     line-height: .75rem;
     font-size: .875rem;
@@ -6576,7 +6576,7 @@ html.touch .social-menu.social-menu--header {
 
 .social-menu--mobile-bar a span {
     font-size: .75rem;
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     font-weight: 700;
     letter-spacing: -.03em;
     text-transform: uppercase;
@@ -8872,4 +8872,8 @@ body.site-layout--horizontal {
 
 /*************************************
 *************************************/
+
+
+/* In dam toan bo chu */
+* { font-weight: 700 !important; }
 

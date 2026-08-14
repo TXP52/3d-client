@@ -3,7 +3,7 @@
     margin: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
 }
 body{
     background-color: #eee;
@@ -21,6 +21,12 @@ body{
 .header-home-page a img{
     margin-top: -25px;
 }
+/* Logo moi (huy hieu xanh la - vang) */
+.header-home-page a img.logo-chinh{
+    height: 62px;
+    width: auto;
+    margin-top: 0;
+}
 .header-logo-page{
     margin-left: 60px;
 }
@@ -28,7 +34,7 @@ body{
 .nav-bar-home-page{
     max-width: 1500px;
     padding: 0 10px;
-    margin: -85px 0 0px 200px;
+    margin: -85px 0 0px 130px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -66,7 +72,8 @@ body{
     width:620px;
     min-height:52px;
     z-index:2;
-    margin: 0 0 0 500px;
+    /* Khung tim kiem nam GIUA (lech nhe sang phai de khong dung menu ben trai) */
+    margin: 0 0 0 80px;
 }
 .centerbox h1 {
     margin-bottom: 25px;
@@ -328,7 +335,7 @@ ul.search-description {
     text-align: center;
     font-size: 40px;
     color: #a3ff12;
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     padding-top: 40px;
 
 }
@@ -337,7 +344,7 @@ ul.search-description {
     text-align: center;
     font-size: 130px;
     line-height: 110px;
-    font-family: Rajdhani, sans-serif;
+    font-family: 'Chakra Petch', sans-serif;
     
     
 }
@@ -502,7 +509,7 @@ ul.search-description {
 
 .list1-top-games{
     width: 100%;
-    height: 600px;
+    height: auto;
     
     padding: 100px 100px 50px 100px;
 }
@@ -526,7 +533,7 @@ ul.search-description {
 
 .card--1 .card__img, .card--1 .card__img--hover {
     background-image: url('../img/p25.jpg');
-    
+
 }
 .card--2 .card__img, .card--2 .card__img--hover {
     background-image: url('../img/p26.jpg');
@@ -536,7 +543,7 @@ ul.search-description {
 }
 .card--4 .card__img, .card--4 .card__img--hover {
     background-image: url('../img/p48.jpg');
-    
+
 }
 .card--5 .card__img, .card--5 .card__img--hover {
     background-image: url('../img/p49.webp');
@@ -670,7 +677,7 @@ border-bottom-right-radius: 12px;
 .list2-3photo{
     
     width: 100%;
-    height: 400px;
+    height: auto;
     padding: 0 100px;
     display: flex;
 }
@@ -737,7 +744,7 @@ border-bottom-right-radius: 12px;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    height: 530px;
+    height: auto;
     padding: 10px;
 }
 .games-free p{
@@ -768,7 +775,7 @@ border-bottom-right-radius: 12px;
     border: #fff 1px solid;
     color: #fff;
     background-color: rgba(0, 0, 0, 0);
-    margin: 10px 0 0 1085px;
+    margin: 10px 20px 0 auto;
     width: 100px;
     height: 45px;
     cursor: pointer;
@@ -785,7 +792,7 @@ border-bottom-right-radius: 12px;
 .all-games{
     
     width: 100%;
-    height: 1550px;
+    height: auto;
     margin-top: 50px;
     padding: 20px 100px;
 }
@@ -815,7 +822,7 @@ border-bottom-right-radius: 12px;
 }
 .see-more a{
     text-decoration: none;
-    margin: 60px 0 0 1310px ;
+    margin: 60px 0 0 auto;
     font-weight: bold;
     color: #868686;
 }
@@ -1032,3 +1039,115 @@ border-bottom-right-radius: 12px;
     font-size: 14px;
     color: #878787;
   }
+/* ==========================================================
+   RESPONSIVE - IN3D Shop
+   ========================================================== */
+
+/* Man hinh vua (laptop nho / tablet ngang) */
+@media only screen and (max-width: 1300px) {
+    .list1-top-games { height: auto; padding: 80px 30px 40px 30px; }
+    .cards, .game-free1, .all-list1-game, .all-list2-game, .all-list3-game {
+        flex-wrap: wrap;
+        gap: 25px;
+        justify-content: center;
+    }
+    .card { width: 30%; min-width: 250px; margin-right: 0; }
+    .list2-3photo { height: auto; padding: 0 30px; flex-wrap: wrap; gap: 30px; justify-content: center; }
+    .photo2-list2, .photo3-list2 { margin-left: 0; }
+    .photo1-list2, .photo2-list2, .photo3-list2 { height: auto; padding-bottom: 20px; max-width: 100%; }
+    .list2-3photo img { max-width: 100%; height: auto; }
+    .games-free { margin: 60px 30px 0 30px; height: auto; padding-bottom: 25px; }
+    .all-games { height: auto; padding: 20px 30px; }
+
+    .footer-section { height: auto; }
+    .footer-cta { padding: 40px 20px 25px 20px; }
+    .single-cta i { padding-left: 0; margin-right: 18px; }
+    .footer-content { margin-left: 0; padding: 30px 20px; height: auto; }
+    .footer-widget1, .footer-widget2 { margin: 40px 0 0 0; }
+    .footer-logo { margin-top: 0; margin-bottom: 10px; }
+}
+
+/* Tablet doc / dien thoai ngang */
+@media only screen and (max-width: 900px) {
+    .header-home-page { position: static; height: auto; padding: 10px; }
+    .header-home-page a img { margin-top: 0; width: 90px; height: 90px; }
+    .header-logo-home { text-align: center; }
+    .nav-bar-home-page { margin: 0; max-width: 100%; justify-content: center; }
+    .nav-bar-home-page ul { margin: 0; flex-wrap: wrap; justify-content: center; }
+    .centerbox { position: static; transform: none; margin: 15px auto 0 auto; width: 100%; max-width: 480px; }
+    .main-form-container { margin: 0 auto; }
+
+    .background-home-page { margin-top: 0; background-attachment: scroll; height: 420px; }
+    .background-shadow-button { height: 420px; }
+    .text-background { width: 100%; height: 420px; padding-top: 30px; }
+    .background-shadow-button .text-background p { font-size: 26px; padding-top: 20px; }
+    .background-shadow-button .text-background h1 { font-size: 64px; line-height: 60px; }
+    .button-background { top: 58%; width: 170px; padding: 30px; }
+
+    .photo1-home { height: auto; padding: 30px 20px 0 20px; display: block; }
+    .photo1-first { width: 100%; height: auto; }
+    .photo1-home img { width: 100%; height: auto; }
+    .photo1-home hr { display: none; }
+    .text-nextTo-photo1 { margin-left: 0; padding-top: 20px; }
+    .text-nextTo-photo1 h1 { font-size: 34px; line-height: 40px; }
+    .text-nextTo-photo1 .text-games-p1 { font-size: 24px; }
+
+    .start-game { height: auto; margin-top: 15px; padding: 15px; }
+    .start-game h1 a { font-size: 30px; }
+    .start-game h1 a:hover { font-size: 32px; }
+
+    .list1-top-games { padding: 40px 15px 20px 15px; }
+    .list1-top-games .text-top-games { font-size: 21px; }
+    .card { width: 46%; min-width: 220px; }
+    .list2-3photo { padding: 0 15px; }
+    .games-free { margin: 40px 15px 0 15px; }
+    .games-free p { font-size: 22px; padding: 10px 0 15px 10px; }
+    .all-games { padding: 20px 15px; margin-top: 20px; }
+    .see-more a { margin-top: 65px; }
+
+    .footer-cta .row { flex-direction: column; gap: 18px; }
+    .footer-content .row { display: block; }
+}
+
+/* Dien thoai */
+@media only screen and (max-width: 560px) {
+    .nav-bar-home-page ul li { padding: 0 2px; }
+    .nav-bar-home-page ul li a { padding: 6px 8px; font-size: 14px; }
+    .background-shadow-button .text-background h1 { font-size: 44px; line-height: 44px; }
+    .background-shadow-button .text-background p { font-size: 20px; }
+    .card { width: 100%; max-width: 340px; }
+    .text-nextTo-photo1 h1 { font-size: 26px; line-height: 32px; }
+    .list2-3photo h1 { font-size: 22px; }
+    .start-game h1 a { font-size: 22px; }
+    .start-game h1 a:hover { font-size: 24px; }
+}
+
+/* Bo sung: sua tran ngang o man hinh trung binh (thiet ke goc chi dep tren man >=1650px) */
+@media only screen and (max-width: 1650px) {
+    .header-home-page { position: static; height: auto; padding: 10px 10px 15px 10px; }
+    .header-home-page a img { margin-top: 0; }
+    .header-logo-home { text-align: center; }
+    .nav-bar-home-page { margin: 0 auto; max-width: 100%; justify-content: center; }
+    .nav-bar-home-page ul { margin: 0; flex-wrap: wrap; justify-content: center; }
+    .centerbox { position: static; transform: none; margin: 15px auto 0 auto; width: 100%; max-width: 640px; }
+    .main-form-container { width: auto; max-width: 620px; margin: 0 auto; }
+    .background-home-page { margin-top: 0; }
+}
+
+@media only screen and (max-width: 1300px) {
+    .photo1-home { height: auto; padding: 30px 20px 0 20px; display: block; }
+    .photo1-first { width: 100%; height: auto; max-width: 700px; margin: 0 auto; }
+    .photo1-home img { width: 100%; height: auto; }
+    .photo1-home hr { display: none; }
+    .text-nextTo-photo1 { margin-left: 0; padding-top: 20px; }
+}
+
+/* Nut GO dinh vi theo khoi hero de khong de len chu */
+@media only screen and (max-width: 1650px) {
+    .background-shadow-button { position: relative; }
+    .button-background { top: 68%; }
+}
+
+/* In dam toan bo chu */
+* { font-weight: 700 !important; }
+

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Chi tiết sản phẩm - IN3D Shop</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
+    <link href="assets/css/order.css?v=7" rel="stylesheet">
+    <style>
+        * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Chakra Petch', sans-serif; }
+        body { background-color: #eee; }
+
+        .dau-trang {
+            background-color: #151720;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .dau-trang a { color: #fff; text-decoration: none; }
+        .dau-trang a:hover { color: #a3ff12; }
+        .dau-trang .logo img { height: 56px; vertical-align: middle; }
+        .dau-trang nav { display: flex; gap: 18px; flex-wrap: wrap; }
+
+        .khung {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 16px;
+        }
+        .duong-dan { color: #666; font-size: 14px; margin-bottom: 16px; }
+        .duong-dan a { color: #4c8a00; text-decoration: none; }
+
+        .chi-tiet {
+            display: flex;
+            gap: 30px;
+            background: #fff;
+            border-radius: 14px;
+            padding: 26px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+            flex-wrap: wrap;
+        }
+        .chi-tiet .anh {
+            flex: 1 1 380px;
+            min-width: 280px;
+        }
+        .chi-tiet .anh img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .chi-tiet .noi-dung { flex: 1 1 380px; min-width: 280px; }
+        .chi-tiet h1 { font-size: 30px; line-height: 1.25; margin-bottom: 8px; }
+        .nhan-danh-muc {
+            display: inline-block;
+            background: #eef7df;
+            color: #4c8a00;
+            border-radius: 20px;
+            font-size: 13px;
+            padding: 3px 12px;
+            margin-bottom: 12px;
+        }
+        .gia-lon { color: #4c8a00; font-size: 34px; margin: 10px 0; }
+        .ton-kho { font-size: 15px; margin-bottom: 14px; }
+        .ton-kho .con { color: #2e7d32; }
+        .ton-kho .het { color: #c62828; }
+        .mo-ta { color: #555; font-size: 15px; line-height: 1.65; margin-bottom: 22px; }
+
+        .hang-nut { display: flex; gap: 12px; flex-wrap: wrap; }
+        .nut {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 26px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Chakra Petch', sans-serif;
+            transition: 0.2s;
+        }
+        .nut-gio { background: #151720; color: #a3ff12; }
+        .nut-gio:hover { background: #000; }
+        .nut-mua { background: #a3ff12; color: #151720; }
+        .nut-mua:hover { background: #8ede00; }
+
+        .goi-y { margin-top: 34px; }
+        .goi-y h2 { font-size: 22px; margin-bottom: 14px; }
+        .luoi-goi-y { display: flex; gap: 16px; flex-wrap: wrap; }
+        .the-goi-y {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 240px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+            text-decoration: none;
+            color: #222;
+            transition: 0.2s;
+        }
+        .the-goi-y:hover { transform: translateY(-4px); }
+        .the-goi-y img { width: 100%; height: 130px; object-fit: cover; }
+        .the-goi-y .t { padding: 10px 12px 4px 12px; font-size: 14px; line-height: 1.35; }
+        .the-goi-y .g { padding: 0 12px 12px 12px; color: #4c8a00; font-size: 15px; }
+
+        .trang-thai-tai { text-align: center; color: #888; padding: 40px 0; }
+
+        @media (max-width: 700px) {
+            .chi-tiet .anh img { height: 240px; }
+            .chi-tiet h1 { font-size: 22px; }
+            .gia-lon { font-size: 26px; }
+        }
+
+        * { font-weight: 700 !important; }
+    </style>
+</head>
+<body>
+
+    <header class="dau-trang">
+        <a class="logo" href="index.html"><img src="assets/logo/logo.png" alt="IN3D Shop"></a>
+        <nav class="nav-bar-home-page" style="margin:0;">
+            <ul style="display:flex; gap:4px; list-style:none; margin:0; padding:0;">
+                <li><a href="Home.html" style="padding:9px 12px;">TRANG CHỦ</a></li>
+                <li><a href="Home.html#list1-topgames" style="padding:9px 12px;">SẢN PHẨM</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="khung">
+        <p class="duong-dan"><a href="Home.html">Trang chủ</a> › <a href="Home.html#list1-topgames">Sản phẩm</a> › <span id="dd-ten">Chi tiết</span></p>
+
+        <div id="noi-dung-chinh" class="trang-thai-tai">Đang tải thông tin sản phẩm...</div>
+
+        <div class="goi-y" id="khu-goi-y" style="display:none;">
+            <h2>Sản phẩm khác</h2>
+            <div class="luoi-goi-y" id="luoi-goi-y"></div>
+        </div>
+    </div>
+
+    <script src="assets/js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/order.js?v=7"></script>
+    <script>
+        (async function () {
+            'use strict';
+
+            var JAVA_API = 'http://localhost:8090/api';
+            var SB_URL = 'https://nmptxzbtngztzxpwdprs.supabase.co';
+            var SB_KEY = 'sb_publishable_OJjvcAtUPib9bvdNNA-Bjg_vbz7CuQ-';
+
+            var thamSo = new URLSearchParams(location.search);
+            var tenCanTim = (thamSo.get('ten') || '').trim();
+            var giaTrenThe = (thamSo.get('gia') || '').trim();
+
+            function esc(t) {
+                return String(t == null ? '' : t)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+            function giaVND(so) { return Number(so || 0).toLocaleString('vi-VN') + '₫'; }
+
+            // Lấy danh sách sản phẩm: Java -> Supabase -> rỗng
+            async function taiSanPham() {
+                try {
+                    var r = await fetch(JAVA_API + '/san-pham');
+                    if (r.ok) {
+                        return (await r.json()).map(function (s) {
+                            return { ten: s.ten, gia: s.gia || 0, giaChu: s.giaChu, moTa: s.moTa, tonKho: s.tonKho || 0 };
+                        });
+                    }
+                } catch (e) {}
+                try {
+                    var r2 = await fetch(SB_URL + '/rest/v1/san_pham?select=*&dang_ban=eq.true&order=id', {
+                        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+                    });
+                    if (r2.ok) {
+                        return (await r2.json()).map(function (s) {
+                            return { ten: s.ten, gia: Number(s.gia) || 0, giaChu: s.gia_chu, moTa: s.mo_ta, tonKho: s.ton_kho || 0 };
+                        });
+                    }
+                } catch (e) {}
+                return [];
+            }
+
+            function moTaMacDinh(ten) {
+                var t = ten.toLowerCase();
+                if (t.indexOf('máy in') >= 0 || t.indexOf('resin') >= 0)
+                    return 'Máy in 3D chính hãng, bảo hành 12 tháng tại IN3D Shop. Hỗ trợ lắp đặt, hướng dẫn sử dụng miễn phí và tư vấn vật liệu phù hợp với nhu cầu in của bạn.';
+                if (t.indexOf('nhựa') >= 0 || t.indexOf('pla') >= 0 || t.indexOf('petg') >= 0 || t.indexOf('abs') >= 0 || t.indexOf('tpu') >= 0)
+                    return 'Vật liệu in 3D chất lượng cao, độ ẩm thấp, đường kính chuẩn 1.75mm, cho bề mặt in mịn và bám lớp tốt. Đủ màu sắc, giao hàng toàn quốc.';
+                if (t.indexOf('dịch vụ') >= 0 || t.indexOf('scan') >= 0 || t.indexOf('thiết kế') >= 0)
+                    return 'Dịch vụ thực hiện bởi đội ngũ kỹ thuật giàu kinh nghiệm của IN3D Shop. Báo giá trong 1 giờ làm việc, cam kết đúng hẹn và bảo mật file thiết kế của khách hàng.';
+                return 'Sản phẩm chính hãng từ IN3D Shop — cửa hàng in 3D uy tín. Liên hệ hotline để được tư vấn chi tiết và nhận ưu đãi khi mua kèm vật tư.';
+            }
+
+            var dsSanPham = await taiSanPham();
+
+            // Tìm sản phẩm theo tên (khớp gần đúng)
+            var sp = null;
+            if (tenCanTim) {
+                var tim = tenCanTim.toLowerCase();
+                sp = dsSanPham.find(function (s) { return s.ten.toLowerCase() === tim; }) ||
+                     dsSanPham.find(function (s) { return s.ten.toLowerCase().indexOf(tim) >= 0 || tim.indexOf(s.ten.toLowerCase()) >= 0; });
+            }
+            // Không có trong DB -> vẫn hiện theo thông tin trên thẻ
+            if (!sp && tenCanTim) {
+                sp = { ten: tenCanTim, gia: 0, giaChu: giaTrenThe || 'Liên hệ', moTa: null, tonKho: null };
+            }
+
+            var khung = document.getElementById('noi-dung-chinh');
+            if (!sp) {
+                khung.innerHTML = 'Không tìm thấy sản phẩm. <a href="Home.html">Quay lại cửa hàng</a>';
+                return;
+            }
+
+            document.title = sp.ten + ' - IN3D Shop';
+            document.getElementById('dd-ten').textContent = sp.ten;
+
+            var giaHien = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
+            var tonKhoHtml = sp.tonKho === null ? '' :
+                '<p class="ton-kho">Tình trạng: ' + (sp.tonKho > 0
+                    ? '<span class="con">✔ Còn hàng (' + sp.tonKho + ' sản phẩm)</span>'
+                    : '<span class="het">Hết hàng / Đặt trước</span>') + '</p>';
+
+            khung.className = '';
+            khung.innerHTML =
+                '<div class="chi-tiet">' +
+                '  <div class="anh"><img src="' + anhChoSanPham(sp.ten) + '" alt="' + esc(sp.ten) + '"></div>' +
+                '  <div class="noi-dung">' +
+                '    <span class="nhan-danh-muc">IN3D Shop</span>' +
+                '    <h1>' + esc(sp.ten) + '</h1>' +
+                '    <p class="gia-lon">' + esc(giaHien) + '</p>' +
+                tonKhoHtml +
+                '    <p class="mo-ta">' + esc(sp.moTa || moTaMacDinh(sp.ten)) + '</p>' +
+                '    <div class="hang-nut">' +
+                '      <button class="nut nut-gio" id="nut-them-gio">🛒 Thêm vào giỏ</button>' +
+                '      <button class="nut nut-mua" id="nut-mua-ngay">Mua ngay</button>' +
+                '    </div>' +
+                '  </div>' +
+                '</div>';
+
+            var giaChuThem = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
+            document.getElementById('nut-them-gio').addEventListener('click', function () {
+                window.themVaoGioTuNgoai(sp.ten, giaChuThem, false);
+            });
+            document.getElementById('nut-mua-ngay').addEventListener('click', function () {
+                window.themVaoGioTuNgoai(sp.ten, giaChuThem, true);
+            });
+
+            // Gợi ý sản phẩm khác
+            var goiY = dsSanPham.filter(function (s) { return s.ten !== sp.ten; }).slice(0, 4);
+            if (goiY.length) {
+                document.getElementById('khu-goi-y').style.display = '';
+                document.getElementById('luoi-goi-y').innerHTML = goiY.map(function (s) {
+                    var g = s.gia > 0 ? giaVND(s.gia) : (s.giaChu || 'Liên hệ');
+                    return '<a class="the-goi-y" href="chi-tiet.html?ten=' + encodeURIComponent(s.ten) + '&gia=' + encodeURIComponent(g) + '">' +
+                        '<img src="' + anhChoSanPham(s.ten) + '" alt=""><div class="t">' + esc(s.ten) + '</div><div class="g">' + g + '</div></a>';
+                }).join('');
+            }
+        })();
+    </script>
+</body>
+</html>

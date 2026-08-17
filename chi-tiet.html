@@ -164,7 +164,7 @@
                     var r = await fetch(JAVA_API + '/san-pham');
                     if (r.ok) {
                         return (await r.json()).map(function (s) {
-                            return { ten: s.ten, gia: s.gia || 0, giaChu: s.giaChu, moTa: s.moTa, tonKho: s.tonKho || 0 };
+                            return { ten: s.ten, gia: s.gia || 0, giaChu: s.giaChu, moTa: s.moTa, tonKho: s.tonKho || 0, anh: s.hinhAnh || '' };
                         });
                     }
                 } catch (e) {}
@@ -174,7 +174,7 @@
                     });
                     if (r2.ok) {
                         return (await r2.json()).map(function (s) {
-                            return { ten: s.ten, gia: Number(s.gia) || 0, giaChu: s.gia_chu, moTa: s.mo_ta, tonKho: s.ton_kho || 0 };
+                            return { ten: s.ten, gia: Number(s.gia) || 0, giaChu: s.gia_chu, moTa: s.mo_ta, tonKho: s.ton_kho || 0, anh: s.hinh_anh || '' };
                         });
                     }
                 } catch (e) {}
@@ -224,7 +224,8 @@
             khung.className = '';
             khung.innerHTML =
                 '<div class="chi-tiet">' +
-                '  <div class="anh"><img src="' + anhChoSanPham(sp.ten) + '" alt="' + esc(sp.ten) + '"></div>' +
+                '  <div class="anh"><img src="' + anhChoSanPham(sp.ten, sp.anh) + '" alt="' + esc(sp.ten) + '"' +
+                ' onerror="this.src=\'' + anhChoSanPham(sp.ten) + '\'"></div>' +
                 '  <div class="noi-dung">' +
                 '    <span class="nhan-danh-muc">IN3D Shop</span>' +
                 '    <h1>' + esc(sp.ten) + '</h1>' +
@@ -253,7 +254,8 @@
                 document.getElementById('luoi-goi-y').innerHTML = goiY.map(function (s) {
                     var g = s.gia > 0 ? giaVND(s.gia) : (s.giaChu || 'Liên hệ');
                     return '<a class="the-goi-y" href="chi-tiet.html?ten=' + encodeURIComponent(s.ten) + '&gia=' + encodeURIComponent(g) + '">' +
-                        '<img src="' + anhChoSanPham(s.ten) + '" alt=""><div class="t">' + esc(s.ten) + '</div><div class="g">' + g + '</div></a>';
+                        '<img src="' + anhChoSanPham(s.ten, s.anh) + '" alt=""' +
+                        ' onerror="this.src=\'' + anhChoSanPham(s.ten) + '\'"><div class="t">' + esc(s.ten) + '</div><div class="g">' + g + '</div></a>';
                 }).join('');
             }
         })();

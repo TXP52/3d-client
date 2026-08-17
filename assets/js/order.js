@@ -34,8 +34,14 @@
         return (chuoi || '').replace(/\|/g, ' ').replace(/\s+/g, ' ').trim();
     }
 
-    // Chọn ảnh minh hoạ theo tên sản phẩm (dùng lại kho ảnh có sẵn của trang)
-    function anhChoSanPham(ten) {
+    // Ảnh sản phẩm: ưu tiên ảnh thật admin đã tải lên, không có thì lấy ảnh minh hoạ theo tên.
+    // DB lưu đường dẫn tương đối "/anh/xxx.webp" -> ghép với host backend để xem được.
+    function anhChoSanPham(ten, anhThat) {
+        if (anhThat) {
+            if (/^(https?:)?\/\//.test(anhThat) || anhThat.indexOf('data:') === 0) return anhThat;
+            if (anhThat.charAt(0) === '/') return String(JAVA_API).replace(/\/api$/, '') + anhThat;
+            return anhThat;
+        }
         var t = (ten || '').toLowerCase();
         if (t.indexOf('resin') >= 0) return 'assets/img/p26.jpg';
         if (t.indexOf('máy in') >= 0 || t.indexOf('bambu') >= 0 || t.indexOf('creality') >= 0 || t.indexOf('prusa') >= 0 || t.indexOf('kobra') >= 0 || t.indexOf('ender') >= 0) return 'assets/img/p25.jpg';

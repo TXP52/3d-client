@@ -107,7 +107,7 @@ body{
     padding:0px 0px 0px 57px;
     font-size:16px;
     border-right:0px;
-    background: #ffffff url("http://seodesigns.com/projects/TD/images/search.png") 18px 15px no-repeat;background-size:18px 18px;float:left;
+    background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2.5' stroke-linecap='round'><circle cx='10.5' cy='10.5' r='6.5'/><path d='M16 16l5 5'/></svg>") 18px 15px no-repeat;background-size:18px 18px;float:left;
 }
 .main-location {display: none;}
 #main-submit {
@@ -149,7 +149,7 @@ footer {
     position: relative;
     float:left;
     border-right:0px;
-    background: #ffffff url("http://seodesigns.com/projects/TD/images/main-bullet.png") 122px 23px no-repeat;background-size:6px 6px;cursor: pointer;
+    background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='%23666666'/></svg>") 122px 23px no-repeat;background-size:6px 6px;cursor: pointer;
 }
 .search-small {
     font-size:12px;
@@ -192,6 +192,7 @@ ul.search-description {
     padding:14px 0px;
     border: 1px solid #E5E5E5;
     display: none;
+    z-index: 60;   /* không có dòng này thì bảng chọn chui xuống dưới ảnh nền, bấm ra như mất tiêu */
     -webkit-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
     box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.3);
@@ -283,16 +284,16 @@ ul.search-description {
 
 @media only screen and (max-width: 375px) {
     .cover {
-        background: rgba(0, 0, 0, 0) url("seodesigns.com/projects/TD/images/background.jpg") no-repeat center -175px;}
+        background: rgba(0, 0, 0, 0) url("../img/JC4_1024x768.jpg") no-repeat center -175px;}
     .main-input {
         width: 185px;
         padding-left:42px;
-        background: #ffffff url("http://seodesigns.com/projects/TD/images/search.png") 12px 15px no-repeat;
+        background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2.5' stroke-linecap='round'><circle cx='10.5' cy='10.5' r='6.5'/><path d='M16 16l5 5'/></svg>") 12px 15px no-repeat;
         background-size:18px 18px;
     }
     .main-btn {
         width:108px;
-        background: #ffffff url("http://seodesigns.com/projects/TD/images/main-bullet.png") 85px 23px no-repeat;
+        background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='%23666666'/></svg>") 85px 23px no-repeat;
         background-size:6px 6px;
     }
     .main-form-container {
@@ -485,6 +486,57 @@ ul.search-description {
 .text-nextTo-photo1 h1{
     font-size: 70px;
     line-height: 70px;
+}
+
+/* ---- Bảng giá dịch vụ in 3D ở khối giới thiệu ---- */
+.bang-gia-dv {
+    width: 100%;
+    max-width: 560px;
+    border-collapse: collapse;
+    margin: 18px 0 12px 0;
+}
+.bang-gia-dv td {
+    padding: 10px 0;
+    border-bottom: 1px solid #d8d8d8;
+    vertical-align: middle;
+}
+.bang-gia-dv tr:last-child td { border-bottom: none; }
+.bang-gia-dv .ten-dv {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1c1c1c;
+}
+.bang-gia-dv .ten-dv span {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: #6b6b6b;
+    margin-top: 2px;
+}
+.bang-gia-dv .gia-dv {
+    text-align: right;
+    white-space: nowrap;
+    font-size: 15px;
+    color: #4a4a4a;
+    padding-left: 16px;
+}
+.bang-gia-dv .gia-dv strong {
+    font-size: 18px;
+    font-weight: 800;
+    color: #2f9e2f;
+}
+.ghi-chu-gia {
+    font-size: 13.5px;
+    color: #6b6b6b;
+    line-height: 1.6;
+    max-width: 560px;
+}
+
+@media only screen and (max-width: 680px) {
+    .bang-gia-dv .ten-dv { font-size: 14px; }
+    .bang-gia-dv .ten-dv span { font-size: 12px; }
+    .bang-gia-dv .gia-dv { font-size: 14px; }
+    .bang-gia-dv .gia-dv strong { font-size: 16px; }
 }
 .start-game{
     width: 100%;

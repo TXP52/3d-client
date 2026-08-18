@@ -971,6 +971,9 @@
                         i = void 0,
                         r = void 0,
                         n = void 0;
+                    // Trang không có #df-custom-cursor (hiệu ứng con trỏ của theme gốc đã bỏ).
+                    // Thiếu dòng này thì vòng lặp dưới ném lỗi ~60 lần/giây suốt thời gian mở trang.
+                    if (!l) return;
                     ! function t() {
                         requestAnimationFrame(t), o && i ? (r = .25 * (e - o), n = .25 * (s - i), Math.abs(r) + Math.abs(n) < .1 ? (o = e, i = s) : (o += r, i += n)) : (o = e, i = s), l.style.transform = "translate(" + o + "px, " + i + "px)"
                     }()
@@ -1024,16 +1027,15 @@ $('.main-btn').click(function() {
     $('.search-description').slideToggle(100);
   });
   $('.search-description li').click(function() {
-    var target = $(this).html();
-    var toRemove = 'By ';
-    var newTarget = target.replace(toRemove, '');
-    //remove spaces
-    newTarget = newTarget.replace(/\s/g, '');
-    $(".search-large").html(newTarget);
+    // data-o cho biết ô nhập nào cần hiện: main-name (sản phẩm) hay main-location (thương hiệu).
+    // Code cũ lấy chữ tiếng Việt rồi bỏ hết dấu cách để đoán tên class -> ra ".main-theosảnphẩm"
+    // không khớp gì, nên cả hai ô nhập bị ẩn và ô tìm kiếm biến mất luôn.
+    var o = $(this).data('o');
+    var nhan = $(this).text().replace(/^\s*Theo\s+/i, '');   // "Theo sản phẩm" -> "sản phẩm"
+    $('.search-large').text(nhan.charAt(0).toUpperCase() + nhan.slice(1));
     $('.search-description').hide();
     $('.main-input').hide();
-    newTarget = newTarget.toLowerCase();
-    $('.main-' + newTarget).show();
+    $('.main-' + o).show();
   });
   $('#main-submit-mobile').click(function() {
     $('#main-submit').trigger('click');
@@ -1043,12 +1045,9 @@ $('.main-btn').click(function() {
   });
   
   function replaceMatches() {
+    // Ô nhập thương hiệu: màn hình hẹp thì rút gọn chữ gợi ý cho khỏi tràn.
     var width = $(window).width();
-    if (width < 516) {
-      $('.main-location').attr('value', 'City or postal code');
-    } else {
-      $('.main-location').attr('value', 'Search by city or postal code');
-    }
+    $('.main-location').attr('value', width < 516 ? 'Thương hiệu' : 'Tìm theo thương hiệu');
   };
   replaceMatches();
   

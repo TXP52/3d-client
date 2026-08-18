@@ -83,6 +83,9 @@
 
     /* ---------- Gắn nút "Đặt hàng" vào sản phẩm ---------- */
 
+    // Cho san-pham-home.js gọi lại sau khi vẽ thẻ sản phẩm từ database
+    window.ganNutVaoThe = function () { ganNutVaoThe(); };
+
     function ganNutVaoThe() {
         document.querySelectorAll('.card').forEach(function (card) {
             var info = card.querySelector('.card__info');

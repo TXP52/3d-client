@@ -31,8 +31,8 @@
     <link href="assets/vendor/fontawesome/css/brands.css" rel="stylesheet">
 
     <!-- Template CSS-->
-    <link href="assets/css/Home.css?v=10" rel="stylesheet">
-    <link href="assets/css/order.css?v=7" rel="stylesheet">
+    <link href="assets/css/Home.css?v=11" rel="stylesheet">
+    <link href="assets/css/order.css?v=8" rel="stylesheet">
 
 </head>
 <body id="body2">
@@ -130,6 +130,18 @@
             </div>
         </div>
     </div>
+    <!-- ============================================================
+         KHUYẾN MÃI ĐANG CHẠY — lấy từ bảng khuyen_mai.
+         Không có mã nào đang chạy thì JS để nguyên hidden, trang không lòi ra dải trống.
+         ============================================================ -->
+    <div class="dai-khuyen-mai" id="dai-khuyen-mai" hidden>
+      <div class="dau-km-home">
+        <p class="text-top-games">ĐANG CÓ ƯU ĐÃI</p>
+        <span class="phu-km-home">Bấm vào mã để lưu, lúc đặt hàng shop tự trừ tiền cho bạn.</span>
+      </div>
+      <div class="luoi-km-home" id="luoi-km-home"></div>
+    </div>
+
     <!-- ============================================================
          SẢN PHẨM — lấy thẳng từ database (loại "hàng bán" và "hàng mẫu")
          Trước đây khối này là "Mẫu 3D miễn phí" với 4 thẻ viết cứng trong HTML
@@ -310,8 +322,8 @@
     <script src="assets/js/init.js?v=5"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-client.js"></script>
-    <script src="assets/js/order.js?v=8"></script>
-    <script src="assets/js/trang-chu.js?v=1"></script>
+    <script src="assets/js/order.js?v=9"></script>
+    <script src="assets/js/trang-chu.js?v=2"></script>
 
 
 </body>

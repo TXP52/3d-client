@@ -907,6 +907,99 @@ a.button-free{
 .the-dv:hover .card__info { background-color: #fff; position: static; }
 
 /* ============================================================
+   DẢI KHUYẾN MÃI — mã giảm giá đang chạy, kiểu vé xé
+   ============================================================ */
+.dai-khuyen-mai {
+    width: 100%;
+    padding: 10px 100px 0 100px;
+}
+.dau-km-home {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+}
+.dau-km-home .text-top-games { font-size: 25px; padding: 0; }
+.phu-km-home { font-size: 14px; color: #7a7a7a; }
+
+.luoi-km-home {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+.ve-km-home {
+    display: flex;
+    align-items: stretch;
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0px 10px 10px -8px rgba(0, 0, 0, 0.08);
+}
+.km-trai {
+    width: 74px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 26px;
+    /* vạch răng cưa giả cho giống mép vé xé */
+    border-right: 2px dashed rgba(255, 255, 255, .55);
+}
+.km-phan-tram { background: linear-gradient(160deg, #7048e8, #4c2fb0); }
+.km-so-tien   { background: linear-gradient(160deg, #2f9e44, #1d7030); }
+.km-mien-ship { background: linear-gradient(160deg, #1971c2, #12508c); }
+
+.km-phai { padding: 14px 16px; flex: 1; min-width: 0; }
+.km-ten {
+    font-size: 15px;
+    line-height: 1.4;
+    color: #1c1c1c;
+    margin-bottom: 5px;
+}
+.km-dk {
+    font-size: 12.5px;
+    color: #7a7a7a;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+.km-ma {
+    font-family: ui-monospace, monospace;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    background: #f2f6ec;
+    border: 1px dashed #8fbf3f;
+    color: #3d7a12;
+    border-radius: 7px;
+    padding: 7px 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.km-ma:hover { background: #a3ff12; border-color: #6faa1e; color: #151414; }
+.km-ma.da-luu { background: #151414; border-color: #151414; color: #a3ff12; }
+
+/* Báo nhỏ hiện lên khi khách lưu mã */
+.bao-luu-ma {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%) translateY(20px);
+    background: #151414;
+    color: #a3ff12;
+    padding: 12px 22px;
+    border-radius: 30px;
+    font-size: 14.5px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .3);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.25s;
+    z-index: 9999;
+}
+.bao-luu-ma.hien { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================================================
    KHỐI BÀI VIẾT — nội dung lấy từ bảng bai_viet
    ============================================================ */
 .khoi-bai-viet {
@@ -1237,10 +1330,11 @@ a.button-free{
 /* Man hinh vua (laptop nho / tablet ngang) */
 @media only screen and (max-width: 1300px) {
     .list1-top-games { height: auto; padding: 60px 30px 40px 30px; }
-    .cards, .game-free1, .luoi-bai-viet {
+    .cards, .game-free1, .luoi-bai-viet, .luoi-km-home {
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 25px;
     }
+    .dai-khuyen-mai { padding: 10px 30px 0 30px; }
     .card { width: 100%; min-width: 0; margin-right: 0; }
     .games-free { margin: 60px 30px 0 30px; height: auto; padding-bottom: 25px; }
     .khoi-bai-viet { padding: 20px 30px 50px 30px; }
@@ -1289,6 +1383,8 @@ a.button-free{
     .games-free p { font-size: 22px; padding: 10px 0 15px 10px; }
     .khoi-bai-viet { padding: 20px 15px 40px 15px; }
     .dau-bai-viet .text-top-games { font-size: 21px; }
+    .dai-khuyen-mai { padding: 10px 15px 0 15px; }
+    .dau-km-home .text-top-games { font-size: 21px; }
 
     .footer-cta .row { flex-direction: column; gap: 18px; }
     .footer-content .row { display: block; }
@@ -1301,7 +1397,7 @@ a.button-free{
     .background-shadow-button .text-background h1 { font-size: 44px; line-height: 44px; }
     .background-shadow-button .text-background p { font-size: 20px; }
     .card { width: 100%; max-width: none; }
-    .cards, .game-free1, .luoi-bai-viet { grid-template-columns: 1fr; }
+    .cards, .game-free1, .luoi-bai-viet, .luoi-km-home { grid-template-columns: 1fr; }
     .text-nextTo-photo1 h1 { font-size: 26px; line-height: 32px; }
     .start-game h1 a { font-size: 22px; }
     .start-game h1 a:hover { font-size: 24px; }

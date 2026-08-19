@@ -7,6 +7,14 @@
 
     var KHOA_GIO = 'in3d_gio_hang';
     var KHOA_DON = 'in3d_don_hang';
+    var KHOA_KM = 'in3d_ma_khuyen_mai';
+
+    /**
+     * Mã khuyến mãi khách đang áp: { ma, ten, loai, tienGiam, tamTinh }
+     * CHỈ để hiện cho khách xem trước. Số tiền thật do backend tính lại lúc tạo đơn —
+     * sửa localStorage cũng không mua rẻ được.
+     */
+    var maKm = null;
 
     /* ---------- Tiện ích ---------- */
 
@@ -80,6 +88,85 @@
             : '<a href="Login.html" class="chip-ten">👤 Đăng nhập</a>';
         document.body.appendChild(chip);
     }
+
+    /* ---------- Mã khuyến mãi ---------- */
+
+    function nhoMa(ma) {
+        if (ma) localStorage.setItem(KHOA_KM, ma);
+        else localStorage.removeItem(KHOA_KM);
+    }
+
+    function maDaNho() {
+        return localStorage.getItem(KHOA_KM) || '';
+    }
+
+    function tienHang() {
+        return layGio().reduce(function (t, mh) { return t + mh.gia * mh.soLuong; }, 0);
+    }
+
+    /**
+     * Hỏi backend xem mã có dùng được với giỏ hiện tại không.
+     * imLang = true: gọi lại sau khi khách đổi số lượng, không la lên nếu mã hết hiệu lực.
+     */
+    async function apDungMa(ma, imLang) {
+        var oLoi = document.getElementById('km-loi');
+        var nut = document.getElementById('km-ap');
+        if (nut) { nut.disabled = true; nut.textContent = 'Đang kiểm tra...'; }
+        if (oLoi) oLoi.textContent = '';
+
+        try {
+            var resp = await fetch(JAVA_API + '/khuyen-mai/kiem-tra', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ma: ma, tongTien: tienHang() })
+            });
+            var du = await resp.json();
+            if (!resp.ok) {
+                maKm = null;
+                nhoMa('');
+                veGioHang();
+                var o2 = document.getElementById('km-loi');
+                if (o2) o2.textContent = du.loi || ('Không dùng được mã này (HTTP ' + resp.status + ').');
+                var o3 = document.getElementById('km-nhap');
+                if (o3 && !imLang) o3.value = ma;
+                return false;
+            }
+            maKm = {
+                ma: du.ma, ten: du.ten, loai: du.loai,
+                tienGiam: du.tienGiam, tamTinh: du.tamTinh
+            };
+            nhoMa(du.ma);
+            veGioHang();
+            return true;
+        } catch (e) {
+            maKm = null;
+            nhoMa('');
+            veGioHang();
+            var o4 = document.getElementById('km-loi');
+            if (o4 && !imLang) {
+                o4.textContent = 'Chưa kiểm tra được mã lúc này. Bạn thử lại sau hoặc đặt hàng trước, ' +
+                    'shop sẽ trừ khuyến mãi khi gọi xác nhận.';
+            }
+            return false;
+        }
+    }
+
+    window.apDungMaTuNut = function () {
+        var o = document.getElementById('km-nhap');
+        var ma = (o ? o.value : '').trim().toUpperCase();
+        if (!ma) {
+            var oLoi = document.getElementById('km-loi');
+            if (oLoi) oLoi.textContent = 'Bạn chưa nhập mã.';
+            return;
+        }
+        apDungMa(ma, false);
+    };
+
+    window.boMaKhuyenMai = function () {
+        maKm = null;
+        nhoMa('');
+        veGioHang();
+    };
 
     /* ---------- Gắn nút "Đặt hàng" vào sản phẩm ---------- */
 
@@ -209,8 +296,40 @@
 
         var phien = layPhienKhach();
 
+        // Mã đã áp nhưng giỏ vừa đổi -> con số cũ không còn đúng, bỏ đi chờ tính lại
+        if (maKm && maKm.tamTinh !== tongTien) maKm = null;
+
+        var tienGiam = maKm ? maKm.tienGiam : 0;
+        var phaiTra = Math.max(0, tongTien - tienGiam);
+
+        // Khối nhập mã
+        html += '<div class="o-khuyen-mai">';
+        if (maKm) {
+            html +=
+                '<div class="km-da-ap">' +
+                '  <span class="ma">' + mh_esc(maKm.ma) + '</span>' +
+                '  <span class="ten">' + mh_esc(maKm.ten) + '</span>' +
+                '  <button type="button" class="bo" onclick="boMaKhuyenMai()">Bỏ mã</button>' +
+                '</div>';
+        } else {
+            html +=
+                '<span class="nhan-km">Có mã khuyến mãi? Nhập vào đây:</span>' +
+                '<div class="hang-nhap-km">' +
+                '  <input type="text" id="km-nhap" placeholder="VD: GIAM10" autocomplete="off">' +
+                '  <button type="button" id="km-ap" onclick="apDungMaTuNut()">Áp dụng</button>' +
+                '</div>';
+        }
+        html += '<p class="loi-km" id="km-loi"></p></div>';
+
+        if (tienGiam > 0) {
+            html +=
+                '<div class="dong-tien-phu"><span>Tạm tính:</span><span>' + dinhDangGia(tongTien) + '</span></div>' +
+                '<div class="dong-tien-phu"><span>Khuyến mãi ' + mh_esc(maKm.ma) + ':</span>' +
+                '<span class="giam">&minus; ' + dinhDangGia(tienGiam) + '</span></div>';
+        }
+
         html +=
-            '<div class="tong-tien"><span>Tổng cộng:</span><span class="so">' + dinhDangGia(tongTien) +
+            '<div class="tong-tien"><span>Tổng cộng:</span><span class="so">' + dinhDangGia(phaiTra) +
             (coLienHe ? ' + (liên hệ)' : '') + '</span></div>';
 
         if (phien) {
@@ -249,6 +368,14 @@
         });
         var nutGui = document.getElementById('dh-gui');
         if (nutGui) nutGui.addEventListener('click', guiDonHang);
+
+        // Gõ xong bấm Enter là áp mã luôn, khỏi phải rê chuột
+        var oMa = document.getElementById('km-nhap');
+        if (oMa) {
+            oMa.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); window.apDungMaTuNut(); }
+            });
+        }
     }
 
     function doiSoLuong(i, delta) {
@@ -257,14 +384,24 @@
         gio[i].soLuong += delta;
         if (gio[i].soLuong <= 0) gio.splice(i, 1);
         luuGio(gio);
-        veGioHang();
+        veLaiVaTinhLaiMa();
     }
 
     function xoaMatHang(i) {
         var gio = layGio();
         gio.splice(i, 1);
         luuGio(gio);
+        veLaiVaTinhLaiMa();
+    }
+
+    /**
+     * Giỏ đổi thì tiền giảm cũng đổi (mã 10% của đơn 200k khác mã 10% của đơn 400k),
+     * mà đơn tụt xuống dưới mức tối thiểu thì mã còn mất hiệu lực. Nên hỏi lại backend.
+     */
+    function veLaiVaTinhLaiMa() {
+        var ma = maDaNho();
         veGioHang();
+        if (ma && layGio().length) apDungMa(ma, true);
     }
 
     /* ---------- Gửi đơn hàng ---------- */
@@ -273,7 +410,7 @@
     var JAVA_API = 'http://localhost:8090/api';
 
     // Lưu đơn qua backend Java. Trả về { ok, maDon } hoặc { ok:false, loi }
-    async function luuDonVaoJava(ten, sdt, diaChi, ghiChu, gio) {
+    async function luuDonVaoJava(ten, sdt, diaChi, ghiChu, gio, maKhuyenMai) {
         try {
             var resp = await fetch(JAVA_API + '/don-hang', {
                 method: 'POST',
@@ -283,6 +420,8 @@
                     soDienThoai: sdt,
                     diaChi: diaChi,
                     ghiChu: ghiChu || null,
+                    // Gửi MÃ chứ không gửi số tiền giảm — backend tự tính lại
+                    maKhuyenMai: maKhuyenMai || null,
                     matHang: gio.map(function (mh) {
                         return { ten: mh.ten, donGia: mh.gia, soLuong: mh.soLuong };
                     })
@@ -363,7 +502,9 @@
         oLoi.textContent = '';
 
         var gio = layGio();
-        var tongTien = gio.reduce(function (t, mh) { return t + mh.gia * mh.soLuong; }, 0);
+        var tamTinh = gio.reduce(function (t, mh) { return t + mh.gia * mh.soLuong; }, 0);
+        var tienGiam = maKm ? maKm.tienGiam : 0;
+        var tongTien = Math.max(0, tamTinh - tienGiam);
         var maDon = 'IN3D-' + Date.now().toString(36).toUpperCase();
 
         nutGui.disabled = true;
@@ -371,13 +512,25 @@
 
         // Thứ tự ưu tiên: backend Java -> Supabase -> lưu tạm trên trình duyệt
         var noiLuu = 'backend Java (Spring Boot)';
-        var kq = await luuDonVaoJava(ten, sdt, diaChi, ghiChu, gio);
+        var kq = await luuDonVaoJava(ten, sdt, diaChi, ghiChu, gio, maKm ? maKm.ma : null);
         if (kq.ok && kq.maDon) maDon = kq.maDon;
+
+        // Mã sai/hết hạn thì backend từ chối cả đơn -> báo rõ, đừng lặng lẽ nhảy sang Supabase
+        if (!kq.ok && maKm && /mã|khuyến mãi|hết hạn|hết lượt|tạm dừng/i.test(kq.loi || '')) {
+            nutGui.disabled = false;
+            nutGui.textContent = 'Xác nhận đặt hàng';
+            oLoi.textContent = kq.loi + ' Bạn bỏ mã rồi đặt lại nhé.';
+            return;
+        }
 
         if (!kq.ok) {
             console.warn('[IN3D] Backend Java không phản hồi (' + kq.loi + '), chuyển sang Supabase.');
             noiLuu = 'Supabase';
-            kq = await luuDonVaoSupabase(maDon, ten, sdt, diaChi, ghiChu, gio, tongTien);
+            // Supabase chưa có cột mã khuyến mãi -> ghi vào ghi chú để chủ shop còn biết
+            var ghiChuKm = maKm
+                ? ((ghiChu ? ghiChu + ' | ' : '') + 'Mã KM: ' + maKm.ma + ' (-' + dinhDangGia(tienGiam) + ')')
+                : ghiChu;
+            kq = await luuDonVaoSupabase(maDon, ten, sdt, diaChi, ghiChuKm, gio, tongTien);
         }
         if (!kq.ok) {
             console.warn('[IN3D] Không lưu được vào Supabase (' + kq.loi + '), lưu tạm trên trình duyệt.');
@@ -387,6 +540,8 @@
                 ngay: new Date().toLocaleString('vi-VN'),
                 khachHang: { ten: ten, sdt: sdt, diaChi: diaChi, ghiChu: ghiChu },
                 matHang: gio,
+                maKhuyenMai: maKm ? maKm.ma : null,
+                tienGiam: tienGiam,
                 tongTien: tongTien
             };
             var danhSach;
@@ -396,14 +551,19 @@
             localStorage.setItem(KHOA_DON, JSON.stringify(danhSach));
         }
 
-        // Xoá giỏ và hiện màn hình thành công
+        // Xoá giỏ và mã đã áp, rồi hiện màn hình thành công
         luuGio([]);
+        maKm = null;
+        nhoMa('');
         document.getElementById('gio-than').innerHTML =
             '<div class="dat-hang-thanh-cong">' +
             '  <div class="icon">&#10004;</div>' +
             '  <h4>Đặt hàng thành công!</h4>' +
             '  <p>Cảm ơn <strong>' + ten + '</strong> đã mua sắm tại IN3D Shop.</p>' +
             '  <p>Chúng tôi sẽ gọi <strong>' + sdt + '</strong> để xác nhận đơn trong thời gian sớm nhất.</p>' +
+            (tienGiam > 0
+                ? '  <p>Bạn đã tiết kiệm <strong>' + dinhDangGia(tienGiam) + '</strong> nhờ mã khuyến mãi.</p>'
+                : '') +
             '  <p>Mã đơn hàng của bạn:</p>' +
             '  <span class="ma-don">' + maDon + '</span>' +
             '  <p style="font-size:13px;color:#888;margin-top:14px;">Đơn được lưu vào: ' + noiLuu + '</p>' +
@@ -418,7 +578,12 @@
         capNhatSoLuong();
         hienChipPhien();
         // Đang ở trang giỏ hàng -> vẽ nội dung giỏ vào trang
-        if (document.getElementById('gio-than')) veGioHang();
+        if (document.getElementById('gio-than')) {
+            veGioHang();
+            // Mã lưu từ lần trước: hỏi lại backend xem còn dùng được không
+            var maCu = maDaNho();
+            if (maCu && layGio().length) apDungMa(maCu, true);
+        }
     }
 
     if (document.readyState === 'loading') {

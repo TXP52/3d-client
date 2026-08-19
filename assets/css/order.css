@@ -181,6 +181,87 @@
 }
 .tong-tien .so { color: #a3ff12; }
 
+/* ---------- Mã khuyến mãi ở giỏ hàng ---------- */
+.o-khuyen-mai {
+    border-top: 1px solid #333;
+    margin-top: 14px;
+    padding-top: 16px;
+}
+.o-khuyen-mai .nhan-km {
+    font-size: 14px;
+    color: #bdbdbd;
+    margin-bottom: 9px;
+    display: block;
+}
+.hang-nhap-km { display: flex; gap: 9px; flex-wrap: wrap; }
+.hang-nhap-km input {
+    flex: 1;
+    min-width: 150px;
+    padding: 11px 14px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #262626;
+    color: #eee;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.hang-nhap-km input:focus { outline: none; border-color: #a3ff12; }
+.hang-nhap-km button {
+    padding: 11px 20px;
+    border: 1px solid #a3ff12;
+    border-radius: 8px;
+    background: transparent;
+    color: #a3ff12;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+.hang-nhap-km button:hover { background: #a3ff12; color: #151414; }
+.hang-nhap-km button:disabled { opacity: .55; cursor: not-allowed; }
+
+.km-da-ap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #14240b;
+    border: 1px dashed #6faa1e;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+.km-da-ap .ma {
+    font-family: ui-monospace, monospace;
+    letter-spacing: 1.5px;
+    color: #a3ff12;
+    font-size: 16px;
+}
+.km-da-ap .ten { font-size: 13.5px; color: #b9c9a4; flex: 1; min-width: 130px; }
+.km-da-ap .bo {
+    background: none;
+    border: 0;
+    color: #ff8080;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-family: 'Chakra Petch', sans-serif;
+}
+.km-da-ap .bo:hover { text-decoration: underline; }
+
+.loi-km { color: #ff7676; font-size: 13.5px; margin-top: 9px; line-height: 1.55; }
+
+/* Dòng tạm tính / giảm giá nhỏ hơn dòng tổng cộng */
+.dong-tien-phu {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 15px;
+    color: #bdbdbd;
+}
+.dong-tien-phu .giam { color: #a3ff12; }
+
 /* Form đặt hàng */
 .form-dat-hang { padding: 6px 0 20px 0; }
 .form-dat-hang h4 {

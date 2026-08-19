@@ -1,6 +1,7 @@
 /* ============================================================
    TRANG CHỦ — vẽ 3 khối từ DỮ LIỆU THẬT trong database:
 
+     #luoi-km-home    Khuyến mãi (bảng khuyen_mai, chỉ mã đang chạy)
      #luoi-san-pham   Sản phẩm   (loại "ban" và "mau")
      #luoi-dich-vu    Dịch vụ    (loại "dich_vu")
      #luoi-bai-viet   Bài viết   (bảng bai_viet)
@@ -24,6 +25,7 @@
     var oSanPham = document.querySelector('#luoi-san-pham');
     var oDichVu = document.querySelector('#luoi-dich-vu');
     var oBaiViet = document.querySelector('#luoi-bai-viet');
+    var oKhuyenMai = document.querySelector('#luoi-km-home');
 
     /* ================= Tiện ích chung ================= */
 
@@ -178,6 +180,106 @@
             '</div></article>';
     }
 
+    /* ================= KHUYẾN MÃI ================= */
+
+    var KIEU_KM = {
+        phan_tram: { lop: 'km-phan-tram', icon: 'fa-percent' },
+        so_tien:   { lop: 'km-so-tien',   icon: 'fa-money-bill-wave' },
+        mien_ship: { lop: 'km-mien-ship', icon: 'fa-truck-fast' }
+    };
+
+    function moTaUuDai(k) {
+        if (k.loai === 'phan_tram') {
+            return 'Giảm ' + k.giaTri + '%' + (k.giamToiDa > 0 ? ' (tối đa ' + giaVND(k.giamToiDa) + ')' : '');
+        }
+        if (k.loai === 'mien_ship') return 'Miễn phí ship ' + giaVND(k.giaTri);
+        return 'Giảm ' + giaVND(k.giaTri);
+    }
+
+    function dieuKienKm(k) {
+        var d = [];
+        if (k.donToiThieu > 0) d.push('đơn từ ' + giaVND(k.donToiThieu));
+        if (k.ketThuc) d.push('đến ' + ngayVN(k.ketThuc));
+        if (k.soLuong > 0 && k.conLai >= 0) d.push('còn ' + k.conLai + ' lượt');
+        return d.join(' · ') || 'không kèm điều kiện';
+    }
+
+    function veKm(k) {
+        var kieu = KIEU_KM[k.loai] || KIEU_KM.phan_tram;
+        return '<div class="ve-km-home">' +
+            '<div class="km-trai ' + kieu.lop + '"><i class="fa-solid ' + kieu.icon + '"></i></div>' +
+            '<div class="km-phai">' +
+            '<div class="km-ten">' + esc(k.ten) + '</div>' +
+            '<div class="km-dk">' + esc(moTaUuDai(k)) + ' · ' + esc(dieuKienKm(k)) + '</div>' +
+            '<button type="button" class="km-ma" data-ma="' + esc(k.ma) +
+            '" onclick="luuMaKhuyenMai(this)">' + esc(k.ma) +
+            ' <i class="fa-regular fa-copy"></i></button>' +
+            '</div></div>';
+    }
+
+    /**
+     * Bấm vào mã: chép vào clipboard VÀ nhớ lại trong trình duyệt.
+     * Trang giỏ hàng đọc đúng khoá này nên khách không phải gõ lại mã.
+     */
+    window.luuMaKhuyenMai = function (nut) {
+        var ma = nut.getAttribute('data-ma') || '';
+        try { localStorage.setItem('in3d_ma_khuyen_mai', ma); } catch (e) {}
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(ma).catch(function () {});
+        }
+        nut.classList.add('da-luu');
+        nut.innerHTML = esc(ma) + ' <i class="fa-solid fa-check"></i>';
+        baoNho('Đã lưu mã ' + ma + ' — tự áp khi bạn đặt hàng');
+    };
+
+    var hetBao = null;
+    function baoNho(chu) {
+        var o = document.getElementById('bao-luu-ma');
+        if (!o) {
+            o = document.createElement('div');
+            o.id = 'bao-luu-ma';
+            o.className = 'bao-luu-ma';
+            document.body.appendChild(o);
+        }
+        o.textContent = chu;
+        o.classList.add('hien');
+        clearTimeout(hetBao);
+        hetBao = setTimeout(function () { o.classList.remove('hien'); }, 2600);
+    }
+
+    function napKhuyenMai() {
+        if (!oKhuyenMai) return;
+        var dai = document.getElementById('dai-khuyen-mai');
+
+        lay('/khuyen-mai',
+            function (k) {
+                return {
+                    ma: k.ma, ten: k.ten, loai: k.loai, giaTri: k.giaTri,
+                    giamToiDa: k.giamToiDa, donToiThieu: k.donToiThieu,
+                    ketThuc: k.ketThuc, soLuong: k.soLuong, conLai: k.conLai
+                };
+            },
+            'khuyen_mai?select=*&hoat_dong=eq.true&hien_thi=eq.true&is_deleted=eq.false&order=id.desc',
+            function (k) {
+                return {
+                    ma: k.ma, ten: k.ten, loai: k.loai, giaTri: Number(k.gia_tri) || 0,
+                    giamToiDa: Number(k.giam_toi_da) || 0, donToiThieu: Number(k.don_toi_thieu) || 0,
+                    ketThuc: k.ket_thuc, soLuong: k.so_luong || 0,
+                    conLai: k.so_luong ? Math.max(0, k.so_luong - (k.da_dung || 0)) : -1
+                };
+            },
+            function (ds, nguon) {
+                // Không có mã nào đang chạy -> để nguyên hidden, đừng hiện dải trống
+                if (!ds || !ds.length) return;
+                oKhuyenMai.innerHTML = ds.slice(0, 3).map(veKm).join('');
+                if (dai) dai.hidden = false;
+                if (window.console && console.info) {
+                    console.info('[IN3D] Khuyến mãi lấy từ ' + nguon + ' (' + ds.length + ' mã)');
+                }
+            },
+            function () { /* không lấy được thì thôi, dải vẫn ẩn */ });
+    }
+
     /* ================= Vẽ ================= */
 
     function veVao(khung, ds, ham, gioiHan, chuKhiTrong, nguon, ten) {
@@ -266,6 +368,7 @@
     }
 
     function batDau() {
+        napKhuyenMai();
         napSanPham();
         napBaiViet();
     }

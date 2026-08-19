@@ -4,16 +4,17 @@
 
     <!-- Basic Page Needs
 	================================================== -->
-    <title>IN3D Shop - Trang chủ</title>
+    <title>Bedecraft - Trang chủ</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 
     <!-- Favicons
 	================================================== -->
-    <link rel="shortcut icon" href="assets/img/favicons/favicon.ico">
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicons/favicon-120.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicons/favicon-152.png">
+    <!-- Logo tren tab trinh duyet. Thu muc assets/img/favicons/ da bi xoa cung bo logo cu
+         nen 3 duong dan cu deu 404 -> tab khong co logo. Dung thang logo.png dang dung. -->
+    <link rel="icon" type="image/png" href="assets/logo/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo/logo.png">
 
     <!-- Mobile Specific Metas
 	================================================== -->
@@ -30,7 +31,7 @@
     <link href="assets/vendor/fontawesome/css/brands.css" rel="stylesheet">
 
     <!-- Template CSS-->
-    <link href="assets/css/Home.css?v=9" rel="stylesheet">
+    <link href="assets/css/Home.css?v=10" rel="stylesheet">
     <link href="assets/css/order.css?v=7" rel="stylesheet">
 
 </head>
@@ -40,14 +41,14 @@
     <header class="header-home-page">
 
         <div class="header-logo-home">
-            <a href="index.html"><img src="assets/logo/logo.png" class="logo-chinh" alt="IN3D Shop"></a>
+            <a href="index.html"><img src="assets/logo/logo.png" class="logo-chinh" alt="Bedecraft"></a>
         </div>
 
         <nav class="nav-bar-home-page">
             <ul>
                <li><a href="#">TRANG CHỦ</a></li>
-               <li><a href="#photo-home">SẢN PHẨM</a></li>
-               <li><a href="#">TIN TỨC</a></li>
+               <li><a href="#khoi-san-pham">SẢN PHẨM</a></li>
+               <li><a href="#tin-tuc">TIN TỨC</a></li>
                <li><a href="#">LIÊN HỆ</a></li>
             </ul>
         </nav>
@@ -79,8 +80,8 @@
         <div class="background-shadow-button">
             <div class="text-background">
                 <p>Chào mừng bạn đến với</p>
-                <h1>IN3D SHOP</h1>
-                <form action="#list1-topgames">
+                <h1>BEDECRAFT</h1>
+                <form action="#khoi-san-pham">
                   <button  class="button-background">
                       <div></div>
                   </button>
@@ -114,6 +115,10 @@
                     <div class="gia-dv">từ <strong>30.000đ</strong></div>
                 </div>
                 <div class="muc-gia">
+                    <div class="ten-dv">Sơn &amp; hoàn thiện<span>chà nhám, sơn màu</span></div>
+                    <div class="gia-dv">từ <strong>50.000đ</strong></div>
+                </div>
+                <div class="muc-gia">
                     <div class="ten-dv">Thiết kế file 3D<span>gửi ảnh hoặc bản vẽ</span></div>
                     <div class="gia-dv"><strong>Liên hệ</strong></div>
                 </div>
@@ -125,707 +130,75 @@
             </div>
         </div>
     </div>
-    <div class="list1-top-games" id="list1-topgames">
+    <!-- ============================================================
+         SẢN PHẨM — lấy thẳng từ database (loại "hàng bán" và "hàng mẫu")
+         Trước đây khối này là "Mẫu 3D miễn phí" với 4 thẻ viết cứng trong HTML
+         ============================================================ -->
+    <div class="games-free" id="khoi-san-pham">
+      <div class="icon-free">
+        <p>Sản phẩm</p>
+        <a class="button-free" href="index.html">XEM THÊM</a>
+      </div>
+      <div class="game-free1" id="luoi-san-pham">
+        <p class="bao-trong-luoi">Đang tải sản phẩm…</p>
+      </div>
+    </div>
 
-        <p class="text-top-games" >SẢN PHẨM NỔI BẬT</p>
-        <!--                      danh sách thẻ sản phẩm           -->
+    <!-- ============================================================
+         DỊCH VỤ — thẻ tĩnh bên dưới là bản dự phòng khi chưa nối được backend.
+         Có sản phẩm loại "dịch vụ" trong database thì JS thay bằng dữ liệu thật.
+         ============================================================ -->
+    <div class="list1-top-games" id="khoi-dich-vu">
 
-        <section class="cards" id="luoi-san-pham">
+        <p class="text-top-games">DỊCH VỤ IN 3D</p>
 
-            <article class="card card--1">
-              <div class="card__info-hover">
-                <svg class="card__like"  viewBox="0 0 24 24">
-                <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-            </svg>
-                  <div class="card__clock-info">
-                    <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                    </svg><span class="card__time">Giao 24h</span>
-                  </div>
-              </div>
-              <div class="card__img"></div>
-              <a href="#" class="card_link">
-                 <div class="card__img--hover"></div>
-               </a>
+        <section class="cards" id="luoi-dich-vu">
+
+            <article class="card the-dv">
+              <div class="dv-anh dv-mau1"><i class="fa-solid fa-cube"></i></div>
               <div class="card__info">
-                <span class="card__category"> MÁY IN 3D</span>
-                <h3 class="card__title">Máy in 3D FDM Ender-3 V3 SE <br>|</h3>
-                <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>6.490.000₫</h3></a></span>
+                <span class="card__category">IN THEO YÊU CẦU</span>
+                <h3 class="card__title">In 3D từ file của bạn</h3>
+                <p class="dv-mo-ta">Gửi file STL hoặc 3MF, shop tính tiền theo số gram nhựa và báo giá trong ngày.</p>
+                <span class="card__by"><a href="chi-tiet.html?ten=In%203D%20theo%20y%C3%AAu%20c%E1%BA%A7u&amp;gia=t%E1%BB%AB%20500%C4%91%2Fg" class="card__author"><h3>từ 500đ/g</h3></a></span>
               </div>
             </article>
 
-
-
-            <article class="card card--2">
-              <div class="card__info-hover">
-                <svg class="card__like"  viewBox="0 0 24 24">
-                <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-            </svg>
-                  <div class="card__clock-info">
-                    <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                    </svg><span class="card__time">Giao 24h</span>
-                  </div>
-
-              </div>
-              <div class="card__img"></div>
-              <a href="#" class="card_link">
-                 <div class="card__img--hover"></div>
-               </a>
+            <article class="card the-dv">
+              <div class="dv-anh dv-mau2"><i class="fa-solid fa-pen-ruler"></i></div>
               <div class="card__info">
-                <span class="card__category"> MÁY IN RESIN</span>
-                <h3 class="card__title">Máy in resin Photon Mono 4</h3>
-                <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>8.990.000₫</h3></a></span>
+                <span class="card__category">THIẾT KẾ</span>
+                <h3 class="card__title">Dựng file 3D theo ảnh, bản vẽ</h3>
+                <p class="dv-mo-ta">Chưa có file 3D cũng in được. Gửi ảnh vật mẫu kèm số đo, shop dựng file rồi in.</p>
+                <span class="card__by"><a href="chi-tiet.html?ten=Thi%E1%BA%BFt%20k%E1%BA%BF%20file%203D&amp;gia=Li%C3%AAn%20h%E1%BB%87" class="card__author"><h3>Liên hệ</h3></a></span>
               </div>
             </article>
 
-
-
-            <article class="card card--3">
-              <div class="card__info-hover">
-                <svg class="card__like"  viewBox="0 0 24 24">
-                <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-            </svg>
-                  <div class="card__clock-info">
-                    <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                    </svg><span class="card__time">Còn hàng</span>
-                  </div>
-
-              </div>
-              <div class="card__img"></div>
-              <a href="#" class="card_link">
-                 <div class="card__img--hover"></div>
-               </a>
+            <article class="card the-dv">
+              <div class="dv-anh dv-mau3"><i class="fa-solid fa-brush"></i></div>
               <div class="card__info">
-                <span class="card__category"> VẬT LIỆU IN</span>
-                <h3 class="card__title">Nhựa PLA+ 1.75mm (1kg) <br>|</h3>
-                <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>290.000₫</h3></a></span>
+                <span class="card__category">HOÀN THIỆN</span>
+                <h3 class="card__title">Chà nhám &amp; sơn màu</h3>
+                <p class="dv-mo-ta">Xoá vân lớp in, sơn theo màu bạn chọn để món đồ nhìn như hàng đúc khuôn.</p>
+                <span class="card__by"><a href="chi-tiet.html?ten=S%C6%A1n%20v%C3%A0%20ho%C3%A0n%20thi%E1%BB%87n&amp;gia=t%E1%BB%AB%2050.000%C4%91" class="card__author"><h3>từ 50.000đ</h3></a></span>
               </div>
             </article>
-
-
-
-            <article class="card card--4">
-                <div class="card__info-hover">
-                  <svg class="card__like"  viewBox="0 0 24 24">
-                  <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-              </svg>
-                    <div class="card__clock-info">
-                      <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                      </svg><span class="card__time">In 2-3 ngày</span>
-                    </div>
-
-                </div>
-                <div class="card__img"></div>
-                <a href="#" class="card_link">
-                   <div class="card__img--hover"></div>
-                 </a>
-                <div class="card__info">
-                  <span class="card__category"> MÔ HÌNH</span>
-                  <h3 class="card__title">Mô hình trang trí in 3D theo yêu cầu</h3>
-                  <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Từ 99.000₫</h3></a></span>
-                </div>
-              </article>
-
-
-
-              <article class="card card--5">
-                <div class="card__info-hover">
-                  <svg class="card__like"  viewBox="0 0 24 24">
-                  <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-              </svg>
-                    <div class="card__clock-info">
-                      <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                      </svg><span class="card__time">Còn hàng</span>
-                    </div>
-
-                </div>
-                <div class="card__img"></div>
-                <a href="#" class="card_link">
-                   <div class="card__img--hover"></div>
-                 </a>
-                <div class="card__info">
-                  <span class="card__category"> PHỤ KIỆN</span>
-                  <h3 class="card__title">Bộ đầu phun (nozzle) thép 0.4mm <br>|</h3>
-                  <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>150.000₫</h3></a></span>
-                </div>
-              </article>
-
-
-
-              <article class="card card--6">
-                <div class="card__info-hover">
-                  <svg class="card__like"  viewBox="0 0 24 24">
-                  <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-              </svg>
-                    <div class="card__clock-info">
-                      <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                      </svg><span class="card__time">Báo giá 1h</span>
-                    </div>
-
-                </div>
-                <div class="card__img"></div>
-                <a href="#" class="card_link">
-                   <div class="card__img--hover"></div>
-                 </a>
-                <div class="card__info">
-                  <span class="card__category"> DỊCH VỤ</span>
-                  <h3 class="card__title">Dịch vụ in &amp; scan 3D theo yêu cầu </h3>
-                  <span class="card__by"> <a href="#" class="card__author" title="giá bán"><h3>Liên hệ</h3></a></span>
-                </div>
-              </article>
-
-
-
 
         </section>
     </div>
-    <div class="list2-3photo">
 
-        <div class="photo1-list2">
-            <a href="#"><img src="assets/img/p45.webp" width="470px" height="280px"></a>
-            <h1>Nhựa PLA+ giảm giá 30% – đủ màu sắc</h1>
-            <p class="text1-3photo">Không cần mua số lượng lớn! Áp dụng cho tất cả màu nhựa PLA+ 1.75mm tại cửa hàng.</p><br>
-            <p class="price1-3photo">199.000₫</p>
-        </div>
-        <div class="photo2-list2">
-            <a href="#"><img src="assets/img/p46.jpg" width="470px" height="280px"></a>
-            <h1>Máy in resin 8K mới về hàng</h1>
-
-            <p class="text2-3photo">Đặt trước máy in resin 8K trước ngày 16/5 để nhận bộ quà tặng gồm resin và phụ kiện trị giá 1.000.000₫.</p><br>
-            <p class="price2-3photo">12.990.000₫</p>
-        </div>
-        <div class="photo3-list2">
-            <a href="#"><img src="assets/img/p50.jpg" width="470px" height="280px"></a>
-            <h1>DỊCH VỤ SCAN 3D</h1>
-            <p class="text3-3photo">Giảm 45% dịch vụ scan 3D và phục dựng mô hình trong thời gian có hạn! Kết thúc ngày 26/5.</p><br>
-            <p class="price3-3photo">Từ 499.000₫</p>
-        </div>
-
-
-    </div>
-    <div class="games-free">
-      <div class="icon-free">
-        <p>Mẫu 3D miễn phí</p>
-        <button class="button-free"> XEM THÊM</button>
+    <!-- ============================================================
+         BÀI VIẾT — nội dung lấy từ bảng bai_viet trong database.
+         Chỗ này trước đây là 3 khối Máy in 3D / Vật liệu in / Phụ kiện & Dịch vụ
+         với hơn 400 dòng thẻ sản phẩm viết cứng, sửa gì cũng phải sửa tay.
+         ============================================================ -->
+    <div class="khoi-bai-viet" id="tin-tuc">
+      <div class="dau-bai-viet">
+        <p class="text-top-games">KIẾN THỨC IN 3D</p>
+        <span class="phu-bai-viet">Chọn nhựa, chỉnh máy, tính giá — ghi lại từ việc làm hằng ngày ở xưởng.</span>
       </div>
-      <div class="game-free1">
-
-
-        <article class="card card--4">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Tải ngay</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> FILE STL</span>
-            <h3 class="card__title">Chậu cây mini để bàn  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Miễn phí</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--4">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Tải ngay</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> FILE STL</span>
-            <h3 class="card__title">Giá đỡ điện thoại  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Miễn phí</h3></a></span>
-          </div>
-        </article>
-
-        <article class="card card--4">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Tải ngay</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> FILE STL</span>
-            <h3 class="card__title">Móc khoá tên riêng  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Miễn phí</h3></a></span>
-          </div>
-        </article>
-
-        <article class="card card--4">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Tải ngay</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> FILE STL</span>
-            <h3 class="card__title">Hộp đựng bút để bàn  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Miễn phí</h3></a></span>
-          </div>
-        </article>
-      </div>
-    </div>
-
-
-
-
-    <div class="all-games">
-      <div class="see-more"><p>Máy in 3D</p><a href="#">XEM THÊM</a></div>
-      <div class="all-list1-game">
-
-
-
-
-        <article class="card card--1">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Giao 24h</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> MÁY IN 3D</span>
-            <h3 class="card__title">Bambu Lab A1 mini  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>7.290.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--2">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Giao 24h</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> MÁY IN RESIN</span>
-            <h3 class="card__title">Elegoo Mars 5 Ultra  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>9.490.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--1">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Giao 24h</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> MÁY IN 3D</span>
-            <h3 class="card__title">Creality K1 Max  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>19.990.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--1">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Đặt trước</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> MÁY IN 3D</span>
-            <h3 class="card__title">Prusa MK4S  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>28.500.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--2">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Giao 24h</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> MÁY IN RESIN</span>
-            <h3 class="card__title">Phrozen Sonic Mini 8K S  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>10.900.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--1">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Giao 24h</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> MÁY IN 3D</span>
-            <h3 class="card__title">Anycubic Kobra 3 Combo  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>11.500.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-
-      </div>
-
-
-
-      <div class="see-more"><p>Vật liệu in</p><a href="#">XEM THÊM</a></div>
-      <div class="all-list2-game">
-
-
-
-
-
-        <article class="card card--3">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> VẬT LIỆU IN</span>
-            <h3 class="card__title">Nhựa PLA+ 1.75mm (1kg)  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>290.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--3">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> VẬT LIỆU IN</span>
-            <h3 class="card__title">Nhựa PETG 1.75mm (1kg)  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>320.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--3">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> VẬT LIỆU IN</span>
-            <h3 class="card__title">Nhựa ABS 1.75mm (1kg)  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>310.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--3">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> VẬT LIỆU IN</span>
-            <h3 class="card__title">Nhựa dẻo TPU 1.75mm (0.5kg)  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>260.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--3">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> VẬT LIỆU IN</span>
-            <h3 class="card__title">Resin tiêu chuẩn (1L)  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>550.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--3">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> VẬT LIỆU IN</span>
-            <h3 class="card__title">Nhựa PLA vân gỗ (1kg)  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>390.000₫</h3></a></span>
-          </div>
-        </article>
-
-      </div>
-
-
-
-
-
-      <div class="see-more"><p>Phụ kiện &amp; Dịch vụ</p><a href="#" >XEM THÊM</a></div>
-      <div class="all-list3-game">
-
-
-
-
-
-        <article class="card card--5">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> PHỤ KIỆN</span>
-            <h3 class="card__title">Bộ đầu phun thép 0.2-0.8mm  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>150.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--5">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> PHỤ KIỆN</span>
-            <h3 class="card__title">Bàn in nhám PEI nam châm  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>350.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--5">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Còn hàng</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> PHỤ KIỆN</span>
-            <h3 class="card__title">Bộ dụng cụ xử lý sau in  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>220.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--6">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Báo giá 1h</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> DỊCH VỤ</span>
-            <h3 class="card__title">Scan 3D vật thể &amp; phục dựng  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Từ 499.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--6">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">Báo giá 1h</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> DỊCH VỤ</span>
-            <h3 class="card__title">Thiết kế mô hình 3D theo yêu cầu  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Từ 299.000₫</h3></a></span>
-          </div>
-        </article>
-
-
-        <article class="card card--4">
-          <div class="card__info-hover">
-            <svg class="card__like"  viewBox="0 0 24 24">
-            <path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-        </svg>
-              <div class="card__clock-info">
-                <svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
-                </svg><span class="card__time">In 2-3 ngày</span>
-              </div>
-          </div>
-          <div class="card__img"></div>
-          <a href="#" class="card_link">
-             <div class="card__img--hover"></div>
-           </a>
-          <div class="card__info">
-            <span class="card__category"> DỊCH VỤ</span>
-            <h3 class="card__title">In quà tặng doanh nghiệp số lượng lớn  <br>|</h3>
-            <span class="card__by"><a href="#" class="card__author" title="giá bán"><h3>Liên hệ</h3></a></span>
-          </div>
-        </article>
-
+      <div class="luoi-bai-viet" id="luoi-bai-viet">
+        <p class="bao-trong-luoi">Đang tải bài viết…</p>
       </div>
     </div>
 
@@ -858,7 +231,7 @@
                           <i class="far fa-envelope-open"></i>
                           <div class="cta-text">
                               <h4>Email</h4>
-                              <span>lienhe@in3dshop.vn</span>
+                              <span>otpisrealimphake@gmail.com</span>
                           </div>
                       </div>
                   </div>
@@ -869,10 +242,10 @@
                   <div class="col-xl-4 col-lg-4 mb-50">
                       <div class="footer-widget">
                           <div class="footer-logo">
-                              <a href="index.html"><img src="assets/logo/logo.png" class="img-fluid" alt="IN3D Shop"></a>
+                              <a href="index.html"><img src="assets/logo/logo.png" class="img-fluid" alt=" Bedecraft"></a>
                           </div>
                           <div class="footer-text">
-                              <p>Cửa hàng in 3D uy tín hàng đầu <br>Cung cấp máy in 3D, vật liệu in, phụ kiện chính hãng,<br>và dịch vụ in 3D theo yêu cầu.</p>
+                              <p>Xưởng in 3D nhận in theo yêu cầu.<br>Tính tiền theo số gram nhựa, báo giá trước khi in,<br>freeship nội thành Hà Nội.</p>
                           </div>
                           <div class="footer-social-icon">
                               <span>Theo dõi chúng tôi</span>
@@ -888,12 +261,11 @@
                               <h3>Liên kết hữu ích</h3>
                           </div>
                           <ul>
-                              <li><a href="#">Trang chủ</a></li>
-                              <li><a href="#">Sản phẩm</a></li>
-                              <li><a href="#">Về chúng tôi</a></li>
-                              <li><a href="#">Liên hệ</a></li>
-
-                              <li><a href="#">Cửa hàng</a></li>
+                              <li><a href="Home.html">Trang chủ</a></li>
+                              <li><a href="#khoi-san-pham">Sản phẩm</a></li>
+                              <li><a href="#khoi-dich-vu">Dịch vụ</a></li>
+                              <li><a href="#tin-tuc">Bài viết</a></li>
+                              <li><a href="index.html">Cửa hàng</a></li>
 
                           </ul>
                       </div>
@@ -922,7 +294,7 @@
               <div class="row">
                   <div class="col-xl-6 col-lg-6 text-center text-lg-left">
                       <div class="copyright-text">
-                          <p>Bản quyền &copy; 2026, IN3D Shop. <a href="#">Đã đăng ký bản quyền</a></p>
+                          <p>Bản quyền &copy; 2026, Bedecraft. <a href="#">Đã đăng ký bản quyền</a></p>
                       </div>
                   </div>
               </div>
@@ -939,7 +311,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-client.js"></script>
     <script src="assets/js/order.js?v=8"></script>
-    <script src="assets/js/san-pham-home.js?v=1"></script>
+    <script src="assets/js/trang-chu.js?v=1"></script>
 
 
 </body>

@@ -12,20 +12,28 @@ body{
     background-color: #151720;
     width: 100%;
     top: 0;
-    height: 72px;
+    /* height co dinh 72px cat mat logo -> de min-height cho khung tu gian */
+    min-height: 72px;
     padding: 5px 20px;
     z-index: 999;
     position: fixed;
-    
+
 }
 .header-home-page a img{
     margin-top: -25px;
 }
 /* Logo moi (huy hieu xanh la - vang) */
 .header-home-page a img.logo-chinh{
-    height: 62px;
+    height: 60px;
     width: auto;
     margin-top: 0;
+    display: block;      /* bo khoang trong duoi anh inline lam logo bi cat */
+    object-fit: contain;
+}
+.header-logo-home{
+    display: flex;
+    align-items: center;
+    min-height: 62px;
 }
 .header-logo-page{
     margin-left: 60px;
@@ -38,7 +46,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
+
 }
 .nav-bar-home-page ul{
     display: inline-flex;
@@ -91,19 +99,19 @@ body{
 }
 .main-input {
     background: #fff;
-    height: 50px; 
+    height: 50px;
     width: 327px;
     color: #a7b1ab;
     border: 1px solid #cccccc;
     margin-bottom: 0px;
-    -webkit-appearance: none; 
-    border-radius: 4px 0px 0px 4px; 
-    -moz-border-radius: 4px 0px 0px 4px; 
+    -webkit-appearance: none;
+    border-radius: 4px 0px 0px 4px;
+    -moz-border-radius: 4px 0px 0px 4px;
     -webkit-border-radius: 4px 0px 0px 4px;
     display: inline-block;
     text-align: left;
-    font-size: 16px; 
-    font-weight: 500; 
+    font-size: 16px;
+    font-weight: 500;
     padding:0px 0px 0px 57px;
     font-size:16px;
     border-right:0px;
@@ -112,16 +120,16 @@ body{
 .main-location {display: none;}
 #main-submit {
      background: #3cb13c;
-     color: #fff; 
-     display: inline-block; 
-     font-size: 19px; 
+     color: #fff;
+     display: inline-block;
+     font-size: 19px;
      font-weight: 500;
-     text-align: center; 
+     text-align: center;
      cursor: pointer;
-     margin-bottom: 0px; 
+     margin-bottom: 0px;
     -webkit-appearance: none;
-    border-radius: 0px 4px 4px 0px; 
-    -moz-border-radius: 0px 4px 4px 0px; 
+    border-radius: 0px 4px 4px 0px;
+    -moz-border-radius: 0px 4px 4px 0px;
     -webkit-border-radius: 0px 4px 4px 0px;
     width:141px;
     height:50px;
@@ -130,9 +138,9 @@ body{
     float: left;
 }
 #main-submit:hover {
-     background: #00a221; 
-     color: #fff !important; 
-     -webkit-appearance: none; 
+     background: #00a221;
+     color: #fff !important;
+     -webkit-appearance: none;
 }
 #main-submit-mobile {
     display: none;
@@ -182,12 +190,12 @@ footer {
 }
 ul.search-description {
     width:150px;
-    position: absolute; 
+    position: absolute;
     background: #fff;
     right:143px;
     top:55px;
     border-radius: 2px;
-    -moz-border-radius: 2px; 
+    -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     padding:14px 0px;
     border: 1px solid #E5E5E5;
@@ -204,8 +212,8 @@ ul.search-description {
 /* responsive css below */
 @media only screen and (max-width: 680px) {
     .main-btn {
-        border-radius: 0px 4px 4px 0px; 
-        -moz-border-radius: 0px 4px 4px 0px; 
+        border-radius: 0px 4px 4px 0px;
+        -moz-border-radius: 0px 4px 4px 0px;
         -webkit-border-radius: 0px 4px 4px 0px;
         border-right:1px solid #cccccc;
     }
@@ -220,7 +228,7 @@ ul.search-description {
     .centerbox {
         width:auto;
         transform: translate(-50%, -60%);
-        -ms-transform: translate(-50%, -60%); 
+        -ms-transform: translate(-50%, -60%);
         -webkit-transform: translate(-50%, -60%);
     }
     .main-form-container {
@@ -231,16 +239,16 @@ ul.search-description {
     }
     #main-submit-mobile {
          background: #3cb13c;
-         color: #fff; 
-         display:block; 
-         font-size: 19px; 
+         color: #fff;
+         display:block;
+         font-size: 19px;
          font-weight: 500;
-         text-align: center; 
+         text-align: center;
          cursor: pointer;
-         margin-bottom: 0px; 
+         margin-bottom: 0px;
          -webkit-appearance: none;
-         border-radius: 0px; 
-         -moz-border-radius: 0px; 
+         border-radius: 0px;
+         -moz-border-radius: 0px;
          -webkit-border-radius: 0px;
          width:141px;
          height:50px;
@@ -254,10 +262,10 @@ ul.search-description {
          width: 100%;
          z-index:1;
         }
-    #main-submit-mobile:hover { 
-        background: #00a221; 
-        color: #fff !important; 
-        -webkit-appearance: none; 
+    #main-submit-mobile:hover {
+        background: #00a221;
+        color: #fff !important;
+        -webkit-appearance: none;
     }
     footer {
         padding-bottom:50px;
@@ -317,13 +325,13 @@ ul.search-description {
     background-position: top;
     background-attachment: fixed;
     margin-top: 70px;
-    
+
 }
 .background-shadow-button{
     width: 100%;
     height: 550px;
     background-color: rgba(0, 0, 0, 0.70);
-    
+
 }
 .text-background{
 
@@ -346,8 +354,8 @@ ul.search-description {
     font-size: 130px;
     line-height: 110px;
     font-family: 'Chakra Petch', sans-serif;
-    
-    
+
+
 }
 .button-background {
     position: absolute;
@@ -365,7 +373,7 @@ ul.search-description {
     box-shadow: 0 10px 20px -5px #94a6af;
     overflow: hidden;
   }
-  
+
   .button-background:before,
   .button-background:after {
     content: "";
@@ -375,7 +383,7 @@ ul.search-description {
     bottom: 0;
     left: 0;
   }
-  
+
   .button-background:before {
     transform: scale(1);
     background-image: url("https://himalayasingh.github.io/button-hover-effect-1/img/bg.jpg");
@@ -383,13 +391,13 @@ ul.search-description {
     transition: 0.3s ease transform;
     z-index: 1;
 }
-  
+
 .button-background:after {
     background-color: #000;
     opacity: 0.16;
     z-index: 2;
 }
-  
+
 .button-background div {
     position: absolute;
     top: 0;
@@ -398,7 +406,7 @@ ul.search-description {
     left: 0;
     z-index: 3;
 }
-  
+
 .button-background div:before,
 .button-background div:after {
     position: absolute;
@@ -414,31 +422,31 @@ ul.search-description {
     padding: 25px 0;
     transition: 0.3s ease all;
 }
-  
+
 .button-background div:before {
     content: "GO";
     letter-spacing: 0;
     opacity: 1;
     transform: scale(1);
 }
-  
+
 .button-background div:after {
     content: "YEAH !";
     letter-spacing: -10px;
     transform: scale(0);
     opacity: 0;
 }
-  
+
 .button-background:hover:before {
     transform: scale(1.3);
 }
-  
+
 .button-background:hover div:before {
     letter-spacing: 3px;
     opacity: 0;
     transform: scale(4);
 }
-  
+
 .button-background:hover div:after {
     letter-spacing: 0;
     opacity: 1;
@@ -450,22 +458,25 @@ ul.search-description {
     min-height: 350px;
     padding: 30px 100px 40px 100px;
     display: flex;
-    align-items: flex-start;
+    /* stretch: anh cao bang dung khoi chu ben canh, khong con hut thap mot goc */
+    align-items: stretch;
     flex-wrap: wrap;
 }
 .photo1-first{
     box-shadow: 0px 13px 10px -7px rgba(0, 0, 0,0.1);
     width: 600px;
-    height: 280px;
+    min-height: 360px;
     border-radius: 15px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-} 
+    overflow: hidden;
+    display: flex;
+}
 
 .photo1-home img{
-    width: 600px;
-    height: 280px;
+    width: 100%;
+    height: auto;
+    min-height: 360px;
+    flex: 1;
+    object-fit: cover;   /* phong to lap day khung, khong keo mo anh */
     border-radius: 10px;
 } 
 
@@ -490,7 +501,7 @@ ul.search-description {
     .photo1-home{ padding: 24px 20px 30px 20px; }
     .photo1-home hr{ display: none; }
     .text-nextTo-photo1{ margin-left: 0; margin-top: 20px; }
-    .photo1-first, .photo1-home img{ width: 100%; max-width: 600px; height: auto; }
+    .photo1-first, .photo1-home img{ width: 100%; max-width: 600px; height: auto; min-height: 0; }
     .text-nextTo-photo1 h1{ font-size: 40px; line-height: 46px; }
 }
 .text-nextTo-photo1 .text-games-p1{
@@ -507,7 +518,7 @@ ul.search-description {
 /* ---- Bảng giá dịch vụ in 3D: dàn hàng ngang, mỗi mục một ô gọn ---- */
 .bang-gia-dv {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));   /* 6 o -> 3 cot x 2 hang */
     gap: 10px;
     margin: 16px 0 14px 0;
 }
@@ -617,7 +628,7 @@ ul.search-description {
 .list1-top-games{
     width: 100%;
     height: auto;
-    
+
     padding: 100px 100px 50px 100px;
 }
 .list1-top-games .text-top-games{
@@ -626,17 +637,27 @@ ul.search-description {
     font-size: 25px;
 }
 
-.cards {
-   
+.cards, .game-free1 {
     width: 100%;
-    
-    
-    display: -webkit-flex; 
-    justify-content: center;
-    -webkit-justify-content: center;
     max-width: 2000px;
-    
+    /* grid thay flex: them bot bao nhieu the cung khong tran hang */
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
 }
+.cards .card, .game-free1 .card {
+    width: 100%;
+    margin-right: 0;
+}
+/* Bao khi luoi trong hoac dang tai */
+.bao-trong-luoi {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #8a8a8a;
+    font-size: 15px;
+    padding: 34px 0;
+}
+.game-free1 .bao-trong-luoi { color: #e8e8e8; }
 
 .card--1 .card__img, .card--1 .card__img--hover {
     background-image: url('../img/p25.jpg');
@@ -688,7 +709,7 @@ ul.search-description {
     height: 235px;
   border-top-left-radius: 12px;
 border-top-right-radius: 12px;
-  
+
 }
 
 .card__info-hover {
@@ -710,7 +731,7 @@ border-top-right-radius: 12px;
   border-top-left-radius: 12px;
 border-top-right-radius: 12px;
 top: 0;
-  
+
 }
 .card {
   margin-right: 25px;
@@ -736,7 +757,7 @@ border-bottom-right-radius: 12px;
 }
 
 .card__category {
-   
+
     text-transform: uppercase;
     font-size: 13px;
     letter-spacing: 2px;
@@ -747,20 +768,21 @@ border-bottom-right-radius: 12px;
 .card__title {
     margin-top: 5px;
     margin-bottom: 10px;
-   
+
 }
 
 .card__by {
     font-size: 12px;
-    
+
     font-weight: 500;
 }
 
 .card__author {
     font-weight: 600;
     text-decoration: none;
-    color: #a3ff12;
-    
+    /* #a3ff12 tren nen trang gan nhu khong doc duoc -> dung dung xanh voi bang gia */
+    color: #2f9e2f;
+
 }
 
 .card:hover .card__img--hover {
@@ -781,72 +803,10 @@ border-bottom-right-radius: 12px;
 /***********************************************
 **********************************************/
 
-.list2-3photo{
-    
-    width: 100%;
-    height: auto;
-    padding: 0 100px;
-    display: flex;
-}
-.photo1-list2{
-    
-    height: 480px;
-    width: 470px;
-    border-radius: 12px;
-}
-.photo2-list2{
-    
-    height: 480px;
-    width: 470px;
-    margin-left: 30px;
-    border-radius: 12px;
-
-}
-.photo3-list2{
-    
-    height: 480px;
-    width: 470px;
-    margin-left: 30px;
-    border-radius: 12px;
-
-}
-.list2-3photo img{
-    border-radius: 12px;
-    box-shadow: 0px 13px 10px -7px rgba(0, 0, 0,0.1);
-}
-.list2-3photo h1{
-    padding: 10px 0 10px 10px ;
-}
-.text1-3photo{
-    padding-left: 10px;
-}
-.text2-3photo{
-    padding-left: 10px;
-}
-.text3-3photo{
-    padding-left: 10px;
-}
-.price1-3photo{
-    padding-left: 10px;
-    font-weight: bold;
-    font-size: 25px;
-}
-.price2-3photo{
-    padding-left: 10px;
-    padding-top: 40px;
-    font-weight: bold;
-    font-size: 25px;
-}
-.price3-3photo{
-    padding-left: 10px;
-    padding-top: 60px;
-    font-weight: bold;
-    font-size: 25px;
-}
 .games-free{
     margin: 150px 100px 0 100px;
     border-radius: 10px;
-    
+
     background-image: url('../img/p31.jpg');
     background-repeat: no-repeat;
     background-size: cover;
@@ -864,7 +824,7 @@ border-bottom-right-radius: 12px;
 .game-free1{
     display: flex;
     padding-left: 20px;
-    
+
 }
 .game-free1 .card__author{
     font-size: xx-large;
@@ -877,6 +837,12 @@ border-bottom-right-radius: 12px;
 }
 .icon-free{
     display: flex;
+}
+a.button-free{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 .button-free{
     border: #fff 1px solid;
@@ -896,46 +862,161 @@ border-bottom-right-radius: 12px;
     transition: 0.2s;
 }
 
-.all-games{
-    
-    width: 100%;
-    height: auto;
-    margin-top: 50px;
-    padding: 20px 100px;
+/* ============================================================
+   THẺ DỊCH VỤ — không dùng ảnh, dùng nền màu + biểu tượng
+   ============================================================ */
+.the-dv {
+    display: flex;
+    flex-direction: column;
 }
-.all-list1-game{
-   display: flex;
+.dv-anh {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background-size: cover;
+    background-position: center;
+}
+.dv-anh i {
+    font-size: 52px;
+    color: #fff;
+    opacity: 0.92;
+}
+.dv-mau1 { background: linear-gradient(135deg, #1d2b1a, #3f7a1f); }
+.dv-mau2 { background: linear-gradient(135deg, #151720, #2f5e8a); }
+.dv-mau3 { background: linear-gradient(135deg, #2b1d1a, #8a5a2f); }
+.the-dv .card__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.dv-mo-ta {
+    font-size: 14px;
+    color: #6f6f6f;
+    line-height: 1.6;
+    margin: 0 0 14px 0;
+}
+.the-dv .card__by { margin-top: auto; }
+/* de sau .card:hover de thay hieu ung phong to 1.1 (the dich vu cao thap khac nhau) */
+.the-dv:hover {
+    transform: translateY(-6px);
+    box-shadow: 0px 24px 18px -10px rgba(0, 0, 0, 0.16);
+}
+.the-dv:hover .card__info { background-color: #fff; position: static; }
 
+/* ============================================================
+   KHỐI BÀI VIẾT — nội dung lấy từ bảng bai_viet
+   ============================================================ */
+.khoi-bai-viet {
+    width: 100%;
+    padding: 30px 100px 70px 100px;
 }
-.all-list2-game{
+.dau-bai-viet {
     display: flex;
-    
-    
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 22px;
 }
-.all-list3-game{
+.dau-bai-viet .text-top-games {
+    font-size: 25px;
+    padding: 0;
+}
+.phu-bai-viet {
+    font-size: 14px;
+    color: #7a7a7a;
+}
+.luoi-bai-viet {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+}
+.the-bai-viet {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0px 13px 10px -7px rgba(0, 0, 0, 0.1);
     display: flex;
-    
-    
+    flex-direction: column;
+    transition: all 0.25s ease-out;
 }
-.all-games p{
-    margin-top: 60px;
-    padding-bottom: 20px;
-    font-weight: bolder;
-    font-size: 22px;
-    
+.the-bai-viet:hover {
+    transform: translateY(-6px);
+    box-shadow: 0px 24px 18px -10px rgba(0, 0, 0, 0.16);
 }
-.see-more{
+.anh-bai-viet {
+    height: 140px;
     display: flex;
-}
-.see-more a{
+    align-items: center;
+    justify-content: center;
+    position: relative;
     text-decoration: none;
-    margin: 60px 0 0 auto;
-    font-weight: bold;
-    color: #868686;
+    background-size: cover;
+    background-position: center;
 }
-.see-more a:hover{
-    color: #a3ff12;
+.anh-bai-viet i {
+    font-size: 44px;
+    color: #fff;
+    opacity: 0.9;
 }
+.nhan-chuyen-muc {
+    position: absolute;
+    left: 14px;
+    bottom: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #cdf58a;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 11px;
+    border-radius: 999px;
+}
+.than-bai-viet {
+    padding: 16px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.than-bai-viet h3 {
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 9px;
+}
+.than-bai-viet h3 a {
+    color: #1c1c1c;
+    text-decoration: none;
+}
+.than-bai-viet h3 a:hover { color: #2f9e2f; }
+.tom-tat-bai-viet {
+    font-size: 14px;
+    color: #6f6f6f;
+    line-height: 1.65;
+    margin-bottom: 14px;
+}
+.chan-bai-viet {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: #9a9a9a;
+}
+.chan-bai-viet a {
+    color: #2f9e2f;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.chan-bai-viet a:hover { text-decoration: underline; }
+
+/* Nền theo chuyên mục */
+.cm-huong-dan   { background: linear-gradient(135deg, #151720, #2f5e8a); }
+.cm-vat-lieu    { background: linear-gradient(135deg, #1d2b1a, #3f7a1f); }
+.cm-kinh-nghiem { background: linear-gradient(135deg, #2b1d1a, #8a5a2f); }
+.cm-tin-shop    { background: linear-gradient(135deg, #241a2b, #5f3f8a); }
+
 /****************************************************
 *****************************************************/
 
@@ -943,7 +1024,7 @@ border-bottom-right-radius: 12px;
 /*.footer-home-page{
     width: 100%;
     height: 500px;
-    
+
     background-image: url('../img/p31.jpg');
     background-position: center;
     background-repeat: no-repeat;
@@ -957,20 +1038,21 @@ border-bottom-right-radius: 12px;
 .footer-section {
     background: #151414;
     position: relative;
-   
-    height: 450px;
+    /* height co dinh lam khoi ben trong tran ra ngoai */
+    min-height: 450px;
+    height: auto;
   }
   .footer-cta {
-      
+
     border-bottom: 1px solid #373636;
     padding: 48px 300px 30px 0;
-    
+
     display: flex;
   }
   .footer-cta .row{
       display: flex;
       justify-content: space-between;
-      
+
 
   }
   .single-cta i {
@@ -996,15 +1078,15 @@ border-bottom-right-radius: 12px;
   .cta-text span {
     color: #757575;
     font-size: 15px;
-    
+
   }
   .footer-content {
     position: relative;
     z-index: 2;
     padding: 30px 100px 30px 0;
     margin-left: 150px;
-    height: 320px;
-    
+    min-height: 320px;
+
   }
   .footer-pattern img {
     position: absolute;
@@ -1015,23 +1097,25 @@ border-bottom-right-radius: 12px;
     background-position: 100% 100%;
   }
   .footer-logo {
-    margin-bottom: -20px;
-    margin-top: -58px;
-    
+    /* margin-top am -58px keo logo len de trum len hang Dia chi / Dien thoai */
+    margin-top: 0;
+    margin-bottom: 16px;
   }
   .footer-logo img {
-      max-width: 200px;
-      
+      height: 96px;
+      width: auto;
+      max-width: 100%;
+      display: block;
   }
   .footer-text p {
     margin-bottom: 14px;
     margin-top: -20px;
-    
+
     font-size: 14px;
         color: #7e7e7e;
     line-height: 28px;
   }
-  
+
   .footer-social-icon span {
     color: #fff;
     display: block;
@@ -1123,8 +1207,8 @@ border-bottom-right-radius: 12px;
   .copyright-area{
     background: #202020;
     padding: 25px 0;
-    
-    
+
+
   }
   .copyright-text p {
     margin: 0;
@@ -1152,19 +1236,14 @@ border-bottom-right-radius: 12px;
 
 /* Man hinh vua (laptop nho / tablet ngang) */
 @media only screen and (max-width: 1300px) {
-    .list1-top-games { height: auto; padding: 80px 30px 40px 30px; }
-    .cards, .game-free1, .all-list1-game, .all-list2-game, .all-list3-game {
-        flex-wrap: wrap;
+    .list1-top-games { height: auto; padding: 60px 30px 40px 30px; }
+    .cards, .game-free1, .luoi-bai-viet {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 25px;
-        justify-content: center;
     }
-    .card { width: 30%; min-width: 250px; margin-right: 0; }
-    .list2-3photo { height: auto; padding: 0 30px; flex-wrap: wrap; gap: 30px; justify-content: center; }
-    .photo2-list2, .photo3-list2 { margin-left: 0; }
-    .photo1-list2, .photo2-list2, .photo3-list2 { height: auto; padding-bottom: 20px; max-width: 100%; }
-    .list2-3photo img { max-width: 100%; height: auto; }
+    .card { width: 100%; min-width: 0; margin-right: 0; }
     .games-free { margin: 60px 30px 0 30px; height: auto; padding-bottom: 25px; }
-    .all-games { height: auto; padding: 20px 30px; }
+    .khoi-bai-viet { padding: 20px 30px 50px 30px; }
 
     .footer-section { height: auto; }
     .footer-cta { padding: 40px 20px 25px 20px; }
@@ -1192,8 +1271,8 @@ border-bottom-right-radius: 12px;
     .button-background { top: 58%; width: 170px; padding: 30px; }
 
     .photo1-home { height: auto; padding: 30px 20px 0 20px; display: block; }
-    .photo1-first { width: 100%; height: auto; }
-    .photo1-home img { width: 100%; height: auto; }
+    .photo1-first { width: 100%; height: auto; min-height: 0; }
+    .photo1-home img { width: 100%; height: auto; min-height: 0; }
     .photo1-home hr { display: none; }
     .text-nextTo-photo1 { margin-left: 0; padding-top: 20px; }
     .text-nextTo-photo1 h1 { font-size: 34px; line-height: 40px; }
@@ -1205,12 +1284,11 @@ border-bottom-right-radius: 12px;
 
     .list1-top-games { padding: 40px 15px 20px 15px; }
     .list1-top-games .text-top-games { font-size: 21px; }
-    .card { width: 46%; min-width: 220px; }
-    .list2-3photo { padding: 0 15px; }
+    .card { width: 100%; min-width: 0; }
     .games-free { margin: 40px 15px 0 15px; }
     .games-free p { font-size: 22px; padding: 10px 0 15px 10px; }
-    .all-games { padding: 20px 15px; margin-top: 20px; }
-    .see-more a { margin-top: 65px; }
+    .khoi-bai-viet { padding: 20px 15px 40px 15px; }
+    .dau-bai-viet .text-top-games { font-size: 21px; }
 
     .footer-cta .row { flex-direction: column; gap: 18px; }
     .footer-content .row { display: block; }
@@ -1222,9 +1300,9 @@ border-bottom-right-radius: 12px;
     .nav-bar-home-page ul li a { padding: 6px 8px; font-size: 14px; }
     .background-shadow-button .text-background h1 { font-size: 44px; line-height: 44px; }
     .background-shadow-button .text-background p { font-size: 20px; }
-    .card { width: 100%; max-width: 340px; }
+    .card { width: 100%; max-width: none; }
+    .cards, .game-free1, .luoi-bai-viet { grid-template-columns: 1fr; }
     .text-nextTo-photo1 h1 { font-size: 26px; line-height: 32px; }
-    .list2-3photo h1 { font-size: 22px; }
     .start-game h1 a { font-size: 22px; }
     .start-game h1 a:hover { font-size: 24px; }
 }
@@ -1243,8 +1321,8 @@ border-bottom-right-radius: 12px;
 
 @media only screen and (max-width: 1300px) {
     .photo1-home { height: auto; padding: 30px 20px 0 20px; display: block; }
-    .photo1-first { width: 100%; height: auto; max-width: 700px; margin: 0 auto; }
-    .photo1-home img { width: 100%; height: auto; }
+    .photo1-first { width: 100%; height: auto; min-height: 0; max-width: 700px; margin: 0 auto; }
+    .photo1-home img { width: 100%; height: auto; min-height: 0; }
     .photo1-home hr { display: none; }
     .text-nextTo-photo1 { margin-left: 0; padding-top: 20px; }
 }

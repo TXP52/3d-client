@@ -83,7 +83,7 @@
 
     /* ---------- Gắn nút "Đặt hàng" vào sản phẩm ---------- */
 
-    // Cho san-pham-home.js gọi lại sau khi vẽ thẻ sản phẩm từ database
+    // Cho trang-chu.js gọi lại sau khi vẽ thẻ sản phẩm từ database
     window.ganNutVaoThe = function () { ganNutVaoThe(); };
 
     function ganNutVaoThe() {
@@ -92,6 +92,8 @@
             var tieuDe = card.querySelector('.card__title');
             var gia = card.querySelector('.card__author h3');
             if (!info || !tieuDe || info.querySelector('.btn-dat-hang')) return;
+            // Hàng mẫu chỉ trưng bày cho khách xem tay nghề, không bán -> không gắn nút đặt
+            if (card.classList.contains('the-mau')) return;
 
             var ten = lamSachTen(tieuDe.textContent);
             var giaChu = gia ? gia.textContent.trim() : 'Liên hệ';
@@ -112,24 +114,8 @@
             });
             info.appendChild(nut);
         });
-
-        // 3 khối khuyến mãi lớn
-        ['.photo1-list2', '.photo2-list2', '.photo3-list2'].forEach(function (chon) {
-            var khoi = document.querySelector(chon);
-            if (!khoi || khoi.querySelector('.btn-dat-hang')) return;
-            var tieuDe = khoi.querySelector('h1');
-            var gia = khoi.querySelector('p[class^="price"]');
-            if (!tieuDe) return;
-
-            var nut = document.createElement('button');
-            nut.type = 'button';
-            nut.className = 'btn-dat-hang';
-            nut.textContent = '🛒 Đặt hàng';
-            nut.addEventListener('click', function () {
-                themVaoGio(lamSachTen(tieuDe.textContent), gia ? gia.textContent.trim() : 'Liên hệ');
-            });
-            khoi.appendChild(nut);
-        });
+        // Trước đây còn gắn nút cho 3 khối khuyến mãi .photoN-list2 —
+        // các khối đó đã bỏ khỏi trang chủ nên phần này không còn việc để làm.
     }
 
     function themVaoGio(ten, giaChu) {
@@ -195,7 +181,7 @@
 
         if (gio.length === 0) {
             than.innerHTML = '<p class="gio-hang-trong">Giỏ hàng của bạn đang trống.</p>' +
-                '<p style="text-align:center;margin-top:14px;"><a class="nut-xac-nhan nut-den-dang-nhap" href="Home.html#list1-topgames">Tiếp tục mua sắm</a></p>';
+                '<p style="text-align:center;margin-top:14px;"><a class="nut-xac-nhan nut-den-dang-nhap" href="Home.html#khoi-san-pham">Tiếp tục mua sắm</a></p>';
             return;
         }
 

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Bài viết - Bedecraft</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- Logo tren tab trinh duyet. Thu muc assets/img/favicons/ da bi xoa cung bo logo cu
+         nen 3 duong dan cu deu 404 -> tab khong co logo. Dung thang logo.png dang dung. -->
+    <link rel="icon" type="image/png" href="assets/logo/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
+    <style>
+        * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Chakra Petch', sans-serif; }
+        body { background-color: #eee; }
+
+        .dau-trang {
+            background-color: #151720;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .dau-trang a { color: #fff; text-decoration: none; }
+        .dau-trang a:hover { color: #a3ff12; }
+        .dau-trang .logo img { height: 56px; width: auto; display: block; }
+        .dau-trang nav ul { display: flex; gap: 4px; list-style: none; }
+        .dau-trang nav a { padding: 9px 12px; display: inline-block; }
+
+        .khung { max-width: 860px; margin: 30px auto 60px auto; padding: 0 16px; }
+        .duong-dan { color: #6b6b6b; font-size: 14px; margin-bottom: 18px; }
+        .duong-dan a { color: #2f9e2f; text-decoration: none; }
+        .duong-dan a:hover { text-decoration: underline; }
+
+        .bia {
+            height: 200px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: -46px;
+        }
+        .bia i { font-size: 62px; color: #fff; opacity: .9; }
+        .cm-huong-dan   { background: linear-gradient(135deg, #151720, #2f5e8a); }
+        .cm-vat-lieu    { background: linear-gradient(135deg, #1d2b1a, #3f7a1f); }
+        .cm-kinh-nghiem { background: linear-gradient(135deg, #2b1d1a, #8a5a2f); }
+        .cm-tin-shop    { background: linear-gradient(135deg, #241a2b, #5f3f8a); }
+
+        .bai {
+            position: relative;
+            background: #fff;
+            border-radius: 14px;
+            padding: 30px 38px 38px 38px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+        }
+        .nhan-chuyen-muc {
+            display: inline-block;
+            background: #eef7df;
+            color: #4c8a00;
+            border-radius: 20px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 13px;
+            margin-bottom: 14px;
+        }
+        .bai h1 { font-size: 32px; line-height: 1.28; margin-bottom: 12px; }
+        .thong-tin {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            color: #8f8f8f;
+            font-size: 13.5px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #ececec;
+            margin-bottom: 24px;
+        }
+        .tom-tat {
+            font-size: 16.5px;
+            color: #4a4a4a;
+            line-height: 1.7;
+            border-left: 3px solid #a3ff12;
+            padding-left: 16px;
+            margin-bottom: 26px;
+        }
+
+        .noi-dung h2 {
+            font-size: 21px;
+            margin: 30px 0 12px 0;
+            color: #1c1c1c;
+        }
+        .noi-dung p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 15px;
+        }
+        .noi-dung ul { margin: 0 0 18px 22px; }
+        .noi-dung li {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .khac { margin-top: 34px; }
+        .khac h2 { font-size: 21px; margin-bottom: 15px; }
+        .luoi-khac { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+        .the-khac {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+            text-decoration: none;
+            color: #222;
+            transition: 0.2s;
+            display: block;
+        }
+        .the-khac:hover { transform: translateY(-4px); color: #2f9e2f; }
+        .the-khac span { display: block; font-size: 12px; color: #9a9a9a; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .the-khac b { font-size: 15px; line-height: 1.4; }
+
+        .nut-ve {
+            display: inline-block;
+            margin-top: 30px;
+            background: #151720;
+            color: #a3ff12;
+            border-radius: 8px;
+            padding: 12px 24px;
+            text-decoration: none;
+        }
+        .nut-ve:hover { background: #000; }
+
+        .trang-thai-tai { text-align: center; color: #888; padding: 60px 0; }
+
+        @media (max-width: 700px) {
+            .bai { padding: 22px 20px 28px 20px; }
+            .bai h1 { font-size: 24px; }
+            .bia { height: 150px; margin-bottom: -36px; }
+        }
+
+        * { font-weight: 700 !important; }
+    </style>
+</head>
+<body>
+
+    <header class="dau-trang">
+        <a class="logo" href="Home.html"><img src="assets/logo/logo.png" alt="Bedecraft"></a>
+        <nav>
+            <ul>
+                <li><a href="Home.html">TRANG CHỦ</a></li>
+                <li><a href="Home.html#khoi-san-pham">SẢN PHẨM</a></li>
+                <li><a href="Home.html#khoi-dich-vu">DỊCH VỤ</a></li>
+                <li><a href="Home.html#tin-tuc">TIN TỨC</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="khung">
+        <p class="duong-dan">
+            <a href="Home.html">Trang chủ</a> ›
+            <a href="Home.html#tin-tuc">Kiến thức in 3D</a> ›
+            <span id="dd-ten">Bài viết</span>
+        </p>
+
+        <div id="khu-bai" class="trang-thai-tai">Đang tải bài viết…</div>
+
+        <div class="khac" id="khu-khac" style="display:none;">
+            <h2>Bài khác</h2>
+            <div class="luoi-khac" id="luoi-khac"></div>
+        </div>
+
+        <a class="nut-ve" href="Home.html#tin-tuc">← Về trang chủ</a>
+    </div>
+
+<script>
+/* ============================================================
+   Trang đọc bài viết. Bài lấy từ backend Java, không được thì thử Supabase.
+
+   Nội dung trong database là VĂN BẢN THƯỜNG, không phải HTML:
+     "## " đầu dòng = tiêu đề mục nhỏ
+     "- "  đầu dòng = gạch đầu dòng
+     dòng trống     = ngăn hai đoạn
+   Trang này escape hết rồi mới dựng thẻ, nên bài viết không thể chèn mã vào trang.
+   ============================================================ */
+(function () {
+    'use strict';
+
+    var JAVA_API = 'http://localhost:8090/api';
+    var SB_URL = 'https://nmptxzbtngztzxpwdprs.supabase.co';
+    var SB_KEY = 'sb_publishable_OJjvcAtUPib9bvdNNA-Bjg_vbz7CuQ-';
+
+    var CHUYEN_MUC = {
+        'huong-dan':   { ten: 'Hướng dẫn',   icon: 'fa-screwdriver-wrench' },
+        'vat-lieu':    { ten: 'Vật liệu',    icon: 'fa-layer-group' },
+        'kinh-nghiem': { ten: 'Kinh nghiệm', icon: 'fa-lightbulb' },
+        'tin-shop':    { ten: 'Tin shop',    icon: 'fa-bullhorn' }
+    };
+
+    function esc(t) {
+        return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function ngayVN(chuoi) {
+        if (!chuoi) return '';
+        var d = new Date(chuoi);
+        if (isNaN(d.getTime())) return '';
+        var hai = function (n) { return (n < 10 ? '0' : '') + n; };
+        return hai(d.getDate()) + '/' + hai(d.getMonth() + 1) + '/' + d.getFullYear();
+    }
+
+    function anhDayDu(a) {
+        if (!a) return '';
+        if (/^(https?:)?\/\//.test(a) || a.indexOf('data:') === 0) return a;
+        if (a.charAt(0) === '/') return JAVA_API.replace(/\/api$/, '') + a;
+        return a;
+    }
+
+    /** Văn bản thường -> HTML an toàn (đã escape trước khi dựng thẻ). */
+    function dungNoiDung(vanBan) {
+        var dong = String(vanBan || '').split(/\r?\n/);
+        var ra = '', doan = [], dsGach = [];
+
+        function xaDoan() {
+            if (doan.length) { ra += '<p>' + esc(doan.join(' ')) + '</p>'; doan = []; }
+        }
+        function xaGach() {
+            if (dsGach.length) {
+                ra += '<ul>' + dsGach.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul>';
+                dsGach = [];
+            }
+        }
+
+        dong.forEach(function (d) {
+            var t = d.trim();
+            if (t === '') { xaGach(); xaDoan(); return; }
+            if (t.indexOf('## ') === 0) {
+                xaGach(); xaDoan();
+                ra += '<h2>' + esc(t.slice(3)) + '</h2>';
+                return;
+            }
+            if (t.indexOf('- ') === 0) { xaDoan(); dsGach.push(t.slice(2)); return; }
+            xaGach();
+            doan.push(t);
+        });
+        xaGach(); xaDoan();
+        return ra;
+    }
+
+    function ve(b) {
+        var cm = CHUYEN_MUC[b.chuyenMuc] || CHUYEN_MUC['huong-dan'];
+        var lop = 'cm-' + (CHUYEN_MUC[b.chuyenMuc] ? b.chuyenMuc : 'huong-dan');
+        var anh = anhDayDu(b.hinhAnh);
+
+        document.title = b.tieuDe + ' - Bedecraft';
+        document.getElementById('dd-ten').textContent = b.tieuDe;
+
+        document.getElementById('khu-bai').className = '';
+        document.getElementById('khu-bai').innerHTML =
+            '<div class="bia ' + lop + '"' + (anh ? ' style="background-image:url(\'' + anh.replace(/'/g, "\\'") + '\')"' : '') + '>' +
+            (anh ? '' : '<i class="fa-solid ' + cm.icon + '"></i>') + '</div>' +
+            '<article class="bai">' +
+            '<span class="nhan-chuyen-muc">' + esc(cm.ten) + '</span>' +
+            '<h1>' + esc(b.tieuDe) + '</h1>' +
+            '<div class="thong-tin">' +
+            (b.tacGia ? '<span><i class="fa-solid fa-user-pen"></i> ' + esc(b.tacGia) + '</span>' : '') +
+            (ngayVN(b.ngayTao) ? '<span><i class="fa-regular fa-calendar"></i> ' + esc(ngayVN(b.ngayTao)) + '</span>' : '') +
+            '<span><i class="fa-regular fa-eye"></i> ' + (Number(b.luotXem) || 0) + ' lượt đọc</span>' +
+            '</div>' +
+            (b.tomTat ? '<p class="tom-tat">' + esc(b.tomTat) + '</p>' : '') +
+            '<div class="noi-dung">' + dungNoiDung(b.noiDung) + '</div>' +
+            '</article>';
+
+        if (b.id) {
+            fetch(JAVA_API + '/bai-viet/' + b.id + '/luot-xem', { method: 'POST' }).catch(function () {});
+        }
+    }
+
+    function veBaiKhac(ds, dangDoc) {
+        var khac = ds.filter(function (b) { return b.duongDan !== dangDoc; }).slice(0, 3);
+        if (!khac.length) return;
+        document.getElementById('luoi-khac').innerHTML = khac.map(function (b) {
+            var cm = CHUYEN_MUC[b.chuyenMuc] || CHUYEN_MUC['huong-dan'];
+            return '<a class="the-khac" href="bai-viet.html?bai=' + encodeURIComponent(b.duongDan || b.id) + '">' +
+                '<span>' + esc(cm.ten) + '</span><b>' + esc(b.tieuDe) + '</b></a>';
+        }).join('');
+        document.getElementById('khu-khac').style.display = '';
+    }
+
+    function loi(chu) {
+        var o = document.getElementById('khu-bai');
+        o.className = 'trang-thai-tai';
+        o.textContent = chu;
+    }
+
+    function tuJava(khoa) {
+        return fetch(JAVA_API + '/bai-viet/duong-dan/' + encodeURIComponent(khoa))
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function (b) {
+                ve({
+                    id: b.id, tieuDe: b.tieuDe, duongDan: b.duongDan, tomTat: b.tomTat,
+                    noiDung: b.noiDung, chuyenMuc: b.chuyenMuc, hinhAnh: b.hinhAnh,
+                    tacGia: b.tacGia, luotXem: b.luotXem, ngayTao: b.createdAt
+                });
+                return fetch(JAVA_API + '/bai-viet')
+                    .then(function (r) { return r.json(); })
+                    .then(function (ds) {
+                        veBaiKhac(ds.map(function (x) {
+                            return { id: x.id, tieuDe: x.tieuDe, duongDan: x.duongDan, chuyenMuc: x.chuyenMuc };
+                        }), khoa);
+                    })
+                    .catch(function () {});
+            });
+    }
+
+    function tuSupabase(khoa) {
+        return fetch(SB_URL + '/rest/v1/bai_viet?select=*&duong_dan=eq.' + encodeURIComponent(khoa) +
+                     '&is_deleted=eq.false&hien_thi=eq.true', {
+            headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+        })
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function (ds) {
+                if (!ds.length) return Promise.reject();
+                var b = ds[0];
+                ve({
+                    id: null, tieuDe: b.tieu_de, duongDan: b.duong_dan, tomTat: b.tom_tat,
+                    noiDung: b.noi_dung, chuyenMuc: b.chuyen_muc, hinhAnh: b.hinh_anh,
+                    tacGia: b.tac_gia, luotXem: b.luot_xem, ngayTao: b.created_at
+                });
+            });
+    }
+
+    var khoa = new URLSearchParams(location.search).get('bai');
+    if (!khoa) {
+        loi('Thiếu địa chỉ bài viết.');
+        return;
+    }
+    tuJava(khoa).catch(function () {
+        tuSupabase(khoa).catch(function () {
+            loi('Không tìm thấy bài viết này.');
+        });
+    });
+})();
+</script>
+
+</body>
+</html>

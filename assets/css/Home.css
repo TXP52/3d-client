@@ -980,6 +980,41 @@ a.button-free{
 .km-ma:hover { background: #a3ff12; border-color: #6faa1e; color: #151414; }
 .km-ma.da-luu { background: #151414; border-color: #151414; color: #a3ff12; }
 
+/* Nhãn "Đã giảm sẵn" thay cho nút mã ở khuyến mãi sản phẩm */
+.km-tu-ap {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    background: #fff3e0;
+    border: 1px dashed #e8a33d;
+    color: #a35c07;
+    border-radius: 7px;
+    padding: 7px 13px;
+}
+
+/* ---- Thẻ sản phẩm đang giảm giá ---- */
+.nhan-giam {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    background: #e03131;
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: .5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(224, 49, 49, .35);
+}
+.card__by .gia-goc {
+    display: inline-block;
+    margin-left: 9px;
+    color: #9a9a9a;
+    font-size: 15px;
+    text-decoration: line-through;
+}
+
 /* Báo nhỏ hiện lên khi khách lưu mã */
 .bao-luu-ma {
     position: fixed;

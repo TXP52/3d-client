@@ -27,6 +27,11 @@
     var oBaiViet = document.querySelector('#luoi-bai-viet');
     var oKhuyenMai = document.querySelector('#luoi-km-home');
 
+    /* Bảng "sản phẩm nào đang giảm bao nhiêu", lấy từ backend rồi tra theo id.
+       Backend tính sẵn để trang khách, trang quản trị và lúc tạo đơn dùng CHUNG
+       một luật, không mỗi nơi tính một kiểu. */
+    var GIA_GIAM = {};
+
     /* ================= Tiện ích chung ================= */
 
     function esc(t) {
@@ -107,12 +112,20 @@
         var anh = duongDanAnh(sp.anh) ||
             (typeof window.anhChoSanPham === 'function' ? window.anhChoSanPham(sp.ten) : ANH_DU_PHONG);
         var laMau = sp.loaiSanPham === 'mau';
-        var giaHien = laMau ? 'Hàng mẫu' : (sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ'));
+        var giam = !laMau && sp.id ? GIA_GIAM[sp.id] : null;
+
+        // Giá hiện trên thẻ là giá KHÁCH PHẢI TRẢ; order.js lấy đúng chữ này bỏ vào giỏ
+        var giaHien;
+        if (laMau) giaHien = 'Hàng mẫu';
+        else if (giam) giaHien = giaVND(giam.giaSauGiam);
+        else giaHien = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
+
         var duongDan = 'chi-tiet.html?ten=' + encodeURIComponent(sp.ten) +
             '&gia=' + encodeURIComponent(giaHien);
         var nen = nenAnh(anh);
 
         return '<article class="card' + (laMau ? ' the-mau' : '') + '">' +
+            (giam ? '<span class="nhan-giam">-' + giam.phanTram + '%</span>' : '') +
             '<div class="card__info-hover">' + SVG_TIM +
             '<div class="card__clock-info">' + SVG_DONG_HO +
             '<span class="card__time">' + esc(nhanTinhTrang(sp)) + '</span></div></div>' +
@@ -123,7 +136,9 @@
             '<span class="card__category"> ' + esc(danhMuc(sp)) + '</span>' +
             '<h3 class="card__title">' + esc(sp.ten) + '</h3>' +
             '<span class="card__by"><a href="' + esc(duongDan) + '" class="card__author" title="giá bán">' +
-            '<h3>' + esc(giaHien) + '</h3></a></span>' +
+            '<h3>' + esc(giaHien) + '</h3></a>' +
+            (giam ? '<span class="gia-goc">' + giaVND(giam.giaGoc) + '</span>' : '') +
+            '</span>' +
             '</div></article>';
     }
 
@@ -211,9 +226,12 @@
             '<div class="km-phai">' +
             '<div class="km-ten">' + esc(k.ten) + '</div>' +
             '<div class="km-dk">' + esc(moTaUuDai(k)) + ' · ' + esc(dieuKienKm(k)) + '</div>' +
-            '<button type="button" class="km-ma" data-ma="' + esc(k.ma) +
-            '" onclick="luuMaKhuyenMai(this)">' + esc(k.ma) +
-            ' <i class="fa-regular fa-copy"></i></button>' +
+            (k.ma
+                ? '<button type="button" class="km-ma" data-ma="' + esc(k.ma) +
+                  '" onclick="luuMaKhuyenMai(this)">' + esc(k.ma) +
+                  ' <i class="fa-regular fa-copy"></i></button>'
+                : '<span class="km-tu-ap"><i class="fa-solid fa-wand-magic-sparkles"></i> ' +
+                  'Đã giảm sẵn trên giá</span>') +
             '</div></div>';
     }
 
@@ -298,6 +316,20 @@
 
     /* ================= Chạy ================= */
 
+    /** Nạp bảng giá sau giảm rồi mới vẽ sản phẩm, để thẻ hiện đúng giá ngay lần đầu. */
+    function napGiaGiamRoiVeSanPham() {
+        fetch(JAVA_API + '/khuyen-mai/gia-san-pham')
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function (ds) {
+                ds.forEach(function (g) { GIA_GIAM[g.sanPhamId] = g; });
+                if (ds.length && window.console && console.info) {
+                    console.info('[IN3D] Đang giảm giá ' + ds.length + ' sản phẩm');
+                }
+            })
+            .catch(function () { /* không lấy được thì hiện giá gốc, không chặn trang */ })
+            .then(napSanPham, napSanPham);
+    }
+
     function napSanPham() {
         if (!oSanPham && !oDichVu) return;
 
@@ -317,7 +349,7 @@
         lay('/san-pham',
             function (s) {
                 return {
-                    ten: s.ten, moTa: s.moTa, gia: s.gia || 0, giaChu: s.giaChu,
+                    id: s.id, ten: s.ten, moTa: s.moTa, gia: s.gia || 0, giaChu: s.giaChu,
                     tonKho: s.tonKho || 0, anh: s.hinhAnh || '',
                     trangThai: s.trangThai || 'san_hang', loaiSanPham: s.loaiSanPham || 'ban'
                 };
@@ -325,7 +357,7 @@
             'san_pham?select=*&dang_ban=eq.true&order=id',
             function (s) {
                 return {
-                    ten: s.ten, moTa: s.mo_ta, gia: Number(s.gia) || 0, giaChu: s.gia_chu,
+                    id: s.id, ten: s.ten, moTa: s.mo_ta, gia: Number(s.gia) || 0, giaChu: s.gia_chu,
                     tonKho: s.ton_kho || 0, anh: s.hinh_anh || '',
                     trangThai: s.trang_thai || 'san_hang', loaiSanPham: s.loai_san_pham || 'ban'
                 };
@@ -369,7 +401,7 @@
 
     function batDau() {
         napKhuyenMai();
-        napSanPham();
+        napGiaGiamRoiVeSanPham();
         napBaiViet();
     }
 

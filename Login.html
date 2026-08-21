@@ -144,8 +144,15 @@
                     matKhau: mk
                 });
                 luuPhien(kq);
-                baoDK('Đăng ký thành công! Đang chuyển vào cửa hàng...', true);
-                setTimeout(function () { window.location.href = 'Home.html'; }, 700);
+
+                // TẶNG VOUCHER KHÁCH MỚI: nhớ sẵn mã, sang giỏ hàng tự áp,
+                // khách không phải gõ. Backend vẫn kiểm tra "chưa từng đặt đơn nào"
+                // nên nhớ mã ở đây không phải là phát không cho ai cũng dùng được.
+                try { localStorage.setItem('in3d_ma_khuyen_mai', 'KHACHHANGMOI'); } catch (bo) {}
+
+                baoDK('Đăng ký thành công! Tặng bạn mã KHACHHANGMOI giảm 10% cho đơn đầu tiên — ' +
+                      'shop đã lưu sẵn vào giỏ hàng. Đang chuyển vào cửa hàng...', true);
+                setTimeout(function () { window.location.href = 'Home.html'; }, 2200);
             } catch (loi) {
                 baoDK(/fetch/i.test(loi.message) ? 'Không kết nối được backend Java. Hãy chạy backend (cổng 8090) rồi thử lại.' : loi.message, false);
             }

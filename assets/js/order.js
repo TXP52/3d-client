@@ -44,20 +44,27 @@
 
     // Ảnh sản phẩm: ưu tiên ảnh thật admin đã tải lên, không có thì lấy ảnh minh hoạ theo tên.
     // DB lưu đường dẫn tương đối "/anh/xxx.webp" -> ghép với host backend để xem được.
+    /**
+     * Ảnh sản phẩm: ưu tiên ảnh thật admin đã tải lên.
+     * DB lưu đường dẫn tương đối "/anh/xxx.webp" -> ghép với host backend để xem được.
+     * Chưa có ảnh thì trả ô xám "Chưa có ảnh" — trước đây đoán theo tên rồi trả
+     * ảnh game thừa của giao diện mẫu, nhìn như ảnh thật mà chẳng liên quan gì.
+     */
     function anhChoSanPham(ten, anhThat) {
         if (anhThat) {
             if (/^(https?:)?\/\//.test(anhThat) || anhThat.indexOf('data:') === 0) return anhThat;
             if (anhThat.charAt(0) === '/') return String(JAVA_API).replace(/\/api$/, '') + anhThat;
             return anhThat;
         }
-        var t = (ten || '').toLowerCase();
-        if (t.indexOf('resin') >= 0) return 'assets/img/p26.jpg';
-        if (t.indexOf('máy in') >= 0 || t.indexOf('bambu') >= 0 || t.indexOf('creality') >= 0 || t.indexOf('prusa') >= 0 || t.indexOf('kobra') >= 0 || t.indexOf('ender') >= 0) return 'assets/img/p25.jpg';
-        if (t.indexOf('nhựa') >= 0 || t.indexOf('pla') >= 0 || t.indexOf('petg') >= 0 || t.indexOf('abs') >= 0 || t.indexOf('tpu') >= 0 || t.indexOf('filament') >= 0) return 'assets/img/p27.jpg';
-        if (t.indexOf('đầu phun') >= 0 || t.indexOf('nozzle') >= 0 || t.indexOf('bàn in') >= 0 || t.indexOf('dụng cụ') >= 0 || t.indexOf('pei') >= 0) return 'assets/img/p49.webp';
-        if (t.indexOf('scan') >= 0 || t.indexOf('dịch vụ') >= 0 || t.indexOf('thiết kế') >= 0) return 'assets/img/p46.jpg';
-        if (t.indexOf('stl') >= 0 || t.indexOf('mô hình') >= 0 || t.indexOf('chậu') >= 0 || t.indexOf('móc') >= 0 || t.indexOf('hộp') >= 0 || t.indexOf('giá đỡ') >= 0) return 'assets/img/p48.jpg';
-        return 'assets/img/p50.jpg';
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">' +
+            '<rect width="400" height="300" fill="#eef0f2"/>' +
+            '<g fill="none" stroke="#b3bcc6" stroke-width="6" stroke-linejoin="round">' +
+            '<path d="M200 96 L252 126 L252 186 L200 216 L148 186 L148 126 Z"/>' +
+            '<path d="M148 126 L200 156 L252 126 M200 156 L200 216"/></g>' +
+            '<text x="200" y="250" text-anchor="middle" fill="#9aa4ae" '+
+            'font-family="Inter,Arial,sans-serif" font-size="18">Chưa có ảnh</text></svg>'
+        );
     }
     window.anhChoSanPham = anhChoSanPham;
 
@@ -114,11 +121,28 @@
         if (nut) { nut.disabled = true; nut.textContent = 'Đang kiểm tra...'; }
         if (oLoi) oLoi.textContent = '';
 
+        // Gửi kèm địa chỉ + số điện thoại + token để backend kiểm tra được
+        // "chỉ khách hàng mới" và "chỉ giao khu vực này"
+        var phien = layPhienKhach();
+        var dauVao = {
+            'Content-Type': 'application/json'
+        };
+        if (phien && phien.token) dauVao.Authorization = 'Bearer ' + phien.token;
+
+        var oDiaChi = document.getElementById('dh-diachi');
+        var oSdt = document.getElementById('dh-sdt');
+
         try {
+            luuFormTam();
             var resp = await fetch(JAVA_API + '/khuyen-mai/kiem-tra', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ma: ma, tongTien: tienHang() })
+                headers: dauVao,
+                body: JSON.stringify({
+                    ma: ma,
+                    tongTien: tienHang(),
+                    diaChi: oDiaChi ? oDiaChi.value.trim() : '',
+                    soDienThoai: oSdt ? oSdt.value.trim() : ''
+                })
             });
             var du = await resp.json();
             if (!resp.ok) {
@@ -151,6 +175,25 @@
         }
     }
 
+    /* Giữ lại những gì khách đã gõ, vì veGioHang() dựng lại toàn bộ HTML */
+    var nhoForm = { ten: '', sdt: '', diaChi: '', ghiChu: '' };
+
+    function luuFormTam() {
+        ['ten', 'sdt', 'diachi', 'ghichu'].forEach(function (k) {
+            var o = document.getElementById('dh-' + k);
+            if (!o) return;
+            nhoForm[k === 'diachi' ? 'diaChi' : (k === 'ghichu' ? 'ghiChu' : k)] = o.value;
+        });
+    }
+
+    function traLaiFormTam() {
+        var map = { ten: 'ten', sdt: 'sdt', diachi: 'diaChi', ghichu: 'ghiChu' };
+        Object.keys(map).forEach(function (k) {
+            var o = document.getElementById('dh-' + k);
+            if (o && nhoForm[map[k]]) o.value = nhoForm[map[k]];
+        });
+    }
+
     window.apDungMaTuNut = function () {
         var o = document.getElementById('km-nhap');
         var ma = (o ? o.value : '').trim().toUpperCase();
@@ -166,6 +209,69 @@
         maKm = null;
         nhoMa('');
         veGioHang();
+    };
+
+    /* ---------- Gợi ý mã theo địa chỉ ---------- */
+
+    /* Các chương trình đang chạy có ràng buộc khu vực, tải một lần lúc mở giỏ */
+    var KM_THEO_KHU_VUC = [];
+
+    function boDau(t) {
+        return String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+    }
+
+    function napKmTheoKhuVuc() {
+        fetch(JAVA_API + '/khuyen-mai')
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function (ds) {
+                KM_THEO_KHU_VUC = ds.filter(function (k) {
+                    return k.ma && k.dieuKienDiaChi && String(k.dieuKienDiaChi).trim();
+                });
+            })
+            .catch(function () { /* không có thì thôi, chỉ mất phần gợi ý */ });
+    }
+
+    /** Địa chỉ khách gõ có khớp chương trình nào không. */
+    function kmHopDiaChi(diaChi) {
+        var dc = boDau(diaChi);
+        if (!dc) return null;
+        for (var i = 0; i < KM_THEO_KHU_VUC.length; i++) {
+            var k = KM_THEO_KHU_VUC[i];
+            var tuKhoa = String(k.dieuKienDiaChi).split(',');
+            for (var j = 0; j < tuKhoa.length; j++) {
+                var t = boDau(tuKhoa[j]).trim();
+                if (t && dc.indexOf(t) >= 0) return k;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Khách gõ địa chỉ nội thành Hà Nội thì hiện ngay lời mời dùng mã freeship,
+     * bấm một cái là áp luôn. Gõ địa chỉ khác thì lời mời tự biến mất.
+     */
+    window.xemGoiYMa = function () {
+        var o = document.getElementById('goi-y-ma');
+        if (!o) return;
+        var oDiaChi = document.getElementById('dh-diachi');
+        if (!oDiaChi || maKm) { o.innerHTML = ''; return; }
+
+        var k = kmHopDiaChi(oDiaChi.value);
+        if (!k) { o.innerHTML = ''; return; }
+
+        o.innerHTML =
+            '<div class="goi-y-km">' +
+            '  <i class="fa-solid fa-truck-fast"></i>' +
+            '  <span>Địa chỉ của bạn được <strong>' + mh_esc(k.ten) + '</strong>.</span>' +
+            '  <button type="button" onclick="apMaGoiY(\'' + mh_esc(k.ma) + '\')">Dùng mã ' +
+            mh_esc(k.ma) + '</button>' +
+            '</div>';
+    };
+
+    window.apMaGoiY = function (ma) {
+        luuFormTam();
+        apDungMa(ma, false);
     };
 
     /* ---------- Gắn nút "Đặt hàng" vào sản phẩm ---------- */
@@ -340,7 +446,8 @@
                 '  <p class="dang-nhap-voi">Đặt hàng với tài khoản: <strong>' + mh_esc(phien.hoTen) + '</strong> (' + mh_esc(phien.email) + ')</p>' +
                 '  <input type="text" id="dh-ten" placeholder="Họ và tên *" value="' + mh_esc(phien.hoTen || '') + '">' +
                 '  <input type="tel" id="dh-sdt" placeholder="Số điện thoại *">' +
-                '  <input type="text" id="dh-diachi" placeholder="Địa chỉ nhận hàng *">' +
+                '  <input type="text" id="dh-diachi" placeholder="Địa chỉ nhận hàng *" oninput="xemGoiYMa()">' +
+                '  <div id="goi-y-ma"></div>' +
                 '  <textarea id="dh-ghichu" placeholder="Ghi chú (tuỳ chọn)"></textarea>' +
                 '  <p class="bao-loi" id="dh-loi"></p>' +
                 '  <button type="button" class="nut-xac-nhan" id="dh-gui">Xác nhận đặt hàng</button>' +
@@ -366,6 +473,9 @@
         than.querySelectorAll('[data-xoa]').forEach(function (nut) {
             nut.addEventListener('click', function () { xoaMatHang(+nut.dataset.xoa); });
         });
+        traLaiFormTam();
+        xemGoiYMa();
+
         var nutGui = document.getElementById('dh-gui');
         if (nutGui) nutGui.addEventListener('click', guiDonHang);
 
@@ -412,9 +522,14 @@
     // Lưu đơn qua backend Java. Trả về { ok, maDon } hoặc { ok:false, loi }
     async function luuDonVaoJava(ten, sdt, diaChi, ghiChu, gio, maKhuyenMai) {
         try {
+            // Kèm token để backend nối đơn vào tài khoản (don_hang.nguoi_dung_id)
+            var phien = layPhienKhach();
+            var dauVao = { 'Content-Type': 'application/json' };
+            if (phien && phien.token) dauVao.Authorization = 'Bearer ' + phien.token;
+
             var resp = await fetch(JAVA_API + '/don-hang', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: dauVao,
                 body: JSON.stringify({
                     tenKhach: ten,
                     soDienThoai: sdt,
@@ -439,13 +554,13 @@
     async function luuDonVaoSupabase(maDon, ten, sdt, diaChi, ghiChu, gio, tongTien) {
         if (!window.sbClient) return { ok: false, loi: 'Chưa kết nối Supabase' };
 
-        var user = window.layNguoiDung ? await window.layNguoiDung() : null;
-
+        // Cột user_id (uuid trỏ auth.users) đã bỏ khỏi database — tài khoản giờ
+        // nằm ở bảng nguoi_dung do backend Java quản lý. Đường Supabase dự phòng
+        // này không có token nên để trống, đơn vẫn lưu được.
         var kqDon = await window.sbClient
             .from('don_hang')
             .insert({
                 ma_don: maDon,
-                user_id: user ? user.id : null,
                 ten_khach: ten,
                 so_dien_thoai: sdt,
                 dia_chi: diaChi,
@@ -579,6 +694,7 @@
         hienChipPhien();
         // Đang ở trang giỏ hàng -> vẽ nội dung giỏ vào trang
         if (document.getElementById('gio-than')) {
+            napKmTheoKhuVuc();
             veGioHang();
             // Mã lưu từ lần trước: hỏi lại backend xem còn dùng được không
             var maCu = maDaNho();

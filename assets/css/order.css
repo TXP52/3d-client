@@ -252,6 +252,36 @@
 
 .loi-km { color: #ff7676; font-size: 13.5px; margin-top: 9px; line-height: 1.55; }
 
+/* Lời mời dùng mã hiện lên khi khách gõ địa chỉ khớp khu vực */
+.goi-y-km {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-wrap: wrap;
+    background: #14240b;
+    border: 1px dashed #6faa1e;
+    border-radius: 8px;
+    padding: 11px 14px;
+    margin: -6px 0 12px 0;
+    font-size: 13.5px;
+    color: #cfe3b4;
+}
+.goi-y-km i { color: #a3ff12; font-size: 16px; }
+.goi-y-km span { flex: 1; min-width: 150px; line-height: 1.5; }
+.goi-y-km strong { color: #a3ff12; }
+.goi-y-km button {
+    background: #a3ff12;
+    color: #151414;
+    border: 0;
+    border-radius: 7px;
+    padding: 8px 15px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 13.5px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.goi-y-km button:hover { background: #8ede00; }
+
 /* Dòng tạm tính / giảm giá nhỏ hơn dòng tổng cộng */
 .dong-tien-phu {
     display: flex;

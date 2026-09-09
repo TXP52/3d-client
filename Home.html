@@ -31,7 +31,7 @@
     <link href="assets/vendor/fontawesome/css/brands.css" rel="stylesheet">
 
     <!-- Template CSS-->
-    <link href="assets/css/Home.css?v=12" rel="stylesheet">
+    <link href="assets/css/Home.css?v=13" rel="stylesheet">
     <link href="assets/css/order.css?v=9" rel="stylesheet">
 
 </head>
@@ -215,104 +215,70 @@
     </div>
 
 
-    <!--                   footer                 -->
-    <footer class="footer-section">
-      <div class="container">
-          <div class="footer-cta pt-5 pb-5">
-              <div class="row">
-                  <div class="col-xl-4 col-md-4 mb-30">
-                      <div class="single-cta">
-                          <i class="fas fa-map-marker-alt"></i>
-                          <div class="cta-text">
-                              <h4>Địa chỉ</h4>
-                              <span>123 Nguyễn Văn Cừ, Q.5, TP. Hồ Chí Minh</span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xl-4 col-md-4 mb-30">
-                      <div class="single-cta">
-                          <i class="fas fa-phone"></i>
-                          <div class="cta-text">
-                              <h4>Điện thoại</h4>
-                              <span>0901 234 567</span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xl-4 col-md-4 mb-30">
-                      <div class="single-cta">
-                          <i class="far fa-envelope-open"></i>
-                          <div class="cta-text">
-                              <h4>Email</h4>
-                              <span>otpisrealimphake@gmail.com</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="footer-content pt-5 pb-5">
-              <div class="row">
-                  <div class="col-xl-4 col-lg-4 mb-50">
-                      <div class="footer-widget">
-                          <div class="footer-logo">
-                              <a href="index.html"><img src="assets/logo/logo.png" class="img-fluid" alt=" Bedecraft"></a>
-                          </div>
-                          <div class="footer-text">
-                              <p>Xưởng in 3D nhận in theo yêu cầu.<br>Tính tiền theo số gram nhựa, báo giá trước khi in,<br>freeship nội thành Hà Nội.</p>
-                          </div>
-                          <div class="footer-social-icon">
-                              <span>Theo dõi chúng tôi</span>
-                              <a href="#"><i class="fab fa-facebook-f facebook-bg"></i></a>
-                              <a href="#"><i class="fab fa-twitter twitter-bg"></i></a>
-                              <a href="#"><i class="fab fa-google-plus-g google-bg"></i></a>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="col-xl-4 col-lg-4 col-md-6 mb-30">
-                      <div class="footer-widget2">
-                          <div class="footer-widget-heading">
-                              <h3>Liên kết hữu ích</h3>
-                          </div>
-                          <ul>
-                              <li><a href="Home.html">Trang chủ</a></li>
-                              <li><a href="#khoi-san-pham">Sản phẩm</a></li>
-                              <li><a href="#khoi-dich-vu">Dịch vụ</a></li>
-                              <li><a href="#tin-tuc">Bài viết</a></li>
-                              <li><a href="index.html">Cửa hàng</a></li>
+    <!-- ============================================================
+         FOOTER
+         Bốn cột: thương hiệu · liên kết · liên hệ · báo giá. Dàn bằng CSS grid
+         (.ct-luoi), không còn margin âm -480px/700px như bản cũ nên không vỡ
+         khi đổi độ rộng màn hình. Thông tin liên hệ sửa thẳng ở đây.
+         ============================================================ -->
+    <footer class="chan-trang">
+      <div class="ct-trong">
+        <div class="ct-luoi">
 
-                          </ul>
-                      </div>
-                  </div>
-                  <div class="col-xl-4 col-lg-4 col-md-6 mb-50">
-                      <div class="footer-widget1">
-                          <div class="footer-widget-heading">
-                              <h3>Đăng ký nhận tin</h3>
-                          </div>
-                          <div class="footer-text mb-25">
-                              <p>Đừng bỏ lỡ khuyến mãi và sản phẩm mới, hãy điền email của bạn vào ô bên dưới.</p>
-                          </div>
-                          <div class="subscribe-form">
-                              <form action="#">
-                                  <input type="text" placeholder="Địa chỉ email">
-                                  <button><i class="fab fa-telegram-plane"></i></button>
-                              </form>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+          <div class="ct-cot ct-thuong-hieu">
+            <a class="ct-logo" href="Home.html"><img src="assets/logo/logo.png" alt="Bedecraft"></a>
+            <p class="ct-mo-ta">Xưởng in 3D nhận in theo yêu cầu. Tính tiền theo số gram nhựa,
+              báo giá trước khi in, freeship nội thành Hà Nội.</p>
+            <div class="ct-mang-xa-hoi">
+              <a href="#" aria-label="Facebook" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#" aria-label="TikTok" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+              <a href="#" aria-label="YouTube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            </div>
           </div>
-      </div>
-      <div class="copyright-area">
-          <div class="container">
-              <div class="row">
-                  <div class="col-xl-6 col-lg-6 text-center text-lg-left">
-                      <div class="copyright-text">
-                          <p>Bản quyền &copy; 2026, Bedecraft. <a href="#">Đã đăng ký bản quyền</a></p>
-                      </div>
-                  </div>
-              </div>
+
+          <div class="ct-cot">
+            <h4 class="ct-tieu-de">Liên kết</h4>
+            <ul class="ct-lien-ket">
+              <li><a href="Home.html">Trang chủ</a></li>
+              <li><a href="#khoi-san-pham">Sản phẩm</a></li>
+              <li><a href="#khoi-dich-vu">Dịch vụ in theo yêu cầu</a></li>
+              <li><a href="#tin-tuc">Kiến thức in 3D</a></li>
+              <li><a href="gio-hang.html">Giỏ hàng</a></li>
+              <li><a href="Login.html">Đăng nhập / Đăng ký</a></li>
+            </ul>
           </div>
+
+          <div class="ct-cot">
+            <h4 class="ct-tieu-de">Liên hệ</h4>
+            <ul class="ct-lien-he">
+              <li><i class="fa-solid fa-location-dot"></i><span>123 Nguyễn Văn Cừ, Q.5, TP. Hồ Chí Minh</span></li>
+              <li><i class="fa-solid fa-phone"></i><a href="tel:0901234567">0901 234 567</a></li>
+              <li><i class="fa-solid fa-envelope"></i><a href="mailto:otpisrealimphake@gmail.com">otpisrealimphake@gmail.com</a></li>
+              <li><i class="fa-solid fa-clock"></i><span>8:00 – 21:00, tất cả các ngày</span></li>
+            </ul>
+          </div>
+
+          <div class="ct-cot">
+            <div class="ct-bao-gia">
+              <h4 class="ct-tieu-de">Nhận in theo yêu cầu</h4>
+              <p>Gửi file STL hoặc mô tả món đồ, xưởng báo giá theo số gram nhựa trước khi in.</p>
+              <a class="ct-nut" href="mailto:otpisrealimphake@gmail.com?subject=B%C3%A1o%20gi%C3%A1%20in%203D">
+                <i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu báo giá
+              </a>
+            </div>
+          </div>
+
+        </div>
       </div>
-  </footer>
+
+      <div class="ct-day">
+        <div class="ct-trong ct-day-trong">
+          <span>&copy; 2026 Bedecraft. Đã đăng ký bản quyền.</span>
+          <span class="ct-thanh-toan"><i class="fa-solid fa-truck-fast"></i> Giao toàn quốc &nbsp;·&nbsp;
+            <i class="fa-solid fa-money-bill-wave"></i> COD / chuyển khoản</span>
+        </div>
+      </div>
+    </footer>
 
 
     <!-- Javascript Files

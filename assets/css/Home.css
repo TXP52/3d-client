@@ -145,9 +145,6 @@ body{
 #main-submit-mobile {
     display: none;
 }
-footer {
-     border-top: 0px;
-    }
 .main-btn {
     display: inline-block;
     width:150px;
@@ -266,9 +263,6 @@ ul.search-description {
         background: #00a221;
         color: #fff !important;
         -webkit-appearance: none;
-    }
-    footer {
-        padding-bottom:50px;
     }
 }
 
@@ -1149,215 +1143,95 @@ a.button-free{
 *****************************************************/
 
 
-/*.footer-home-page{
-    width: 100%;
-    height: 500px;
-
-    background-image: url('../img/p31.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-
-}*/
-
-
-
-
-.footer-section {
-    background: #151414;
-    position: relative;
-    /* height co dinh lam khoi ben trong tran ra ngoai */
-    min-height: 450px;
-    height: auto;
-  }
-  .footer-cta {
-
-    border-bottom: 1px solid #373636;
-    padding: 48px 300px 30px 0;
-
-    display: flex;
-  }
-  .footer-cta .row{
-      display: flex;
-      justify-content: space-between;
-
-
-  }
-  .single-cta i {
-    color: #a3ff12;
-    font-size: 30px;
-    float: left;
-    margin-top: 8px;
-    margin-right: 50px;
-    padding-left: 100px;
-    justify-content: center;
-    justify-items: center;
-  }
-  .cta-text {
-    padding-left: -10px;
-    display: inline-block;
-  }
-  .cta-text h4 {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
-  .cta-text span {
-    color: #757575;
-    font-size: 15px;
-
-  }
-  .footer-content {
-    position: relative;
-    z-index: 2;
-    padding: 30px 100px 30px 0;
-    margin-left: 150px;
-    min-height: 320px;
-
-  }
-  .footer-pattern img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 330px;
-    background-size: cover;
-    background-position: 100% 100%;
-  }
-  .footer-logo {
-    /* margin-top am -58px keo logo len de trum len hang Dia chi / Dien thoai */
-    margin-top: 0;
-    margin-bottom: 16px;
-  }
-  .footer-logo img {
-      height: 96px;
-      width: auto;
-      max-width: 100%;
-      display: block;
-  }
-  .footer-text p {
-    margin-bottom: 14px;
-    margin-top: -20px;
-
-    font-size: 14px;
-        color: #7e7e7e;
-    line-height: 28px;
-  }
-
-  .footer-social-icon span {
-    color: #fff;
-    display: block;
-    font-size: 20px;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
-    margin-bottom: 20px;
-  }
-  .footer-social-icon a {
-    color: #fff;
-    font-size: 16px;
-    margin-right: 15px;
-    margin-top: -20px;
-  }
-  .footer-social-icon i {
-    height: 40px;
-    width: 40px;
-    text-align: center;
-    line-height: 38px;
-    border-radius: 50%;
-  }
-  .facebook-bg{
-    background: #3B5998;
-  }
-  .twitter-bg{
-    background: #55ACEE;
-  }
-  .google-bg{
-    background: #DD4B39;
-  }
-  .footer-widget1{
-      margin: -480px 0 300px 700px;
-  }
-  .footer-widget2{
-    margin: -300px 0 300px 500px;
+/* ==========================================================
+   FOOTER (chân trang) — nền tối, viền lime trên cùng, 4 cột grid
+   ========================================================== */
+.chan-trang {
+    background: linear-gradient(180deg, #171a24 0%, #101218 100%);
+    border-top: 3px solid #a3ff12;
+    color: #9aa3ad;
+    font-family: 'Chakra Petch', sans-serif;
+    margin-top: 60px;
 }
-  .footer-widget-heading h3 {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 40px;
-    position: relative;
-  }
-  .footer-widget-heading h3::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -15px;
-    height: 2px;
-    width: 50px;
-    background: #a3ff12;
-  }
-  .footer-widget2 ul li {
-    padding-bottom: 3px;
+.ct-trong { max-width: 1240px; margin: 0 auto; padding: 0 30px; }
+.ct-luoi {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.2fr 1.2fr;
+    gap: 40px;
+    padding: 56px 0 44px 0;
+}
+.ct-cot { min-width: 0; }
 
-  }
-  .footer-widget2 ul li a:hover{
-    color: #a3ff12;
-  }
-  .footer-widget2 ul li a {
-    color: #878787;
-    text-transform: capitalize;
-    text-decoration: none;
-  }
-  .subscribe-form {
-    position: relative;
-    overflow: hidden;
-  }
-  .subscribe-form input {
-    width: 100%;
-    padding: 14px 28px;
-    background: #2E2E2E;
-    border: 1px solid #2E2E2E;
-    color: #fff;
-  }
-  .subscribe-form button {
-      position: absolute;
-      right: 0;
-      background: #a3ff12;
-      padding: 13px 20px;
-      border: 1px solid #a3ff12;
-      top: 0;
-  }
-  .subscribe-form button i {
-    color: #fff;
-    font-size: 22px;
-    transform: rotate(-6deg);
-  }
-  .copyright-area{
-    background: #202020;
-    padding: 25px 0;
+.ct-logo { display: inline-block; margin-bottom: 14px; }
+.ct-logo img { height: 72px; width: auto; display: block; }
+.ct-mo-ta { font-size: 14.5px; line-height: 1.7; margin: 0 0 18px 0; color: #9aa3ad; }
 
+.ct-mang-xa-hoi { display: flex; gap: 10px; }
+.ct-mang-xa-hoi a {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #232734; color: #fff; font-size: 15px;
+    text-decoration: none; transition: .2s;
+}
+.ct-mang-xa-hoi a:hover { background: #a3ff12; color: #101218; transform: translateY(-2px); }
 
-  }
-  .copyright-text p {
-    margin: 0;
-    font-size: 14px;
-    color: #878787;
-    text-align: center;
-  }
-  .copyright-text p a{
-    color: #a3ff12;
-  }
-  .footer-menu li {
+.ct-tieu-de {
+    color: #fff; font-size: 17px; font-weight: 700; letter-spacing: .4px;
+    text-transform: uppercase; margin: 6px 0 22px 0; position: relative; padding-bottom: 12px;
+}
+.ct-tieu-de::after {
+    content: ""; position: absolute; left: 0; bottom: 0;
+    width: 40px; height: 3px; border-radius: 2px; background: #a3ff12;
+}
+
+.ct-lien-ket, .ct-lien-he { list-style: none; margin: 0; padding: 0; }
+.ct-lien-ket li { margin-bottom: 10px; }
+.ct-lien-ket a {
+    color: #b9c0c8; text-decoration: none; font-size: 14.5px; transition: .2s;
     display: inline-block;
-    margin-left: 20px;
-  }
-  .footer-menu li:hover a{
-    color: #00a221;
-  }
-  .footer-menu li a {
-    font-size: 14px;
-    color: #878787;
-  }
+}
+.ct-lien-ket a::before { content: "›"; color: #a3ff12; margin-right: 8px; font-weight: 700; }
+.ct-lien-ket a:hover { color: #a3ff12; padding-left: 4px; }
+
+.ct-lien-he li {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 13px; font-size: 14.5px; line-height: 1.55;
+}
+.ct-lien-he i {
+    color: #a3ff12; width: 18px; text-align: center; margin-top: 3px; flex-shrink: 0;
+}
+.ct-lien-he a { color: #b9c0c8; text-decoration: none; }
+.ct-lien-he a:hover { color: #a3ff12; }
+
+.ct-bao-gia {
+    background: #1d2130; border: 1px solid #2b3040; border-radius: 14px; padding: 22px 22px 24px 22px;
+}
+.ct-bao-gia .ct-tieu-de { margin-top: 0; font-size: 16px; }
+.ct-bao-gia p { font-size: 14px; line-height: 1.65; margin: 0 0 18px 0; }
+.ct-nut {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: #a3ff12; color: #101218; font-weight: 700; font-size: 14.5px;
+    padding: 11px 18px; border-radius: 999px; text-decoration: none; transition: .2s;
+}
+.ct-nut:hover { background: #b8ff4a; box-shadow: 0 6px 18px rgba(163, 255, 18, .25); }
+
+.ct-day { background: #0b0d12; border-top: 1px solid #23283a; }
+.ct-day-trong {
+    display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding-top: 16px; padding-bottom: 16px; font-size: 13.5px; color: #7f8896;
+}
+.ct-thanh-toan i { color: #a3ff12; margin-right: 4px; }
+
+@media only screen and (max-width: 1100px) {
+    .ct-luoi { grid-template-columns: 1fr 1fr; gap: 34px; padding: 44px 0 36px 0; }
+}
+@media only screen and (max-width: 600px) {
+    .ct-trong { padding: 0 18px; }
+    .ct-luoi { grid-template-columns: 1fr; gap: 28px; padding: 36px 0 30px 0; }
+    .ct-day-trong { flex-direction: column; text-align: center; }
+    .chan-trang { margin-top: 40px; }
+}
+
 /* ==========================================================
    RESPONSIVE - IN3D Shop
    ========================================================== */
@@ -1374,12 +1248,6 @@ a.button-free{
     .games-free { margin: 60px 30px 0 30px; height: auto; padding-bottom: 25px; }
     .khoi-bai-viet { padding: 20px 30px 50px 30px; }
 
-    .footer-section { height: auto; }
-    .footer-cta { padding: 40px 20px 25px 20px; }
-    .single-cta i { padding-left: 0; margin-right: 18px; }
-    .footer-content { margin-left: 0; padding: 30px 20px; height: auto; }
-    .footer-widget1, .footer-widget2 { margin: 40px 0 0 0; }
-    .footer-logo { margin-top: 0; margin-bottom: 10px; }
 }
 
 /* Tablet doc / dien thoai ngang */
@@ -1421,8 +1289,6 @@ a.button-free{
     .dai-khuyen-mai { padding: 10px 15px 0 15px; }
     .dau-km-home .text-top-games { font-size: 21px; }
 
-    .footer-cta .row { flex-direction: column; gap: 18px; }
-    .footer-content .row { display: block; }
 }
 
 /* Dien thoai */

@@ -161,7 +161,7 @@
             '<div class="card__info">' +
             '<span class="card__category">DỊCH VỤ</span>' +
             '<h3 class="card__title">' + esc(dv.ten) + '</h3>' +
-            (dv.moTa ? '<p class="dv-mo-ta">' + esc(dv.moTa) + '</p>' : '') +
+            // Mô tả để dành cho trang chi tiết, thẻ ngoài chỉ tên + giá cho gọn
             '<span class="card__by"><a href="' + esc(duongDan) + '" class="card__author">' +
             '<h3>' + esc(giaHien) + '</h3></a></span>' +
             '</div></article>';

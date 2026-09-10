@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap');
+
+/* ============================================================
+   LỚP TRANG TRÍ PHONG CÁCH ANIME
+
+   File này chỉ THÊM trang trí lên giao diện có sẵn — không đụng
+   vào bố cục. Muốn tắt: bỏ 2 dòng <link anime.css> và <script
+   anime.js> ở các trang khách là mọi thứ về y như cũ.
+
+   Bảng màu: giữ lime #a3ff12 của theme, thêm hồng / tím / xanh
+   neon kiểu poster anime.
+   ============================================================ */
+
+:root {
+  --am-hong: #ff5fa2;
+  --am-tim:  #a86bff;
+  --am-xanh: #5ee7ff;
+  --am-lime: #a3ff12;
+  --am-toi:  #151720;
+  --am-chu-nhat: 'Zen Maru Gothic', 'Chakra Petch', sans-serif;
+}
+
+/* ============================================================
+   1. MƯA HOA ANH ĐÀO — lớp phủ toàn trang, anime.js chèn vào
+   pointer-events: none để không chắn nút bấm phía dưới
+   ============================================================ */
+.mua-hoa {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 900;          /* dưới header (999) để không che menu */
+}
+.mua-hoa i {
+  position: absolute;
+  top: -8vh;
+  width: 12px;
+  height: 12px;
+  border-radius: 100% 0 100% 0;
+  background: linear-gradient(135deg, #ffd0e4, var(--am-hong));
+  opacity: .75;
+  animation: am-roi linear infinite;
+}
+.mua-hoa i:nth-child(3n)   { width: 9px;  height: 9px;  opacity: .55; }
+.mua-hoa i:nth-child(4n)   { width: 15px; height: 15px; opacity: .45;
+                             background: linear-gradient(135deg, #fff, #ffc0dc); }
+.mua-hoa i:nth-child(5n)   { background: linear-gradient(135deg, #e6d4ff, var(--am-tim)); }
+
+@keyframes am-roi {
+  0%   { transform: translate3d(0, -10vh, 0) rotate(0deg); }
+  50%  { transform: translate3d(40px, 45vh, 0) rotate(220deg); }
+  100% { transform: translate3d(-25px, 110vh, 0) rotate(540deg); }
+}
+
+/* ============================================================
+   2. TIÊU ĐỀ KHỐI — thêm dòng chữ Nhật nhỏ phía trên + gạch chân
+   gradient. Chữ Nhật đặt bằng CSS content nên không sửa HTML.
+   ============================================================ */
+.text-top-games,
+.games-free .icon-free > p {
+  position: relative;
+}
+.text-top-games::before,
+.games-free .icon-free > p::before {
+  display: block;
+  font-family: var(--am-chu-nhat);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  line-height: 1;
+  margin-bottom: 6px;
+  color: var(--am-hong);
+  text-shadow: 0 0 12px rgba(255, 95, 162, .55);
+}
+#khoi-san-pham .icon-free > p::before { content: 'ショップ'; }
+#khoi-dich-vu  .text-top-games::before { content: 'サービス'; }
+#tin-tuc       .text-top-games::before { content: 'ニュース'; color: var(--am-tim);
+                                         text-shadow: 0 0 12px rgba(168, 107, 255, .55); }
+#dai-khuyen-mai .text-top-games::before { content: 'セール'; }
+
+/* Gạch chân kiểu vệt cọ: ngắn, bo tròn, chuyển màu */
+.text-top-games::after,
+.games-free .icon-free > p::after {
+  content: '';
+  display: block;
+  width: 68px;
+  height: 5px;
+  margin-top: 10px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--am-hong), var(--am-tim) 55%, var(--am-xanh));
+  box-shadow: 0 0 14px rgba(255, 95, 162, .5);
+}
+
+/* ============================================================
+   3. VÂN NỀN HALFTONE + TIA TỐC ĐỘ kiểu trang truyện
+   Đặt ở ::before của khối, pointer-events none, nằm dưới nội dung
+   ============================================================ */
+.games-free,
+.list1-top-games,
+.khoi-bai-viet,
+.dai-khuyen-mai {
+  position: relative;
+  isolation: isolate;
+}
+.games-free::before,
+.list1-top-games::before,
+.khoi-bai-viet::before,
+.dai-khuyen-mai::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255, 95, 162, .18) 1.5px, transparent 1.6px),
+    radial-gradient(rgba(94, 231, 255, .14) 1.5px, transparent 1.6px);
+  background-size: 22px 22px, 34px 34px;
+  background-position: 0 0, 11px 17px;
+  -webkit-mask-image: linear-gradient(200deg, #000 0%, transparent 45%);
+          mask-image: linear-gradient(200deg, #000 0%, transparent 45%);
+}
+
+/* Tia tốc độ chéo ở mép phải khối sản phẩm (nền tối nên dùng màu sáng) */
+.games-free::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    100deg,
+    rgba(163, 255, 18, .10) 0 2px,
+    transparent 2px 13px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000);
+          mask-image: linear-gradient(90deg, transparent, #000);
+}
+
+/* ============================================================
+   4. THẺ SẢN PHẨM / DỊCH VỤ / BÀI VIẾT — nghiêng nhẹ khi rê chuột,
+   viền phát sáng và một ngôi sao lấp lánh ở góc
+   ============================================================ */
+.card,
+.the-bai-viet,
+.ve-km-home {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.card:hover,
+.the-bai-viet:hover,
+.ve-km-home:hover {
+  transform: translateY(-6px) rotate(-.5deg);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, .28),
+    0 0 0 2px rgba(255, 95, 162, .55),
+    0 0 26px rgba(168, 107, 255, .35);
+}
+
+/* Ngôi sao lấp lánh — chỉ hiện lúc rê chuột */
+.card { position: relative; }
+.card::after {
+  content: '✧';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 3;
+  font-size: 20px;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 10px var(--am-hong), 0 0 22px var(--am-tim);
+  opacity: 0;
+  transform: scale(.4) rotate(-40deg);
+  transition: opacity .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
+  pointer-events: none;
+}
+.card:hover::after {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* ============================================================
+   5. NÚT BẤM — nền chuyển màu neon, sáng lên khi rê chuột
+   ============================================================ */
+.button-free,
+.ct-nut,
+.button-background,
+.nut-dat-hang,
+.btn--landing {
+  position: relative;
+  overflow: hidden;
+}
+.button-free:hover,
+.ct-nut:hover,
+.nut-dat-hang:hover {
+  border-color: var(--am-hong) !important;
+  box-shadow: 0 0 20px rgba(255, 95, 162, .45);
+}
+/* Vệt sáng quét ngang khi rê chuột — kiểu hiệu ứng "kiếm chém" */
+.button-free::after,
+.ct-nut::after,
+.nut-dat-hang::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+.button-free:hover::after,
+.ct-nut:hover::after,
+.nut-dat-hang:hover::after {
+  animation: am-quet .6s ease;
+}
+@keyframes am-quet {
+  to { left: 130%; }
+}
+
+/* ============================================================
+   6. TIÊU ĐỀ LỚN TRANG CHỦ — chữ chuyển màu + quầng sáng
+   ============================================================ */
+.text-background h1,
+.landing-title {
+  background: linear-gradient(92deg, #fff 12%, var(--am-hong) 46%, var(--am-xanh) 78%, #fff);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(255, 95, 162, .45));
+}
+.text-background > p::after {
+  content: ' ✦';
+  color: var(--am-lime);
+}
+
+/* ============================================================
+   7. HUY HIỆU GIÁ / NHÃN — bo góc kiểu tem, chữ Nhật nhỏ
+   ============================================================ */
+.nhan-freeship {
+  background: linear-gradient(92deg, var(--am-hong), var(--am-tim)) !important;
+  color: #fff !important;
+  border: 0 !important;
+  box-shadow: 0 4px 16px rgba(168, 107, 255, .4);
+}
+
+/* Thanh viền neon mảnh trên đầu chân trang */
+.chan-trang {
+  border-top: 3px solid transparent !important;
+  border-image: linear-gradient(90deg, var(--am-hong), var(--am-tim), var(--am-xanh), var(--am-lime)) 1;
+}
+
+/* ============================================================
+   8. Tôn trọng cài đặt "giảm chuyển động" của máy người dùng:
+   tắt hết hiệu ứng động, giữ lại phần trang trí tĩnh.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .mua-hoa { display: none; }
+  .card, .the-bai-viet, .ve-km-home { transition: none; }
+  .card:hover, .the-bai-viet:hover, .ve-km-home:hover { transform: none; }
+  .button-free:hover::after, .ct-nut:hover::after, .nut-dat-hang:hover::after { animation: none; }
+}
+
+/* Màn nhỏ: bớt hoa cho đỡ rối và đỡ tốn pin */
+@media (max-width: 700px) {
+  .mua-hoa i:nth-child(n + 8) { display: none; }
+  .games-free::after { display: none; }
+}

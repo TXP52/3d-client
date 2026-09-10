@@ -69,7 +69,25 @@
         .ton-kho { font-size: 15px; margin-bottom: 14px; }
         .ton-kho .con { color: #2e7d32; }
         .ton-kho .het { color: #c62828; }
-        .mo-ta { color: #555; font-size: 15px; line-height: 1.65; margin-bottom: 22px; }
+        .mo-ta { color: #555; font-size: 15px; line-height: 1.65; margin-bottom: 18px; white-space: pre-wrap; }
+
+        /* Vài dòng thông số lấy thẳng từ database; thiếu ô nào thì giấu dòng đó */
+        .bang-tt { margin-bottom: 22px; }
+        .dong-tt {
+            display: flex; justify-content: space-between; align-items: center; gap: 14px;
+            padding: 9px 0; border-bottom: 1px solid #eef0f2; font-size: 14.5px;
+        }
+        .dong-tt:last-child { border-bottom: none; }
+        .dong-tt .nhan-tt { color: #777; }
+        .chip-mau {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #f4f5f6; border-radius: 20px; padding: 3px 11px 3px 5px;
+            font-size: 13px; margin-left: 4px;
+        }
+        .chip-mau i {
+            width: 13px; height: 13px; border-radius: 4px;
+            border: 1px solid rgba(0,0,0,.18); display: inline-block;
+        }
 
         .hang-nut { display: flex; gap: 12px; flex-wrap: wrap; }
         .nut {
@@ -114,6 +132,7 @@
 
         * { font-weight: 700 !important; }
     </style>
+    <link href="assets/css/anime.css?v=1" rel="stylesheet">
 </head>
 <body>
 
@@ -160,13 +179,18 @@
             }
             function giaVND(so) { return Number(so || 0).toLocaleString('vi-VN') + '₫'; }
 
-            // Lấy danh sách sản phẩm: Java -> Supabase -> rỗng
+            /* Lấy danh sách sản phẩm: Java -> Supabase -> rỗng.
+               Trang này chỉ cần: tên, mã, giá, tình trạng, mô tả, ảnh. */
             async function taiSanPham() {
                 try {
                     var r = await fetch(JAVA_API + '/san-pham');
                     if (r.ok) {
                         return (await r.json()).map(function (s) {
-                            return { ten: s.ten, gia: s.gia || 0, giaChu: s.giaChu, moTa: s.moTa, tonKho: s.tonKho || 0, anh: s.hinhAnh || '' };
+                            return {
+                                id: s.id, ten: s.ten, gia: s.gia || 0, giaChu: s.giaChu, moTa: s.moTa,
+                                tonKho: s.tonKho || 0, anh: s.hinhAnh || '',
+                                mauSac: s.mauSac || [], loaiSanPham: s.loaiSanPham || 'ban'
+                            };
                         });
                     }
                 } catch (e) {}
@@ -176,22 +200,15 @@
                     });
                     if (r2.ok) {
                         return (await r2.json()).map(function (s) {
-                            return { ten: s.ten, gia: Number(s.gia) || 0, giaChu: s.gia_chu, moTa: s.mo_ta, tonKho: s.ton_kho || 0, anh: s.hinh_anh || '' };
+                            return {
+                                id: s.id, ten: s.ten, gia: Number(s.gia) || 0, giaChu: s.gia_chu,
+                                moTa: s.mo_ta, tonKho: s.ton_kho || 0, anh: s.hinh_anh || '',
+                                mauSac: [], loaiSanPham: s.loai_san_pham || 'ban'
+                            };
                         });
                     }
                 } catch (e) {}
                 return [];
-            }
-
-            function moTaMacDinh(ten) {
-                var t = ten.toLowerCase();
-                if (t.indexOf('máy in') >= 0 || t.indexOf('resin') >= 0)
-                    return 'Máy in 3D chính hãng, bảo hành 12 tháng tại IN3D Shop. Hỗ trợ lắp đặt, hướng dẫn sử dụng miễn phí và tư vấn vật liệu phù hợp với nhu cầu in của bạn.';
-                if (t.indexOf('nhựa') >= 0 || t.indexOf('pla') >= 0 || t.indexOf('petg') >= 0 || t.indexOf('abs') >= 0 || t.indexOf('tpu') >= 0)
-                    return 'Vật liệu in 3D chất lượng cao, độ ẩm thấp, đường kính chuẩn 1.75mm, cho bề mặt in mịn và bám lớp tốt. Đủ màu sắc, giao hàng toàn quốc.';
-                if (t.indexOf('dịch vụ') >= 0 || t.indexOf('scan') >= 0 || t.indexOf('thiết kế') >= 0)
-                    return 'Dịch vụ thực hiện bởi đội ngũ kỹ thuật giàu kinh nghiệm của IN3D Shop. Báo giá trong 1 giờ làm việc, cam kết đúng hẹn và bảo mật file thiết kế của khách hàng.';
-                return 'Sản phẩm chính hãng từ IN3D Shop — cửa hàng in 3D uy tín. Liên hệ hotline để được tư vấn chi tiết và nhận ưu đãi khi mua kèm vật tư.';
             }
 
             var dsSanPham = await taiSanPham();
@@ -205,7 +222,8 @@
             }
             // Không có trong DB -> vẫn hiện theo thông tin trên thẻ
             if (!sp && tenCanTim) {
-                sp = { ten: tenCanTim, gia: 0, giaChu: giaTrenThe || 'Liên hệ', moTa: null, tonKho: null };
+                sp = { id: null, ten: tenCanTim, gia: 0, giaChu: giaTrenThe || 'Liên hệ',
+                       moTa: null, tonKho: null, mauSac: [], loaiSanPham: 'ban' };
             }
 
             var khung = document.getElementById('noi-dung-chinh');
@@ -218,10 +236,28 @@
             document.getElementById('dd-ten').textContent = sp.ten;
 
             var giaHien = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
+            var laHangMau = sp.loaiSanPham === 'mau';
             var tonKhoHtml = sp.tonKho === null ? '' :
-                '<p class="ton-kho">Tình trạng: ' + (sp.tonKho > 0
-                    ? '<span class="con">✔ Còn hàng (' + sp.tonKho + ' sản phẩm)</span>'
-                    : '<span class="het">Hết hàng / Đặt trước</span>') + '</p>';
+                '<p class="ton-kho">Tình trạng: ' + (laHangMau
+                    ? '<span class="con">Hàng trưng bày — đặt in theo yêu cầu</span>'
+                    : (sp.tonKho > 0
+                        ? '<span class="con">✔ Còn hàng (' + sp.tonKho + ' sản phẩm)</span>'
+                        : '<span class="het">Hết hàng / Đặt trước</span>')) + '</p>';
+
+            // Mã sản phẩm ghép từ id, đúng cách trang quản trị đang hiển thị
+            var maSp = sp.id ? 'SP-' + sp.id : '';
+
+            function dongTt(nhan, giaTri) {
+                if (!giaTri) return '';
+                return '<div class="dong-tt"><span class="nhan-tt">' + esc(nhan) + '</span>' +
+                       '<span>' + giaTri + '</span></div>';
+            }
+            var thongSo =
+                dongTt('Màu', (sp.mauSac || []).map(function (m) {
+                    return '<span class="chip-mau"><i style="background:' + esc(m.maMau || '#ddd') + '"></i>' +
+                           esc(m.ten) + '</span>';
+                }).join(' ')) +
+                dongTt('Tồn kho', sp.tonKho ? sp.tonKho + ' sản phẩm' : '');
 
             khung.className = '';
             khung.innerHTML =
@@ -229,11 +265,12 @@
                 '  <div class="anh"><img src="' + anhChoSanPham(sp.ten, sp.anh) + '" alt="' + esc(sp.ten) + '"' +
                 ' onerror="this.src=\'' + anhChoSanPham(sp.ten) + '\'"></div>' +
                 '  <div class="noi-dung">' +
-                '    <span class="nhan-danh-muc">IN3D Shop</span>' +
+                (maSp ? '    <span class="nhan-danh-muc">Mã ' + esc(maSp) + '</span>' : '') +
                 '    <h1>' + esc(sp.ten) + '</h1>' +
                 '    <p class="gia-lon">' + esc(giaHien) + '</p>' +
                 tonKhoHtml +
-                '    <p class="mo-ta">' + esc(sp.moTa || moTaMacDinh(sp.ten)) + '</p>' +
+                (sp.moTa ? '    <p class="mo-ta">' + esc(sp.moTa) + '</p>' : '') +
+                (thongSo ? '    <div class="bang-tt">' + thongSo + '</div>' : '') +
                 '    <div class="hang-nut">' +
                 '      <button class="nut nut-gio" id="nut-them-gio">🛒 Thêm vào giỏ</button>' +
                 '      <button class="nut nut-mua" id="nut-mua-ngay">Mua ngay</button>' +
@@ -262,5 +299,6 @@
             }
         })();
     </script>
+    <script src="assets/js/anime.js?v=1"></script>
 </body>
 </html>

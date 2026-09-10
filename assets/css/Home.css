@@ -351,15 +351,16 @@ ul.search-description {
 
 
 }
+/* position:absolute + top:45% khien nut GO de len chu BEDECRAFT o mot so
+   chieu cao man hinh. Cho nut chay theo dong binh thuong ngay duoi tieu de:
+   luon cach deu, khong phai chinh % theo tung co man. Van la position:relative
+   de 2 lop :before/:after va thang div ben trong bam dung vao nut. */
 .button-background {
-    position: absolute;
-    top: 45%;
-    right: 0;
-    left: 0;
+    position: relative;
     display: block;
     width: 240px;
     padding: 40px;
-    margin: 0 auto;
+    margin: 34px auto 0;
     border: #a3ff12 1px solid;
     cursor: pointer;
     border-radius: 2px;
@@ -380,7 +381,9 @@ ul.search-description {
 
   .button-background:before {
     transform: scale(1);
-    background-image: url("https://himalayasingh.github.io/button-hover-effect-1/img/bg.jpg");
+    /* Truoc day hotlink anh tu himalayasingh.github.io (demo cua theme goc) —
+       link do da chet, tra 404 nen nut GO chi con o xam. Thay bang gradient. */
+    background-image: linear-gradient(125deg, #ff5fa2 0%, #a86bff 45%, #5ee7ff 100%);
     background-size: cover;
     transition: 0.3s ease transform;
     z-index: 1;
@@ -815,10 +818,10 @@ border-bottom-right-radius: 12px;
     color: #fff;
 
 }
+/* KHONG dat display:flex o day. Rule nay nam sau ".cards, .game-free1 {display:grid}"
+   nen flex an mat grid: con 1 san pham thi the keo rong ca hang, anh bi keo bet ra. */
 .game-free1{
-    display: flex;
     padding-left: 20px;
-
 }
 .game-free1 .card__author{
     font-size: xx-large;
@@ -1239,8 +1242,11 @@ a.button-free{
 /* Man hinh vua (laptop nho / tablet ngang) */
 @media only screen and (max-width: 1300px) {
     .list1-top-games { height: auto; padding: 60px 30px 40px 30px; }
+    /* auto-FILL chu khong phai auto-FIT: auto-fit dep cac cot trong ve 0 nen
+       khi chi con 1 san pham thi the do bi keo rong het hang, anh bet ra.
+       auto-fill giu nguyen cac cot trong -> the luon giu do rong binh thuong. */
     .cards, .game-free1, .luoi-bai-viet, .luoi-km-home {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
         gap: 25px;
     }
     .dai-khuyen-mai { padding: 10px 30px 0 30px; }
@@ -1265,7 +1271,7 @@ a.button-free{
     .text-background { width: 100%; height: 420px; padding-top: 30px; }
     .background-shadow-button .text-background p { font-size: 26px; padding-top: 20px; }
     .background-shadow-button .text-background h1 { font-size: 64px; line-height: 60px; }
-    .button-background { top: 58%; width: 170px; padding: 30px; }
+    .button-background { width: 170px; padding: 30px; margin-top: 24px; }
 
     .photo1-home { height: auto; padding: 30px 20px 0 20px; display: block; }
     .photo1-first { width: 100%; height: auto; min-height: 0; }

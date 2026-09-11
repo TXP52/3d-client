@@ -131,7 +131,9 @@
             '<span class="card__time">' + esc(nhanTinhTrang(sp)) + '</span></div></div>' +
             '<div class="card__img" style="' + nen + '"></div>' +
             '<a href="' + esc(duongDan) + '" class="card_link">' +
-            '<div class="card__img--hover" style="' + nen + '"></div></a>' +
+            // Có ảnh thứ hai thì rê chuột vào thẻ là đổi sang ảnh đó
+            '<div class="card__img--hover" style="' + (sp.anh2 ? nenAnh(duongDanAnh(sp.anh2)) : nen) +
+            '"></div></a>' +
             '<div class="card__info">' +
             '<span class="card__category"> ' + esc(danhMuc(sp)) + '</span>' +
             '<h3 class="card__title">' + esc(sp.ten) + '</h3>' +
@@ -351,6 +353,8 @@
                 return {
                     id: s.id, ten: s.ten, moTa: s.moTa, gia: s.gia || 0, giaChu: s.giaChu,
                     tonKho: s.tonKho || 0, anh: s.hinhAnh || '',
+                    // ảnh thứ hai (nếu có) để thẻ đổi ảnh khi rê chuột
+                    anh2: (s.danhSachAnh || [])[1] || '',
                     trangThai: s.trangThai || 'san_hang', loaiSanPham: s.loaiSanPham || 'ban'
                 };
             },

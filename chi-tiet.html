@@ -48,12 +48,38 @@
             flex: 1 1 380px;
             min-width: 280px;
         }
-        .chi-tiet .anh img {
-            width: 100%;
-            height: 380px;
-            object-fit: cover;
-            border-radius: 12px;
+        /* SLIDE ẢNH: ảnh lớn trượt ngang + nút trái/phải + chấm + dải ảnh nhỏ bên dưới */
+        .slide { position: relative; border-radius: 12px; overflow: hidden; background: #f4f5f6; }
+        .slide-khung { display: flex; transition: transform .45s ease; }
+        .slide-khung img {
+            flex: 0 0 100%; width: 100%; height: 380px; object-fit: cover; display: block;
+            user-select: none; -webkit-user-drag: none;
         }
+        .slide-nut {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+            background: rgba(21, 23, 32, .55); color: #fff; font-size: 16px;
+            display: flex; align-items: center; justify-content: center; transition: background .2s;
+        }
+        .slide-nut:hover { background: rgba(21, 23, 32, .85); }
+        .slide-nut.trai { left: 10px; }
+        .slide-nut.phai { right: 10px; }
+        .slide-cham {
+            position: absolute; left: 0; right: 0; bottom: 10px;
+            display: flex; justify-content: center; gap: 6px;
+        }
+        .slide-cham button {
+            width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+            background: rgba(255, 255, 255, .6); transition: width .2s;
+        }
+        .slide-cham button.dang-xem { background: #fff; width: 22px; border-radius: 6px; }
+        .dai-anh { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 2px; }
+        .dai-anh img {
+            width: 64px; height: 64px; object-fit: cover; border-radius: 8px; cursor: pointer;
+            border: 2px solid transparent; opacity: .65; flex-shrink: 0; transition: opacity .2s;
+        }
+        .dai-anh img.dang-xem { border-color: #a3ff12; opacity: 1; }
+        @media (prefers-reduced-motion: reduce) { .slide-khung { transition: none; } }
         .chi-tiet .noi-dung { flex: 1 1 380px; min-width: 280px; }
         .chi-tiet h1 { font-size: 30px; line-height: 1.25; margin-bottom: 8px; }
         .nhan-danh-muc {
@@ -125,7 +151,7 @@
         .trang-thai-tai { text-align: center; color: #888; padding: 40px 0; }
 
         @media (max-width: 700px) {
-            .chi-tiet .anh img { height: 240px; }
+            .slide-khung img { height: 260px; }
             .chi-tiet h1 { font-size: 22px; }
             .gia-lon { font-size: 26px; }
         }
@@ -189,6 +215,7 @@
                             return {
                                 id: s.id, ten: s.ten, gia: s.gia || 0, giaChu: s.giaChu, moTa: s.moTa,
                                 tonKho: s.tonKho || 0, anh: s.hinhAnh || '',
+                                dsAnh: s.danhSachAnh || [],
                                 mauSac: s.mauSac || [], loaiSanPham: s.loaiSanPham || 'ban'
                             };
                         });
@@ -203,6 +230,9 @@
                             return {
                                 id: s.id, ten: s.ten, gia: Number(s.gia) || 0, giaChu: s.gia_chu,
                                 moTa: s.mo_ta, tonKho: s.ton_kho || 0, anh: s.hinh_anh || '',
+                                // cột danh_sach_anh: mỗi dòng một đường dẫn
+                                dsAnh: String(s.danh_sach_anh || '').split('\n')
+                                    .map(function (u) { return u.trim(); }).filter(Boolean),
                                 mauSac: [], loaiSanPham: s.loai_san_pham || 'ban'
                             };
                         });
@@ -223,7 +253,7 @@
             // Không có trong DB -> vẫn hiện theo thông tin trên thẻ
             if (!sp && tenCanTim) {
                 sp = { id: null, ten: tenCanTim, gia: 0, giaChu: giaTrenThe || 'Liên hệ',
-                       moTa: null, tonKho: null, mauSac: [], loaiSanPham: 'ban' };
+                       moTa: null, tonKho: null, dsAnh: [], mauSac: [], loaiSanPham: 'ban' };
             }
 
             var khung = document.getElementById('noi-dung-chinh');
@@ -247,6 +277,88 @@
             // Mã sản phẩm ghép từ id, đúng cách trang quản trị đang hiển thị
             var maSp = sp.id ? 'SP-' + sp.id : '';
 
+            /* ---------- SLIDE ẢNH ----------
+               Lấy tất cả ảnh admin đã thêm (ảnh đầu = ảnh bìa). Chỉ có một ảnh thì
+               hiện ảnh tĩnh, không vẽ nút với chấm cho rối. */
+            var dsAnh = (sp.dsAnh && sp.dsAnh.length ? sp.dsAnh : [sp.anh]).map(function (u) {
+                return anhChoSanPham(sp.ten, u);
+            });
+            var anhLoi = anhChoSanPham(sp.ten);
+            var nhieuAnh = dsAnh.length > 1;
+            var htmlSlide =
+                '<div class="slide">' +
+                '<div class="slide-khung">' + dsAnh.map(function (u, k) {
+                    return '<img src="' + esc(u) + '" alt="' + esc(sp.ten) + (nhieuAnh ? ' — ảnh ' + (k + 1) : '') + '"' +
+                           ' onerror="this.src=\'' + anhLoi + '\'">';
+                }).join('') + '</div>' +
+                (nhieuAnh
+                    ? '<button type="button" class="slide-nut trai" aria-label="Ảnh trước">&#10094;</button>' +
+                      '<button type="button" class="slide-nut phai" aria-label="Ảnh sau">&#10095;</button>' +
+                      '<div class="slide-cham">' + dsAnh.map(function (u, k) {
+                          return '<button type="button" aria-label="Ảnh ' + (k + 1) + '"' +
+                                 (k === 0 ? ' class="dang-xem"' : '') + '></button>';
+                      }).join('') + '</div>'
+                    : '') +
+                '</div>' +
+                (nhieuAnh
+                    ? '<div class="dai-anh">' + dsAnh.map(function (u, k) {
+                          return '<img src="' + esc(u) + '" alt=""' + (k === 0 ? ' class="dang-xem"' : '') +
+                                 ' onerror="this.src=\'' + anhLoi + '\'">';
+                      }).join('') + '</div>'
+                    : '');
+
+            /* Tự chạy 4 giây một ảnh; rê chuột vào thì dừng, bấm/vuốt/phím mũi tên
+               để chuyển. Máy bật "giảm chuyển động" thì không tự chạy. */
+            function ganSlide(soAnh) {
+                if (soAnh < 2) return;
+                var khungSlide = document.querySelector('.slide-khung');
+                var slide = document.querySelector('.slide');
+                var cham = document.querySelectorAll('.slide-cham button');
+                var nho = document.querySelectorAll('.dai-anh img');
+                var dai = document.querySelector('.dai-anh');
+                var hienTai = 0, hen = null;
+
+                function den(i) {
+                    hienTai = (i + soAnh) % soAnh;
+                    khungSlide.style.transform = 'translateX(' + (-100 * hienTai) + '%)';
+                    Array.prototype.forEach.call(cham, function (c, k) { c.classList.toggle('dang-xem', k === hienTai); });
+                    Array.prototype.forEach.call(nho, function (c, k) { c.classList.toggle('dang-xem', k === hienTai); });
+                    // Kéo dải ảnh nhỏ cho ảnh đang xem nằm giữa — chỉ cuộn NGANG trong dải,
+                    // không dùng scrollIntoView vì nó kéo cả trang lên mỗi lần tự chuyển
+                    var n = nho[hienTai];
+                    if (n && dai) dai.scrollLeft = n.offsetLeft - dai.clientWidth / 2 + n.clientWidth / 2;
+                }
+                function dung() { if (hen) { clearInterval(hen); hen = null; } }
+                function tuChay() {
+                    dung();
+                    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                    hen = setInterval(function () { den(hienTai + 1); }, 4000);
+                }
+
+                document.querySelector('.slide-nut.trai').addEventListener('click', function () { den(hienTai - 1); tuChay(); });
+                document.querySelector('.slide-nut.phai').addEventListener('click', function () { den(hienTai + 1); tuChay(); });
+                Array.prototype.forEach.call(cham, function (c, k) { c.addEventListener('click', function () { den(k); tuChay(); }); });
+                Array.prototype.forEach.call(nho, function (c, k) { c.addEventListener('click', function () { den(k); tuChay(); }); });
+                slide.addEventListener('mouseenter', dung);
+                slide.addEventListener('mouseleave', tuChay);
+
+                // Vuốt trên điện thoại
+                var x0 = null;
+                slide.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; dung(); }, { passive: true });
+                slide.addEventListener('touchend', function (e) {
+                    if (x0 === null) return;
+                    var dx = e.changedTouches[0].clientX - x0;
+                    if (Math.abs(dx) > 40) den(hienTai + (dx < 0 ? 1 : -1));
+                    x0 = null;
+                    tuChay();
+                });
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'ArrowLeft') { den(hienTai - 1); tuChay(); }
+                    if (e.key === 'ArrowRight') { den(hienTai + 1); tuChay(); }
+                });
+                tuChay();
+            }
+
             function dongTt(nhan, giaTri) {
                 if (!giaTri) return '';
                 return '<div class="dong-tt"><span class="nhan-tt">' + esc(nhan) + '</span>' +
@@ -262,8 +374,7 @@
             khung.className = '';
             khung.innerHTML =
                 '<div class="chi-tiet">' +
-                '  <div class="anh"><img src="' + anhChoSanPham(sp.ten, sp.anh) + '" alt="' + esc(sp.ten) + '"' +
-                ' onerror="this.src=\'' + anhChoSanPham(sp.ten) + '\'"></div>' +
+                '  <div class="anh">' + htmlSlide + '</div>' +
                 '  <div class="noi-dung">' +
                 (maSp ? '    <span class="nhan-danh-muc">Mã ' + esc(maSp) + '</span>' : '') +
                 '    <h1>' + esc(sp.ten) + '</h1>' +
@@ -277,6 +388,8 @@
                 '    </div>' +
                 '  </div>' +
                 '</div>';
+
+            ganSlide(dsAnh.length);
 
             var giaChuThem = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
             document.getElementById('nut-them-gio').addEventListener('click', function () {

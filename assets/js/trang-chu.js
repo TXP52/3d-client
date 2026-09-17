@@ -1,5 +1,5 @@
 /* ============================================================
-   TRANG CHỦ — vẽ 3 khối từ DỮ LIỆU THẬT trong database:
+   TRANG CHỦ — vẽ các khối từ DỮ LIỆU THẬT trong database:
 
      #luoi-km-home    Khuyến mãi (bảng khuyen_mai, chỉ mã đang chạy)
      #luoi-san-pham   Sản phẩm   (loại "ban" và "mau")
@@ -9,28 +9,26 @@
    Trước đây cả ba khối đều là thẻ viết cứng trong Home.html: thêm/xoá
    sản phẩm ở trang quản trị không đổi được gì ngoài trang chủ.
 
-   Thứ tự lấy dữ liệu: backend Java (8090) -> Supabase REST -> giữ thẻ tĩnh sẵn có.
+   Trang chủ gọi MỘT lần GET /api/cua-hang/trang-chu: backend trả sẵn cả bốn khối,
+   đã lọc loại và cắt đúng số lượng. Trang "Tất cả sản phẩm" (lưới có data-tat-ca)
+   gọi GET /api/cua-hang/san-pham.
+   Giá khách trả, % giảm, danh mục, nhãn trạng thái, có đặt được không... backend
+   tính sẵn trong từng sản phẩm — file này CHỈ VẼ, không tự tính hay tự đoán.
+   Chỉ lấy dữ liệu từ backend Java; không gọi được thì báo, khối dịch vụ giữ thẻ tĩnh.
    Giữ nguyên cấu trúc thẻ của theme để CSS và nút "Đặt hàng" chạy như cũ.
    ============================================================ */
 (function () {
     'use strict';
 
     var JAVA_API = 'http://localhost:8090/api';
-    var SB_URL = 'https://nmptxzbtngztzxpwdprs.supabase.co';
-    var SB_KEY = 'sb_publishable_OJjvcAtUPib9bvdNNA-Bjg_vbz7CuQ-';
 
-    var SO_SAN_PHAM_TOI_DA = 6;
-    var SO_BAI_VIET_TOI_DA = 6;
+    // Trang chủ hiện tối đa 6 sản phẩm / 6 dịch vụ / 6 bài viết (backend tự cắt)
+    var SO_MUC_TRANG_CHU = 6;
 
     var oSanPham = document.querySelector('#luoi-san-pham');
     var oDichVu = document.querySelector('#luoi-dich-vu');
     var oBaiViet = document.querySelector('#luoi-bai-viet');
     var oKhuyenMai = document.querySelector('#luoi-km-home');
-
-    /* Bảng "sản phẩm nào đang giảm bao nhiêu", lấy từ backend rồi tra theo id.
-       Backend tính sẵn để trang khách, trang quản trị và lúc tạo đơn dùng CHUNG
-       một luật, không mỗi nơi tính một kiểu. */
-    var GIA_GIAM = {};
 
     /* ================= Tiện ích chung ================= */
 
@@ -64,19 +62,11 @@
         return hai(d.getDate()) + '/' + hai(d.getMonth() + 1) + '/' + d.getFullYear();
     }
 
-    /** Gọi lần lượt Java -> Supabase, hết cách thì gọi thatBai() để giữ thẻ tĩnh. */
-    function lay(duongDanJava, doiJava, duongDanSb, doiSb, xong, thatBai) {
-        fetch(JAVA_API + duongDanJava)
-            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-            .then(function (ds) { xong(ds.map(doiJava), 'Java'); })
-            .catch(function () {
-                fetch(SB_URL + '/rest/v1/' + duongDanSb, {
-                    headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
-                })
-                    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-                    .then(function (ds) { xong(ds.map(doiSb), 'Supabase'); })
-                    .catch(thatBai);
-            });
+    /** GET JSON từ backend Java; lỗi HTTP hay mất kết nối đều thành Promise bị từ chối. */
+    function layJson(duongDan) {
+        return fetch(JAVA_API + duongDan).then(function (r) {
+            return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status));
+        });
     }
 
     /* ================= SẢN PHẨM ================= */
@@ -86,60 +76,78 @@
 
     var ANH_DU_PHONG = 'assets/img/pexels.avif';
 
-    function danhMuc(sp) {
-        if (sp.loaiSanPham === 'mau') return 'HÀNG MẪU';
-        var t = (sp.ten || '').toLowerCase();
-        if (t.indexOf('resin') >= 0) return 'MÁY IN RESIN';
-        if (t.indexOf('máy in') >= 0 || t.indexOf('bambu') >= 0 || t.indexOf('creality') >= 0 ||
-            t.indexOf('prusa') >= 0 || t.indexOf('ender') >= 0) return 'MÁY IN 3D';
-        if (t.indexOf('nhựa') >= 0 || t.indexOf('pla') >= 0 || t.indexOf('petg') >= 0 ||
-            t.indexOf('abs') >= 0 || t.indexOf('tpu') >= 0) return 'VẬT LIỆU IN';
-        if (t.indexOf('mô hình') >= 0 || t.indexOf('móc') >= 0 || t.indexOf('chậu') >= 0) return 'SẢN PHẨM IN 3D';
-        return 'SẢN PHẨM';
+    /** Các lớp ảnh chồng lên nhau để thẻ tự chuyển ảnh (ảnh bìa hiện trước), kèm chấm. */
+    function lopSlide(sp) {
+        var ds = (sp.danhSachAnh || []).map(duongDanAnh).filter(Boolean);
+        if (ds.length < 2) return '';
+        return ds.map(function (u, k) {
+            return '<span class="lop-slide' + (k === 0 ? ' hien' : '') + '" style="' + nenAnh(u) + '"></span>';
+        }).join('') +
+            '<span class="cham-slide">' + ds.map(function (u, k) {
+                return '<i' + (k === 0 ? ' class="dang"' : '') + '></i>';
+            }).join('') + '</span>';
     }
 
-    /** Nhãn nhỏ góc trên thẻ, dựa trên trạng thái và tồn kho. */
-    function nhanTinhTrang(sp) {
-        if (sp.loaiSanPham === 'mau') return 'Trưng bày';
-        if (sp.trangThai === 'het_hang') return 'Hết hàng';
-        if (sp.trangThai === 'dang_in') return 'Đang in';
-        if (sp.trangThai === 'du_kien') return 'Sắp có';
-        if (sp.trangThai === 'dang_van_chuyen') return 'Đang về';
-        return (sp.tonKho || 0) > 0 ? 'Còn hàng' : 'Đặt trước';
+    /**
+     * Thẻ nhiều ảnh tự chuyển ảnh 3,5 giây một lần. Mỗi thẻ lệch nhau một chút để
+     * cả lưới không đổi ảnh cùng lúc. Rê chuột vào thẻ thì dừng. Máy bật "giảm
+     * chuyển động" thì đứng yên ở ảnh bìa.
+     */
+    function chaySlideThe(khung) {
+        if (!khung) return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        Array.prototype.forEach.call(khung.querySelectorAll('.card'), function (the, k) {
+            var lop = the.querySelectorAll('.lop-slide');
+            if (lop.length < 2) return;
+            var cham = the.querySelectorAll('.cham-slide i');
+            var i = 0, dung = false;
+            the.addEventListener('mouseenter', function () { dung = true; });
+            the.addEventListener('mouseleave', function () { dung = false; });
+            setTimeout(function () {
+                setInterval(function () {
+                    if (dung) return;
+                    lop[i].classList.remove('hien');
+                    if (cham[i]) cham[i].classList.remove('dang');
+                    i = (i + 1) % lop.length;
+                    lop[i].classList.add('hien');
+                    if (cham[i]) cham[i].classList.add('dang');
+                }, 3500);
+            }, k * 600);
+        });
+    }
+
+    /** Thuộc tính cho order.js gắn nút "Đặt hàng": mã sản phẩm + backend cho đặt hay không. */
+    function thuocTinhDat(sp) {
+        return ' data-san-pham-id="' + esc(sp.id) + '" data-co-the-dat="' + (sp.coTheDat ? 'true' : 'false') + '"';
     }
 
     function theSanPham(sp) {
-        var anh = duongDanAnh(sp.anh) ||
+        var anh = duongDanAnh(sp.hinhAnh) ||
             (typeof window.anhChoSanPham === 'function' ? window.anhChoSanPham(sp.ten) : ANH_DU_PHONG);
-        var laMau = sp.loaiSanPham === 'mau';
-        var giam = !laMau && sp.id ? GIA_GIAM[sp.id] : null;
+        // Backend chỉ gửi giaSauGiam khi món đang có chương trình giảm giá chạy.
+        // Hàng mẫu không bán nên không gắn nhãn giảm (giá đã hiện "Hàng mẫu").
+        var giam = sp.coTheDat && sp.giaSauGiam != null;
 
-        // Giá hiện trên thẻ là giá KHÁCH PHẢI TRẢ; order.js lấy đúng chữ này bỏ vào giỏ
-        var giaHien;
-        if (laMau) giaHien = 'Hàng mẫu';
-        else if (giam) giaHien = giaVND(giam.giaSauGiam);
-        else giaHien = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
-
-        var duongDan = 'chi-tiet.html?ten=' + encodeURIComponent(sp.ten) +
-            '&gia=' + encodeURIComponent(giaHien);
+        var duongDan = 'chi-tiet.html?id=' + encodeURIComponent(sp.id);
         var nen = nenAnh(anh);
 
-        return '<article class="card' + (laMau ? ' the-mau' : '') + '">' +
-            (giam ? '<span class="nhan-giam">-' + giam.phanTram + '%</span>' : '') +
+        return '<article class="card' + (sp.loaiSanPham === 'mau' ? ' the-mau' : '') + '"' + thuocTinhDat(sp) + '>' +
+            (giam ? '<span class="nhan-giam">-' + esc(sp.phanTram) + '%</span>' : '') +
             '<div class="card__info-hover">' + SVG_TIM +
             '<div class="card__clock-info">' + SVG_DONG_HO +
-            '<span class="card__time">' + esc(nhanTinhTrang(sp)) + '</span></div></div>' +
+            '<span class="card__time">' + esc(sp.nhanTrangThai) + '</span></div></div>' +
             '<div class="card__img" style="' + nen + '"></div>' +
             '<a href="' + esc(duongDan) + '" class="card_link">' +
-            // Có ảnh thứ hai thì rê chuột vào thẻ là đổi sang ảnh đó
-            '<div class="card__img--hover" style="' + (sp.anh2 ? nenAnh(duongDanAnh(sp.anh2)) : nen) +
-            '"></div></a>' +
+            // Lớp NHÌN THẤY của thẻ là .card__img--hover (theme giấu .card__img đi), nên nó
+            // phải luôn mở đầu bằng ẢNH BÌA. Sản phẩm nhiều ảnh thì chồng thêm các lớp trượt.
+            '<div class="card__img--hover" style="' + nen + '">' + lopSlide(sp) + '</div></a>' +
             '<div class="card__info">' +
-            '<span class="card__category"> ' + esc(danhMuc(sp)) + '</span>' +
+            // Danh mục lấy thẳng từ database (CSS tự viết hoa)
+            '<span class="card__category"> ' + esc(sp.danhMuc || 'Sản phẩm') + '</span>' +
             '<h3 class="card__title">' + esc(sp.ten) + '</h3>' +
             '<span class="card__by"><a href="' + esc(duongDan) + '" class="card__author" title="giá bán">' +
-            '<h3>' + esc(giaHien) + '</h3></a>' +
-            (giam ? '<span class="gia-goc">' + giaVND(giam.giaGoc) + '</span>' : '') +
+            '<h3>' + esc(sp.giaHienChu) + '</h3></a>' +
+            (giam ? '<span class="gia-goc">' + giaVND(sp.giaGoc) + '</span>' : '') +
             '</span>' +
             '</div></article>';
     }
@@ -149,23 +157,21 @@
     var BIEU_TUONG_DV = ['fa-cube', 'fa-pen-ruler', 'fa-brush', 'fa-gears', 'fa-cubes-stacked', 'fa-wand-magic-sparkles'];
 
     function theDichVu(dv, i) {
-        var anh = duongDanAnh(dv.anh);
+        var anh = duongDanAnh(dv.hinhAnh);
         var dau = anh
             ? '<div class="dv-anh" style="' + nenAnh(anh) + '"></div>'
             : '<div class="dv-anh dv-mau' + ((i % 3) + 1) + '">' +
               '<i class="fa-solid ' + BIEU_TUONG_DV[i % BIEU_TUONG_DV.length] + '"></i></div>';
 
-        var giaHien = dv.gia > 0 ? giaVND(dv.gia) : (dv.giaChu || 'Liên hệ');
-        var duongDan = 'chi-tiet.html?ten=' + encodeURIComponent(dv.ten) +
-            '&gia=' + encodeURIComponent(giaHien);
+        var duongDan = 'chi-tiet.html?id=' + encodeURIComponent(dv.id);
 
-        return '<article class="card the-dv">' + dau +
+        return '<article class="card the-dv"' + thuocTinhDat(dv) + '>' + dau +
             '<div class="card__info">' +
             '<span class="card__category">DỊCH VỤ</span>' +
             '<h3 class="card__title">' + esc(dv.ten) + '</h3>' +
             // Mô tả để dành cho trang chi tiết, thẻ ngoài chỉ tên + giá cho gọn
             '<span class="card__by"><a href="' + esc(duongDan) + '" class="card__author">' +
-            '<h3>' + esc(giaHien) + '</h3></a></span>' +
+            '<h3>' + esc(dv.giaHienChu) + '</h3></a></span>' +
             '</div></article>';
     }
 
@@ -192,7 +198,7 @@
             '<div class="than-bai-viet">' +
             '<h3><a href="' + esc(link) + '">' + esc(b.tieuDe) + '</a></h3>' +
             '<p class="tom-tat-bai-viet">' + esc(b.tomTat || '') + '</p>' +
-            '<div class="chan-bai-viet"><span>' + esc(ngayVN(b.ngayTao)) + '</span>' +
+            '<div class="chan-bai-viet"><span>' + esc(ngayVN(b.createdAt)) + '</span>' +
             '<a href="' + esc(link) + '">Đọc tiếp →</a></div>' +
             '</div></article>';
     }
@@ -267,146 +273,84 @@
         hetBao = setTimeout(function () { o.classList.remove('hien'); }, 2600);
     }
 
-    function napKhuyenMai() {
-        if (!oKhuyenMai) return;
-        var dai = document.getElementById('dai-khuyen-mai');
-
-        lay('/khuyen-mai',
-            function (k) {
-                return {
-                    ma: k.ma, ten: k.ten, loai: k.loai, giaTri: k.giaTri,
-                    giamToiDa: k.giamToiDa, donToiThieu: k.donToiThieu,
-                    ketThuc: k.ketThuc, soLuong: k.soLuong, conLai: k.conLai
-                };
-            },
-            'khuyen_mai?select=*&hoat_dong=eq.true&hien_thi=eq.true&is_deleted=eq.false&order=id.desc',
-            function (k) {
-                return {
-                    ma: k.ma, ten: k.ten, loai: k.loai, giaTri: Number(k.gia_tri) || 0,
-                    giamToiDa: Number(k.giam_toi_da) || 0, donToiThieu: Number(k.don_toi_thieu) || 0,
-                    ketThuc: k.ket_thuc, soLuong: k.so_luong || 0,
-                    conLai: k.so_luong ? Math.max(0, k.so_luong - (k.da_dung || 0)) : -1
-                };
-            },
-            function (ds, nguon) {
-                // Không có mã nào đang chạy -> để nguyên hidden, đừng hiện dải trống
-                if (!ds || !ds.length) return;
-                oKhuyenMai.innerHTML = ds.slice(0, 3).map(veKm).join('');
-                if (dai) dai.hidden = false;
-                if (window.console && console.info) {
-                    console.info('[IN3D] Khuyến mãi lấy từ ' + nguon + ' (' + ds.length + ' mã)');
-                }
-            },
-            function () { /* không lấy được thì thôi, dải vẫn ẩn */ });
-    }
-
     /* ================= Vẽ ================= */
 
-    function veVao(khung, ds, ham, gioiHan, chuKhiTrong, nguon, ten) {
+    function veVao(khung, ds, ham, chuKhiTrong, ten) {
         if (!khung) return;
         if (!ds || !ds.length) {
             khung.innerHTML = '<p class="bao-trong-luoi">' + chuKhiTrong + '</p>';
             return;
         }
-        khung.innerHTML = ds.slice(0, gioiHan).map(ham).join('');
+        khung.innerHTML = ds.map(ham).join('');
         // Gắn lại nút "Đặt hàng" cho thẻ vừa tạo (order.js chỉ gắn 1 lần lúc tải trang)
         if (typeof window.ganNutVaoThe === 'function') window.ganNutVaoThe();
         if (window.console && console.info) {
-            console.info('[IN3D] ' + ten + ' lấy từ ' + nguon + ' (' + ds.length + ' mục)');
+            console.info('[IN3D] ' + ten + ': ' + ds.length + ' mục');
+        }
+    }
+
+    function veKhuyenMai(ds) {
+        if (!oKhuyenMai) return;
+        // Không có mã nào đang chạy -> để nguyên hidden, đừng hiện dải trống
+        if (!ds || !ds.length) return;
+        oKhuyenMai.innerHTML = ds.map(veKm).join('');
+        var dai = document.getElementById('dai-khuyen-mai');
+        if (dai) dai.hidden = false;
+    }
+
+    function veSanPham(ds) {
+        veVao(oSanPham, ds, theSanPham,
+            'Cửa hàng đang cập nhật sản phẩm. Bạn quay lại sau nhé!', 'Sản phẩm');
+        chaySlideThe(oSanPham);
+    }
+
+    function veDichVu(ds) {
+        // Chưa có dịch vụ trong database thì GIỮ NGUYÊN 3 thẻ tĩnh trong HTML
+        if (ds && ds.length) veVao(oDichVu, ds, theDichVu, '', 'Dịch vụ');
+    }
+
+    function veBaiViet(ds) {
+        veVao(oBaiViet, ds, theBaiViet, 'Chưa có bài viết nào.', 'Bài viết');
+    }
+
+    function baoLoiSanPham() {
+        if (oSanPham) {
+            oSanPham.innerHTML = '<p class="bao-trong-luoi">' +
+                'Chưa kết nối được kho hàng. Gọi 0901 234 567 để đặt trực tiếp nhé!</p>';
+        }
+        if (window.console && console.warn) {
+            console.warn('[IN3D] Không lấy được dữ liệu cửa hàng từ backend.');
         }
     }
 
     /* ================= Chạy ================= */
 
-    /** Nạp bảng giá sau giảm rồi mới vẽ sản phẩm, để thẻ hiện đúng giá ngay lần đầu. */
-    function napGiaGiamRoiVeSanPham() {
-        fetch(JAVA_API + '/khuyen-mai/gia-san-pham')
-            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-            .then(function (ds) {
-                ds.forEach(function (g) { GIA_GIAM[g.sanPhamId] = g; });
-                if (ds.length && window.console && console.info) {
-                    console.info('[IN3D] Đang giảm giá ' + ds.length + ' sản phẩm');
-                }
+    /** Trang chủ: một lần gọi lấy đủ khuyến mãi + sản phẩm + dịch vụ + bài viết. */
+    function napTrangChu() {
+        layJson('/cua-hang/trang-chu?gioiHan=' + SO_MUC_TRANG_CHU)
+            .then(function (du) {
+                veKhuyenMai(du.khuyenMai);
+                veSanPham(du.sanPham);
+                veDichVu(du.dichVu);
+                veBaiViet(du.baiViet);
             })
-            .catch(function () { /* không lấy được thì hiện giá gốc, không chặn trang */ })
-            .then(napSanPham, napSanPham);
-    }
-
-    function napSanPham() {
-        if (!oSanPham && !oDichVu) return;
-
-        function chia(ds, nguon) {
-            var hang = ds.filter(function (s) { return s.loaiSanPham !== 'dich_vu'; });
-            var dichVu = ds.filter(function (s) { return s.loaiSanPham === 'dich_vu'; });
-
-            veVao(oSanPham, hang, theSanPham, SO_SAN_PHAM_TOI_DA,
-                'Cửa hàng đang cập nhật sản phẩm. Bạn quay lại sau nhé!', nguon, 'Sản phẩm');
-
-            // Chưa có dịch vụ trong database thì GIỮ NGUYÊN 3 thẻ tĩnh trong HTML
-            if (dichVu.length) {
-                veVao(oDichVu, dichVu, theDichVu, SO_SAN_PHAM_TOI_DA, '', nguon, 'Dịch vụ');
-            }
-        }
-
-        lay('/san-pham',
-            function (s) {
-                return {
-                    id: s.id, ten: s.ten, moTa: s.moTa, gia: s.gia || 0, giaChu: s.giaChu,
-                    tonKho: s.tonKho || 0, anh: s.hinhAnh || '',
-                    // ảnh thứ hai (nếu có) để thẻ đổi ảnh khi rê chuột
-                    anh2: (s.danhSachAnh || [])[1] || '',
-                    trangThai: s.trangThai || 'san_hang', loaiSanPham: s.loaiSanPham || 'ban'
-                };
-            },
-            'san_pham?select=*&dang_ban=eq.true&order=id',
-            function (s) {
-                return {
-                    id: s.id, ten: s.ten, moTa: s.mo_ta, gia: Number(s.gia) || 0, giaChu: s.gia_chu,
-                    tonKho: s.ton_kho || 0, anh: s.hinh_anh || '',
-                    trangThai: s.trang_thai || 'san_hang', loaiSanPham: s.loai_san_pham || 'ban'
-                };
-            },
-            chia,
-            function () {
-                if (oSanPham) {
-                    oSanPham.innerHTML = '<p class="bao-trong-luoi">' +
-                        'Chưa kết nối được kho hàng. Gọi 0901 234 567 để đặt trực tiếp nhé!</p>';
-                }
-                if (window.console && console.warn) {
-                    console.warn('[IN3D] Không lấy được sản phẩm từ backend lẫn Supabase.');
-                }
+            .catch(function () {
+                // Dải khuyến mãi vẫn ẩn, khối dịch vụ giữ thẻ tĩnh
+                baoLoiSanPham();
+                if (oBaiViet) oBaiViet.innerHTML = '<p class="bao-trong-luoi">Chưa tải được bài viết.</p>';
             });
     }
 
-    function napBaiViet() {
-        if (!oBaiViet) return;
-        lay('/bai-viet',
-            function (b) {
-                return {
-                    id: b.id, tieuDe: b.tieuDe, duongDan: b.duongDan, tomTat: b.tomTat,
-                    chuyenMuc: b.chuyenMuc, hinhAnh: b.hinhAnh, ngayTao: b.createdAt
-                };
-            },
-            'bai_viet?select=*&hien_thi=eq.true&is_deleted=eq.false&order=thu_tu.asc,id.desc',
-            function (b) {
-                return {
-                    id: b.id, tieuDe: b.tieu_de, duongDan: b.duong_dan, tomTat: b.tom_tat,
-                    chuyenMuc: b.chuyen_muc, hinhAnh: b.hinh_anh, ngayTao: b.created_at
-                };
-            },
-            function (ds, nguon) {
-                veVao(oBaiViet, ds, theBaiViet, SO_BAI_VIET_TOI_DA,
-                    'Chưa có bài viết nào.', nguon, 'Bài viết');
-            },
-            function () {
-                oBaiViet.innerHTML = '<p class="bao-trong-luoi">Chưa tải được bài viết.</p>';
-            });
+    /** Trang "Tất cả sản phẩm": hàng bán + hàng mẫu, không cắt, không có dịch vụ. */
+    function napTatCaSanPham() {
+        layJson('/cua-hang/san-pham?loai=ban,mau')
+            .then(veSanPham)
+            .catch(baoLoiSanPham);
     }
 
     function batDau() {
-        napKhuyenMai();
-        napGiaGiamRoiVeSanPham();
-        napBaiViet();
+        if (oSanPham && oSanPham.hasAttribute('data-tat-ca')) napTatCaSanPham();
+        else if (oSanPham || oDichVu || oBaiViet || oKhuyenMai) napTrangChu();
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', batDau);

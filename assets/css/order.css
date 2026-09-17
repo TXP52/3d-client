@@ -422,6 +422,27 @@
     color: #999;
     font-size: 13px;
 }
+/* Giá gốc gạch ngang cạnh giá đã giảm (backend báo món đang giảm giá) */
+.mat-hang .gia-goc-gio {
+    color: #888;
+    font-size: 13px;
+    margin-left: 6px;
+}
+/* Backend báo món không đặt được (ngừng bán, hàng mẫu...) */
+.mat-hang .loi-dong {
+    display: block;
+    color: #ff7676;
+    font-size: 13px;
+}
+.goi-y-km + .loi-goi-y { margin: -4px 0 12px 0; }
+
+/* Đang chờ backend tính lại tiền: làm mờ các con số cũ */
+.dang-tinh-gia .mat-hang .gia,
+.dang-tinh-gia .mat-hang .thanh-tien,
+.dang-tinh-gia #gio-tien {
+    opacity: .5;
+    transition: opacity .2s;
+}
 
 /* Thong bao can dang nhap trong gio */
 .can-dang-nhap {

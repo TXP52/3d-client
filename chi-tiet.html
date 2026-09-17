@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
-    <link href="assets/css/order.css?v=9" rel="stylesheet">
+    <link href="assets/css/order.css?v=10" rel="stylesheet">
     <style>
         * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Chakra Petch', sans-serif; }
         body { background-color: #eee; }
@@ -92,6 +92,12 @@
             margin-bottom: 12px;
         }
         .gia-lon { color: #4c8a00; font-size: 34px; margin: 10px 0; }
+        /* Đang giảm giá: giá gốc gạch ngang + nhãn % cạnh giá khách phải trả (giống thẻ trang chủ) */
+        .gia-lon .gia-goc { color: #9a9a9a; font-size: 20px; text-decoration: line-through; margin-left: 8px; }
+        .gia-lon .nhan-giam {
+            display: inline-block; vertical-align: middle; margin-left: 6px;
+            background: #e03131; color: #fff; font-size: 14px; padding: 3px 10px; border-radius: 999px;
+        }
         .ton-kho { font-size: 15px; margin-bottom: 14px; }
         .ton-kho .con { color: #2e7d32; }
         .ton-kho .het { color: #c62828; }
@@ -167,13 +173,13 @@
         <nav class="nav-bar-home-page" style="margin:0;">
             <ul style="display:flex; gap:4px; list-style:none; margin:0; padding:0;">
                 <li><a href="Home.html" style="padding:9px 12px;">TRANG CHỦ</a></li>
-                <li><a href="Home.html#khoi-san-pham" style="padding:9px 12px;">SẢN PHẨM</a></li>
+                <li><a href="san-pham.html" style="padding:9px 12px;">SẢN PHẨM</a></li>
             </ul>
         </nav>
     </header>
 
     <div class="khung">
-        <p class="duong-dan"><a href="Home.html">Trang chủ</a> › <a href="Home.html#khoi-san-pham">Sản phẩm</a> › <span id="dd-ten">Chi tiết</span></p>
+        <p class="duong-dan"><a href="Home.html">Trang chủ</a> › <a href="san-pham.html">Sản phẩm</a> › <span id="dd-ten">Chi tiết</span></p>
 
         <div id="noi-dung-chinh" class="trang-thai-tai">Đang tải thông tin sản phẩm...</div>
 
@@ -183,20 +189,17 @@
         </div>
     </div>
 
-    <script src="assets/js/supabase-client.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/order.js?v=10"></script>
+    <script src="assets/js/order.js?v=11" defer></script>
     <script>
-        (async function () {
+        (function () {
             'use strict';
 
             var JAVA_API = 'http://localhost:8090/api';
-            var SB_URL = 'https://nmptxzbtngztzxpwdprs.supabase.co';
-            var SB_KEY = 'sb_publishable_OJjvcAtUPib9bvdNNA-Bjg_vbz7CuQ-';
 
             var thamSo = new URLSearchParams(location.search);
+            var idCanTim = (thamSo.get('id') || '').trim();
+            // Link cũ dạng ?ten=...&gia=... (giỏ hàng cũ, trang đã lưu dấu) vẫn mở được
             var tenCanTim = (thamSo.get('ten') || '').trim();
-            var giaTrenThe = (thamSo.get('gia') || '').trim();
 
             function esc(t) {
                 return String(t == null ? '' : t)
@@ -205,107 +208,153 @@
             }
             function giaVND(so) { return Number(so || 0).toLocaleString('vi-VN') + '₫'; }
 
-            /* Lấy danh sách sản phẩm: Java -> Supabase -> rỗng.
-               Trang này chỉ cần: tên, mã, giá, tình trạng, mô tả, ảnh. */
-            async function taiSanPham() {
-                try {
-                    var r = await fetch(JAVA_API + '/san-pham');
-                    if (r.ok) {
-                        return (await r.json()).map(function (s) {
-                            return {
-                                id: s.id, ten: s.ten, gia: s.gia || 0, giaChu: s.giaChu, moTa: s.moTa,
-                                tonKho: s.tonKho || 0, anh: s.hinhAnh || '',
-                                dsAnh: s.danhSachAnh || [],
-                                mauSac: s.mauSac || [], loaiSanPham: s.loaiSanPham || 'ban'
-                            };
-                        });
-                    }
-                } catch (e) {}
-                try {
-                    var r2 = await fetch(SB_URL + '/rest/v1/san_pham?select=*&dang_ban=eq.true&order=id', {
-                        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
-                    });
-                    if (r2.ok) {
-                        return (await r2.json()).map(function (s) {
-                            return {
-                                id: s.id, ten: s.ten, gia: Number(s.gia) || 0, giaChu: s.gia_chu,
-                                moTa: s.mo_ta, tonKho: s.ton_kho || 0, anh: s.hinh_anh || '',
-                                // cột danh_sach_anh: mỗi dòng một đường dẫn
-                                dsAnh: String(s.danh_sach_anh || '').split('\n')
-                                    .map(function (u) { return u.trim(); }).filter(Boolean),
-                                mauSac: [], loaiSanPham: s.loai_san_pham || 'ban'
-                            };
-                        });
-                    }
-                } catch (e) {}
-                return [];
-            }
+            /* Hỏi backend đúng MỘT sản phẩm (kèm sẵn "sản phẩm liên quan"), không tải cả kho
+               về rồi dò tên như trước. Giá sau giảm, nhãn trạng thái, có đặt được không...
+               backend tính sẵn. Không có / đã ẩn -> 404. */
+            var duongDan = /^\d+$/.test(idCanTim)
+                ? '/cua-hang/san-pham/' + idCanTim
+                : (tenCanTim ? '/cua-hang/san-pham/tim?ten=' + encodeURIComponent(tenCanTim) : '');
 
-            var dsSanPham = await taiSanPham();
+            var taiSanPham = !duongDan
+                ? Promise.resolve(null)
+                : fetch(JAVA_API + duongDan).then(function (r) {
+                    if (r.status === 404) return null;
+                    return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status));
+                });
 
-            // Tìm sản phẩm theo tên (khớp gần đúng)
-            var sp = null;
-            if (tenCanTim) {
-                var tim = tenCanTim.toLowerCase();
-                sp = dsSanPham.find(function (s) { return s.ten.toLowerCase() === tim; }) ||
-                     dsSanPham.find(function (s) { return s.ten.toLowerCase().indexOf(tim) >= 0 || tim.indexOf(s.ten.toLowerCase()) >= 0; });
-            }
-            // Không có trong DB -> vẫn hiện theo thông tin trên thẻ
-            if (!sp && tenCanTim) {
-                sp = { id: null, ten: tenCanTim, gia: 0, giaChu: giaTrenThe || 'Liên hệ',
-                       moTa: null, tonKho: null, dsAnh: [], mauSac: [], loaiSanPham: 'ban' };
-            }
+            // order.js nạp kiểu defer: chờ trang dựng xong (order.js đã chạy) rồi mới vẽ,
+            // vì phần vẽ dùng anhChoSanPham / themVaoGioTuNgoai của order.js.
+            // Còn gọi backend thì bắt đầu ngay từ đây, không phải chờ.
+            var trangSanSang = new Promise(function (xong) {
+                if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', xong);
+                else xong();
+            });
 
             var khung = document.getElementById('noi-dung-chinh');
-            if (!sp) {
-                khung.innerHTML = 'Không tìm thấy sản phẩm. <a href="Home.html">Quay lại cửa hàng</a>';
-                return;
-            }
 
-            document.title = sp.ten + ' - IN3D Shop';
-            document.getElementById('dd-ten').textContent = sp.ten;
-
-            var giaHien = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
-            var laHangMau = sp.loaiSanPham === 'mau';
-            var tonKhoHtml = sp.tonKho === null ? '' :
-                '<p class="ton-kho">Tình trạng: ' + (laHangMau
-                    ? '<span class="con">Hàng trưng bày — đặt in theo yêu cầu</span>'
-                    : (sp.tonKho > 0
-                        ? '<span class="con">✔ Còn hàng (' + sp.tonKho + ' sản phẩm)</span>'
-                        : '<span class="het">Hết hàng / Đặt trước</span>')) + '</p>';
-
-            // Mã sản phẩm ghép từ id, đúng cách trang quản trị đang hiển thị
-            var maSp = sp.id ? 'SP-' + sp.id : '';
-
-            /* ---------- SLIDE ẢNH ----------
-               Lấy tất cả ảnh admin đã thêm (ảnh đầu = ảnh bìa). Chỉ có một ảnh thì
-               hiện ảnh tĩnh, không vẽ nút với chấm cho rối. */
-            var dsAnh = (sp.dsAnh && sp.dsAnh.length ? sp.dsAnh : [sp.anh]).map(function (u) {
-                return anhChoSanPham(sp.ten, u);
+            Promise.all([taiSanPham, trangSanSang]).then(function (kq) {
+                if (!kq[0]) {
+                    khung.innerHTML = 'Không tìm thấy sản phẩm. <a href="Home.html">Quay lại cửa hàng</a>';
+                    return;
+                }
+                ve(kq[0]);
+            }, function () {
+                khung.innerHTML = 'Chưa kết nối được cửa hàng. Bạn tải lại trang sau ít phút ' +
+                    'hoặc gọi 0901 234 567 nhé. <a href="Home.html">Quay lại cửa hàng</a>';
             });
-            var anhLoi = anhChoSanPham(sp.ten);
-            var nhieuAnh = dsAnh.length > 1;
-            var htmlSlide =
-                '<div class="slide">' +
-                '<div class="slide-khung">' + dsAnh.map(function (u, k) {
-                    return '<img src="' + esc(u) + '" alt="' + esc(sp.ten) + (nhieuAnh ? ' — ảnh ' + (k + 1) : '') + '"' +
-                           ' onerror="this.src=\'' + anhLoi + '\'">';
-                }).join('') + '</div>' +
-                (nhieuAnh
-                    ? '<button type="button" class="slide-nut trai" aria-label="Ảnh trước">&#10094;</button>' +
-                      '<button type="button" class="slide-nut phai" aria-label="Ảnh sau">&#10095;</button>' +
-                      '<div class="slide-cham">' + dsAnh.map(function (u, k) {
-                          return '<button type="button" aria-label="Ảnh ' + (k + 1) + '"' +
-                                 (k === 0 ? ' class="dang-xem"' : '') + '></button>';
-                      }).join('') + '</div>'
-                    : '') +
-                '</div>' +
-                (nhieuAnh
-                    ? '<div class="dai-anh">' + dsAnh.map(function (u, k) {
-                          return '<img src="' + esc(u) + '" alt=""' + (k === 0 ? ' class="dang-xem"' : '') +
-                                 ' onerror="this.src=\'' + anhLoi + '\'">';
-                      }).join('') + '</div>'
+
+            function ve(sp) {
+                document.title = sp.ten + ' - IN3D Shop';
+                document.getElementById('dd-ten').textContent = sp.ten;
+                // Mở bằng link cũ ?ten= thì đổi địa chỉ sang ?id= cho gọn, tải lại vẫn đúng món
+                if (!idCanTim && sp.id && window.history && history.replaceState) {
+                    history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(sp.id));
+                }
+
+                // Giá khách phải trả (đã trừ giảm giá sản phẩm nếu có) — cùng số với thẻ ở trang chủ.
+                // Hàng mẫu không bán nên không gắn giá gốc / nhãn giảm.
+                var giam = sp.coTheDat && sp.giaSauGiam != null;
+                var giaHtml = esc(sp.giaHienChu) + (giam
+                    ? ' <span class="gia-goc">' + giaVND(sp.giaGoc) + '</span>' +
+                      ' <span class="nhan-giam">-' + esc(sp.phanTram) + '%</span>'
                     : '');
+
+                /* Tình trạng = đúng trạng thái đặt ở trang quản trị (cùng chữ với trang
+                   chủ), backend đổi sẵn ra chữ cho khách. */
+                var tonKhoHtml = !sp.nhanTrangThai ? '' :
+                    '<p class="ton-kho">Tình trạng: <span class="' + (sp.trangThai === 'het_hang' ? 'het' : 'con') + '">' +
+                    esc(sp.nhanTrangThai) + '</span></p>';
+
+                // Mã sản phẩm ghép từ id, đúng cách trang quản trị đang hiển thị
+                var maSp = sp.id ? 'SP-' + sp.id : '';
+
+                /* ---------- SLIDE ẢNH ----------
+                   Lấy tất cả ảnh admin đã thêm (ảnh đầu = ảnh bìa). Chỉ có một ảnh thì
+                   hiện ảnh tĩnh, không vẽ nút với chấm cho rối. */
+                var dsAnh = (sp.danhSachAnh && sp.danhSachAnh.length ? sp.danhSachAnh : [sp.hinhAnh]).map(function (u) {
+                    return anhChoSanPham(sp.ten, u);
+                });
+                var anhLoi = anhChoSanPham(sp.ten);
+                var nhieuAnh = dsAnh.length > 1;
+                var htmlSlide =
+                    '<div class="slide">' +
+                    '<div class="slide-khung">' + dsAnh.map(function (u, k) {
+                        return '<img src="' + esc(u) + '" alt="' + esc(sp.ten) + (nhieuAnh ? ' — ảnh ' + (k + 1) : '') + '"' +
+                               ' onerror="this.src=\'' + anhLoi + '\'">';
+                    }).join('') + '</div>' +
+                    (nhieuAnh
+                        ? '<button type="button" class="slide-nut trai" aria-label="Ảnh trước">&#10094;</button>' +
+                          '<button type="button" class="slide-nut phai" aria-label="Ảnh sau">&#10095;</button>' +
+                          '<div class="slide-cham">' + dsAnh.map(function (u, k) {
+                              return '<button type="button" aria-label="Ảnh ' + (k + 1) + '"' +
+                                     (k === 0 ? ' class="dang-xem"' : '') + '></button>';
+                          }).join('') + '</div>'
+                        : '') +
+                    '</div>' +
+                    (nhieuAnh
+                        ? '<div class="dai-anh">' + dsAnh.map(function (u, k) {
+                              return '<img src="' + esc(u) + '" alt=""' + (k === 0 ? ' class="dang-xem"' : '') +
+                                     ' onerror="this.src=\'' + anhLoi + '\'">';
+                          }).join('') + '</div>'
+                        : '');
+
+                function dongTt(nhan, giaTri) {
+                    if (!giaTri) return '';
+                    return '<div class="dong-tt"><span class="nhan-tt">' + esc(nhan) + '</span>' +
+                           '<span>' + giaTri + '</span></div>';
+                }
+                var thongSo =
+                    dongTt('Màu', (sp.mauSac || []).map(function (m) {
+                        return '<span class="chip-mau"><i style="background:' + esc(m.maMau || '#ddd') + '"></i>' +
+                               esc(m.ten) + '</span>';
+                    }).join(' ')) +
+                    dongTt('Tồn kho', sp.tonKho ? esc(sp.tonKho) + ' sản phẩm' : '');
+
+                khung.className = '';
+                khung.innerHTML =
+                    '<div class="chi-tiet">' +
+                    '  <div class="anh">' + htmlSlide + '</div>' +
+                    '  <div class="noi-dung">' +
+                    (maSp ? '    <span class="nhan-danh-muc">Mã ' + esc(maSp) + '</span>' : '') +
+                    '    <h1>' + esc(sp.ten) + '</h1>' +
+                    '    <p class="gia-lon">' + giaHtml + '</p>' +
+                    tonKhoHtml +
+                    (sp.moTa ? '    <p class="mo-ta">' + esc(sp.moTa) + '</p>' : '') +
+                    (thongSo ? '    <div class="bang-tt">' + thongSo + '</div>' : '') +
+                    // Chỉ món backend cho đặt mới có nút (hàng mẫu chỉ để xem)
+                    (sp.coTheDat
+                        ? '    <div class="hang-nut">' +
+                          '      <button class="nut nut-gio" id="nut-them-gio">🛒 Thêm vào giỏ</button>' +
+                          '      <button class="nut nut-mua" id="nut-mua-ngay">Mua ngay</button>' +
+                          '    </div>'
+                        : '') +
+                    '  </div>' +
+                    '</div>';
+
+                ganSlide(dsAnh.length);
+
+                if (sp.coTheDat) {
+                    // Giỏ lưu MÃ sản phẩm, giá do backend tính lúc xem giỏ và lúc đặt
+                    document.getElementById('nut-them-gio').addEventListener('click', function () {
+                        window.themVaoGioTuNgoai(sp.id, sp.ten, false);
+                    });
+                    document.getElementById('nut-mua-ngay').addEventListener('click', function () {
+                        window.themVaoGioTuNgoai(sp.id, sp.ten, true);
+                    });
+                }
+
+                // Sản phẩm liên quan: backend chọn sẵn (cùng danh mục trước), tối đa 4
+                var goiY = sp.lienQuan || [];
+                if (goiY.length) {
+                    document.getElementById('khu-goi-y').style.display = '';
+                    document.getElementById('luoi-goi-y').innerHTML = goiY.map(function (s) {
+                        return '<a class="the-goi-y" href="chi-tiet.html?id=' + encodeURIComponent(s.id) + '">' +
+                            '<img src="' + esc(anhChoSanPham(s.ten, s.hinhAnh)) + '" alt=""' +
+                            ' onerror="this.src=\'' + anhChoSanPham(s.ten) + '\'"><div class="t">' + esc(s.ten) + '</div>' +
+                            '<div class="g">' + esc(s.giaHienChu) + '</div></a>';
+                    }).join('');
+                }
+            }
 
             /* Tự chạy 4 giây một ảnh; rê chuột vào thì dừng, bấm/vuốt/phím mũi tên
                để chuyển. Máy bật "giảm chuyển động" thì không tự chạy. */
@@ -358,60 +407,8 @@
                 });
                 tuChay();
             }
-
-            function dongTt(nhan, giaTri) {
-                if (!giaTri) return '';
-                return '<div class="dong-tt"><span class="nhan-tt">' + esc(nhan) + '</span>' +
-                       '<span>' + giaTri + '</span></div>';
-            }
-            var thongSo =
-                dongTt('Màu', (sp.mauSac || []).map(function (m) {
-                    return '<span class="chip-mau"><i style="background:' + esc(m.maMau || '#ddd') + '"></i>' +
-                           esc(m.ten) + '</span>';
-                }).join(' ')) +
-                dongTt('Tồn kho', sp.tonKho ? sp.tonKho + ' sản phẩm' : '');
-
-            khung.className = '';
-            khung.innerHTML =
-                '<div class="chi-tiet">' +
-                '  <div class="anh">' + htmlSlide + '</div>' +
-                '  <div class="noi-dung">' +
-                (maSp ? '    <span class="nhan-danh-muc">Mã ' + esc(maSp) + '</span>' : '') +
-                '    <h1>' + esc(sp.ten) + '</h1>' +
-                '    <p class="gia-lon">' + esc(giaHien) + '</p>' +
-                tonKhoHtml +
-                (sp.moTa ? '    <p class="mo-ta">' + esc(sp.moTa) + '</p>' : '') +
-                (thongSo ? '    <div class="bang-tt">' + thongSo + '</div>' : '') +
-                '    <div class="hang-nut">' +
-                '      <button class="nut nut-gio" id="nut-them-gio">🛒 Thêm vào giỏ</button>' +
-                '      <button class="nut nut-mua" id="nut-mua-ngay">Mua ngay</button>' +
-                '    </div>' +
-                '  </div>' +
-                '</div>';
-
-            ganSlide(dsAnh.length);
-
-            var giaChuThem = sp.gia > 0 ? giaVND(sp.gia) : (sp.giaChu || 'Liên hệ');
-            document.getElementById('nut-them-gio').addEventListener('click', function () {
-                window.themVaoGioTuNgoai(sp.ten, giaChuThem, false);
-            });
-            document.getElementById('nut-mua-ngay').addEventListener('click', function () {
-                window.themVaoGioTuNgoai(sp.ten, giaChuThem, true);
-            });
-
-            // Gợi ý sản phẩm khác
-            var goiY = dsSanPham.filter(function (s) { return s.ten !== sp.ten; }).slice(0, 4);
-            if (goiY.length) {
-                document.getElementById('khu-goi-y').style.display = '';
-                document.getElementById('luoi-goi-y').innerHTML = goiY.map(function (s) {
-                    var g = s.gia > 0 ? giaVND(s.gia) : (s.giaChu || 'Liên hệ');
-                    return '<a class="the-goi-y" href="chi-tiet.html?ten=' + encodeURIComponent(s.ten) + '&gia=' + encodeURIComponent(g) + '">' +
-                        '<img src="' + anhChoSanPham(s.ten, s.anh) + '" alt=""' +
-                        ' onerror="this.src=\'' + anhChoSanPham(s.ten) + '\'"><div class="t">' + esc(s.ten) + '</div><div class="g">' + g + '</div></a>';
-                }).join('');
-            }
         })();
     </script>
-    <script src="assets/js/anime.js?v=1"></script>
+    <script src="assets/js/anime.js?v=1" defer></script>
 </body>
 </html>

@@ -10,8 +10,9 @@
 - **Responsive** trên nhiều thiết bị, mang lại trải nghiệm tốt hơn.
 - Toàn bộ nội dung bằng **tiếng Việt**.
 - **Chức năng đặt hàng:** nhấn "Đặt hàng" trên sản phẩm để thêm vào giỏ, chỉnh số lượng, điền thông tin (họ tên, SĐT, địa chỉ) và xác nhận đơn kèm mã đơn.
-- **Backend Supabase dùng chung với trang quản trị** (`D:\3d\3d`): đơn hàng, thanh toán, tài khoản người dùng được lưu trên Supabase; nếu mất mạng thì đơn lưu tạm trên trình duyệt. Đăng ký/đăng nhập tại `Login.html` dùng Supabase Auth.
-- **Cài đặt backend:** xem hướng dẫn đầy đủ tại `../HUONG-DAN-BACKEND.md` (chạy `../backend/schema.sql` trên Supabase SQL Editor 1 lần).
+- **Mọi dữ liệu đi qua backend Java** (`D:\3d\3d-backend`, cổng 8090, dùng chung với trang quản trị): sản phẩm, khuyến mãi, bài viết, báo giá giỏ hàng, đơn hàng, đăng ký/đăng nhập. Trang web không gọi thẳng database. Backend không phản hồi thì trang báo lỗi rõ ràng và giữ nguyên giỏ hàng, không có chuyện "đặt thành công" mà đơn không tới shop.
+- **Địa chỉ backend:** hằng `JAVA_API` ở đầu `assets/js/order.js`, `assets/js/trang-chu.js`, trong `chi-tiet.html`, `bai-viet.html`, `Login.html` — đổi khi deploy lên server thật.
+- **Cài đặt backend:** xem hướng dẫn đầy đủ tại `../HUONG-DAN-BACKEND.md`.
 
 ---
 

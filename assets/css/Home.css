@@ -787,6 +787,27 @@ border-bottom-right-radius: 12px;
     opacity: 0.3;
 }
 
+/* THẺ NHIỀU ẢNH TỰ CHUYỂN — trang-chu.js vẽ các lớp .lop-slide chồng nhau bên trong
+   .card__img--hover (lớp nhìn thấy của thẻ). Lớp đầu là ảnh bìa; lớp có .hien thì
+   hiện, chuyển bằng mờ dần. */
+.card__img--hover .lop-slide {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    border-radius: inherit;
+    opacity: 0; transition: opacity .8s ease;
+}
+.card__img--hover .lop-slide.hien { opacity: 1; }
+.card__img--hover .cham-slide {
+    position: absolute; left: 0; right: 0; bottom: 8px; z-index: 1;
+    display: flex; justify-content: center; gap: 5px; pointer-events: none;
+}
+.card__img--hover .cham-slide i {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255, 255, 255, .6); box-shadow: 0 0 3px rgba(0, 0, 0, .35);
+    transition: width .25s ease;
+}
+.card__img--hover .cham-slide i.dang { width: 16px; border-radius: 4px; background: #fff; }
+
 .card:hover .card__info {
     background-color: transparent;
     position: relative;

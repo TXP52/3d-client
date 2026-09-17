@@ -31,8 +31,8 @@
     <link href="assets/vendor/fontawesome/css/brands.css" rel="stylesheet">
 
     <!-- Template CSS-->
-    <link href="assets/css/Home.css?v=17" rel="stylesheet">
-    <link href="assets/css/order.css?v=9" rel="stylesheet">
+    <link href="assets/css/Home.css?v=18" rel="stylesheet">
+    <link href="assets/css/order.css?v=10" rel="stylesheet">
 
     <link href="assets/css/anime.css?v=1" rel="stylesheet">
 </head>
@@ -150,7 +150,7 @@
     <div class="games-free" id="khoi-san-pham">
       <div class="icon-free">
         <p>Sản phẩm</p>
-        <a class="button-free" href="index.html">XEM THÊM</a>
+        <a class="button-free" href="san-pham.html">XEM THÊM</a>
       </div>
       <div class="game-free1" id="luoi-san-pham">
         <p class="bao-trong-luoi">Đang tải sản phẩm…</p>
@@ -158,8 +158,10 @@
     </div>
 
     <!-- ============================================================
-         DỊCH VỤ — thẻ tĩnh bên dưới là bản dự phòng khi chưa nối được backend.
-         Có sản phẩm loại "dịch vụ" trong database thì JS thay bằng dữ liệu thật.
+         DỊCH VỤ — thẻ tĩnh bên dưới là bản dự phòng khi database chưa có dịch vụ.
+         Có sản phẩm loại "dịch vụ" trong database thì JS thay bằng dữ liệu thật
+         (kèm nút "Đặt hàng"). Thẻ tĩnh không phải sản phẩm trong database nên
+         không đặt vào giỏ được: bấm vào giá là gửi yêu cầu báo giá cho xưởng.
          ============================================================ -->
     <div class="list1-top-games" id="khoi-dich-vu">
 
@@ -172,7 +174,7 @@
               <div class="card__info">
                 <span class="card__category">IN THEO YÊU CẦU</span>
                 <h3 class="card__title">In 3D từ file của bạn</h3>
-                <span class="card__by"><a href="chi-tiet.html?ten=In%203D%20theo%20y%C3%AAu%20c%E1%BA%A7u&amp;gia=t%E1%BB%AB%20500%C4%91%2Fg" class="card__author"><h3>từ 500đ/g</h3></a></span>
+                <span class="card__by"><a href="mailto:otpisrealimphake@gmail.com?subject=B%C3%A1o%20gi%C3%A1%20in%203D%20t%E1%BB%AB%20file" class="card__author"><h3>từ 500đ/g</h3></a></span>
               </div>
             </article>
 
@@ -181,7 +183,7 @@
               <div class="card__info">
                 <span class="card__category">THIẾT KẾ</span>
                 <h3 class="card__title">Dựng file 3D theo ảnh, bản vẽ</h3>
-                <span class="card__by"><a href="chi-tiet.html?ten=Thi%E1%BA%BFt%20k%E1%BA%BF%20file%203D&amp;gia=Li%C3%AAn%20h%E1%BB%87" class="card__author"><h3>Liên hệ</h3></a></span>
+                <span class="card__by"><a href="mailto:otpisrealimphake@gmail.com?subject=B%C3%A1o%20gi%C3%A1%20thi%E1%BA%BFt%20k%E1%BA%BF%20file%203D" class="card__author"><h3>Liên hệ</h3></a></span>
               </div>
             </article>
 
@@ -190,7 +192,7 @@
               <div class="card__info">
                 <span class="card__category">HOÀN THIỆN</span>
                 <h3 class="card__title">Chà nhám &amp; sơn màu</h3>
-                <span class="card__by"><a href="chi-tiet.html?ten=S%C6%A1n%20v%C3%A0%20ho%C3%A0n%20thi%E1%BB%87n&amp;gia=t%E1%BB%AB%2050.000%C4%91" class="card__author"><h3>từ 50.000đ</h3></a></span>
+                <span class="card__by"><a href="mailto:otpisrealimphake@gmail.com?subject=B%C3%A1o%20gi%C3%A1%20s%C6%A1n%20v%C3%A0%20ho%C3%A0n%20thi%E1%BB%87n" class="card__author"><h3>từ 50.000đ</h3></a></span>
               </div>
             </article>
 
@@ -282,14 +284,14 @@
     <!-- Javascript Files
 	================================================== -->
     <!-- JS -->
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/js/init.js?v=5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase-client.js"></script>
-    <script src="assets/js/order.js?v=10"></script>
-    <script src="assets/js/trang-chu.js?v=5"></script>
+    <!-- defer: tải song song, chạy theo đúng thứ tự dưới đây sau khi trang dựng xong.
+         order.js phải chạy trước trang-chu.js (trang-chu dùng anhChoSanPham / ganNutVaoThe). -->
+    <script src="assets/vendor/jquery/jquery.min.js" defer></script>
+    <script src="assets/js/init.js?v=5" defer></script>
+    <script src="assets/js/order.js?v=11" defer></script>
+    <script src="assets/js/trang-chu.js?v=7" defer></script>
 
 
-    <script src="assets/js/anime.js?v=1"></script>
+    <script src="assets/js/anime.js?v=1" defer></script>
 </body>
 </html>

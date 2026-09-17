@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Sản phẩm - Bedecraft</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/logo/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
+    <link href="assets/vendor/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="assets/css/Home.css?v=18" rel="stylesheet">
+    <link href="assets/css/order.css?v=10" rel="stylesheet">
+    <style>
+        /* Đầu trang gọn như trang chi tiết (đầu trang của trang chủ là thanh cố định kèm ô tìm kiếm) */
+        .dau-trang {
+            background-color: #151720;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .dau-trang a { color: #fff; text-decoration: none; }
+        .dau-trang a:hover { color: #a3ff12; }
+        .dau-trang .logo img { height: 56px; display: block; }
+        .dau-trang ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+        .dau-trang ul a { padding: 9px 12px; display: inline-block; }
+
+        .duong-dan { color: #666; font-size: 14px; margin: 24px 100px 0 100px; }
+        .duong-dan a { color: #4c8a00; text-decoration: none; }
+
+        /* Khối sản phẩm của trang chủ có margin-top 150px để chừa chỗ ảnh nền phía trên */
+        .trang-tat-ca { margin-top: 16px !important; margin-bottom: 60px !important; }
+
+        @media (max-width: 1300px) { .duong-dan { margin: 20px 30px 0 30px; } }
+        @media (max-width: 560px) {
+            .dau-trang { padding: 10px 14px; gap: 10px; }
+            .dau-trang .logo img { height: 44px; }
+            .duong-dan { margin: 16px 16px 0 16px; }
+        }
+    </style>
+    <link href="assets/css/anime.css?v=1" rel="stylesheet">
+</head>
+<body>
+
+    <header class="dau-trang">
+        <a class="logo" href="Home.html"><img src="assets/logo/logo.png" alt="Bedecraft"></a>
+        <nav>
+            <ul>
+                <li><a href="Home.html">TRANG CHỦ</a></li>
+                <li><a href="san-pham.html">SẢN PHẨM</a></li>
+                <li><a href="Home.html#tin-tuc">TIN TỨC</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <p class="duong-dan"><a href="Home.html">Trang chủ</a> › Sản phẩm</p>
+
+    <!-- ============================================================
+         TẤT CẢ SẢN PHẨM — nút "XEM THÊM" ở trang chủ dẫn tới đây.
+         Vẽ thẻ bằng CHÍNH trang-chu.js như khối Sản phẩm ở trang chủ (cùng giá,
+         cùng trạng thái, cùng slide ảnh). data-tat-ca: gọi /api/cua-hang/san-pham,
+         hiện hết hàng bán + hàng mẫu, không cắt còn 6.
+         ============================================================ -->
+    <div class="games-free trang-tat-ca" id="khoi-san-pham">
+        <div class="icon-free">
+            <p>Tất cả sản phẩm</p>
+        </div>
+        <div class="game-free1" id="luoi-san-pham" data-tat-ca>
+            <p class="bao-trong-luoi">Đang tải sản phẩm…</p>
+        </div>
+    </div>
+
+    <!-- defer: chạy theo đúng thứ tự sau khi trang dựng xong (order.js trước trang-chu.js) -->
+    <script src="assets/js/order.js?v=11" defer></script>
+    <script src="assets/js/trang-chu.js?v=7" defer></script>
+    <script src="assets/js/anime.js?v=1" defer></script>
+</body>
+</html>

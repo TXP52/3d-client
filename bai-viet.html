@@ -180,7 +180,7 @@
 
 <script>
 /* ============================================================
-   Trang đọc bài viết. Bài lấy từ backend Java, không được thì thử Supabase.
+   Trang đọc bài viết. Bài lấy từ backend Java.
 
    Nội dung trong database là VĂN BẢN THƯỜNG, không phải HTML:
      "## " đầu dòng = tiêu đề mục nhỏ
@@ -192,8 +192,6 @@
     'use strict';
 
     var JAVA_API = 'http://localhost:8090/api';
-    var SB_URL = 'https://nmptxzbtngztzxpwdprs.supabase.co';
-    var SB_KEY = 'sb_publishable_OJjvcAtUPib9bvdNNA-Bjg_vbz7CuQ-';
 
     var CHUYEN_MUC = {
         'huong-dan':   { ten: 'Hướng dẫn',   icon: 'fa-screwdriver-wrench' },
@@ -300,41 +298,12 @@
         o.textContent = chu;
     }
 
-    function tuJava(khoa) {
-        return fetch(JAVA_API + '/bai-viet/duong-dan/' + encodeURIComponent(khoa))
-            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-            .then(function (b) {
-                ve({
-                    id: b.id, tieuDe: b.tieuDe, duongDan: b.duongDan, tomTat: b.tomTat,
-                    noiDung: b.noiDung, chuyenMuc: b.chuyenMuc, hinhAnh: b.hinhAnh,
-                    tacGia: b.tacGia, luotXem: b.luotXem, ngayTao: b.createdAt
-                });
-                return fetch(JAVA_API + '/bai-viet')
-                    .then(function (r) { return r.json(); })
-                    .then(function (ds) {
-                        veBaiKhac(ds.map(function (x) {
-                            return { id: x.id, tieuDe: x.tieuDe, duongDan: x.duongDan, chuyenMuc: x.chuyenMuc };
-                        }), khoa);
-                    })
-                    .catch(function () {});
-            });
-    }
-
-    function tuSupabase(khoa) {
-        return fetch(SB_URL + '/rest/v1/bai_viet?select=*&duong_dan=eq.' + encodeURIComponent(khoa) +
-                     '&is_deleted=eq.false&hien_thi=eq.true', {
-            headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
-        })
-            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-            .then(function (ds) {
-                if (!ds.length) return Promise.reject();
-                var b = ds[0];
-                ve({
-                    id: null, tieuDe: b.tieu_de, duongDan: b.duong_dan, tomTat: b.tom_tat,
-                    noiDung: b.noi_dung, chuyenMuc: b.chuyen_muc, hinhAnh: b.hinh_anh,
-                    tacGia: b.tac_gia, luotXem: b.luot_xem, ngayTao: b.created_at
-                });
-            });
+    /** GET JSON từ backend; 404 trả null (không có bài), lỗi khác / mất kết nối thì từ chối. */
+    function layJson(duongDan) {
+        return fetch(JAVA_API + duongDan).then(function (r) {
+            if (r.status === 404) return null;
+            return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status));
+        });
     }
 
     var khoa = new URLSearchParams(location.search).get('bai');
@@ -342,14 +311,34 @@
         loi('Thiếu địa chỉ bài viết.');
         return;
     }
-    tuJava(khoa).catch(function () {
-        tuSupabase(khoa).catch(function () {
-            loi('Không tìm thấy bài viết này.');
+
+    // Gọi song song bài đang đọc và danh sách bài cho mục "Bài khác", không phải chờ nhau
+    var taiBaiKhac = layJson('/bai-viet').catch(function () { return null; });
+
+    layJson('/bai-viet/duong-dan/' + encodeURIComponent(khoa))
+        .then(function (b) {
+            if (!b) {
+                loi('Không tìm thấy bài viết này.');
+                return;
+            }
+            ve({
+                id: b.id, tieuDe: b.tieuDe, duongDan: b.duongDan, tomTat: b.tomTat,
+                noiDung: b.noiDung, chuyenMuc: b.chuyenMuc, hinhAnh: b.hinhAnh,
+                tacGia: b.tacGia, luotXem: b.luotXem, ngayTao: b.createdAt
+            });
+            return taiBaiKhac.then(function (ds) {
+                if (!ds || !ds.length) return;
+                veBaiKhac(ds.map(function (x) {
+                    return { id: x.id, tieuDe: x.tieuDe, duongDan: x.duongDan, chuyenMuc: x.chuyenMuc };
+                }), khoa);
+            });
+        })
+        .catch(function () {
+            loi('Chưa kết nối được máy chủ nên chưa mở được bài viết. Bạn tải lại trang sau ít phút nhé.');
         });
-    });
 })();
 </script>
 
-    <script src="assets/js/anime.js?v=1"></script>
+    <script src="assets/js/anime.js?v=1" defer></script>
 </body>
 </html>

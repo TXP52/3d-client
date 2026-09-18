@@ -417,6 +417,11 @@
     text-decoration: none;
 }
 .mat-hang .ten-lien-ket:hover { color: #a3ff12; }
+/* Phân loại khách đã chọn, viết ngay sau tên: "Móc khoá — Đỏ" */
+.mat-hang .ten-bien-the {
+    color: #9fb98a;
+    font-size: 14px;
+}
 .mat-hang .thanh-tien {
     display: block;
     color: #999;

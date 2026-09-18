@@ -49,6 +49,8 @@
             <ul>
                <li><a href="#">TRANG CHỦ</a></li>
                <li><a href="#khoi-san-pham">SẢN PHẨM</a></li>
+               <!-- Hiện lên khi shop có bộ sưu tập đang khoe (trang-chu.js bỏ hidden) -->
+               <li id="menu-bo-suu-tap" hidden><a href="#khoi-bo-suu-tap">BỘ SƯU TẬP</a></li>
                <li><a href="#tin-tuc">TIN TỨC</a></li>
                <li><a href="#">LIÊN HỆ</a></li>
             </ul>
@@ -155,6 +157,18 @@
       <div class="game-free1" id="luoi-san-pham">
         <p class="bao-trong-luoi">Đang tải sản phẩm…</p>
       </div>
+    </div>
+
+    <!-- ============================================================
+         BỘ SƯU TẬP — lấy từ bảng bo_suu_tap (chỉ bộ chủ shop đang cho hiện).
+         Chưa có bộ nào thì JS để nguyên hidden, trang không lòi ra khối trống.
+         ============================================================ -->
+    <div class="khoi-bo-suu-tap" id="khoi-bo-suu-tap" hidden>
+      <div class="dau-bo-suu-tap">
+        <p class="text-top-games">BỘ SƯU TẬP</p>
+        <span class="phu-bo-suu-tap">Những món cùng một chủ đề, shop xếp sẵn cho bạn chọn nhanh.</span>
+      </div>
+      <div class="luoi-bo-suu-tap" id="luoi-bo-suu-tap"></div>
     </div>
 
     <!-- ============================================================

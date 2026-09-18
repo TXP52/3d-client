@@ -1,9 +1,15 @@
 /* ==========================================================
    Chức năng đặt hàng - IN3D Shop
-   Giỏ hàng lưu trên trình duyệt (localStorage). Mỗi dòng chỉ giữ MÃ sản phẩm,
-   tên (để hiện) và số lượng. Giá từng món, giảm giá, mã khuyến mãi, tổng tiền
-   đều do backend Java tính (POST /api/gio-hang/bao-gia) — cùng một luật với
-   lúc tạo đơn, nên số khách thấy trong giỏ đúng bằng số trên đơn.
+   Giỏ hàng lưu trên trình duyệt (localStorage). Mỗi dòng chỉ giữ MÃ phân loại
+   (biến thể) + mã sản phẩm, tên (để hiện) và số lượng. Giá từng món, giảm giá,
+   mã khuyến mãi, tổng tiền đều do backend Java tính (POST /api/gio-hang/bao-gia)
+   — cùng một luật với lúc tạo đơn, nên số khách thấy trong giỏ đúng bằng số
+   trên đơn.
+
+   Một sản phẩm có nhiều phân loại (Đỏ / Xám...) thì mỗi phân loại là MỘT dòng
+   giỏ riêng, nhận nhau theo bienTheId. Dòng giỏ cũ lưu trước khi shop có phân
+   loại (chỉ có sanPhamId, hoặc chỉ có tên) vẫn dùng được: backend tự lấy phân
+   loại MẶC ĐỊNH của sản phẩm.
    ========================================================== */
 (function () {
     'use strict';
@@ -20,8 +26,9 @@
     /* ---------- Tiện ích ---------- */
 
     /**
-     * Dòng giỏ mới: { sanPhamId, ten, soLuong }.
-     * Dòng cũ (lưu trước khi giỏ có mã sản phẩm): { ten, giaChu, gia, soLuong } — vẫn dùng được.
+     * Dòng giỏ mới: { sanPhamId, bienTheId, ten, tenBienThe, soLuong }.
+     * Dòng giỏ đời trước (chưa có phân loại): { sanPhamId, ten, soLuong }.
+     * Dòng cũ nhất (lưu trước khi giỏ có mã sản phẩm): { ten, giaChu, gia, soLuong } — vẫn dùng được.
      */
     function layGio() {
         try {
@@ -43,21 +50,53 @@
         return (chuoi || '').replace(/\|/g, ' ').replace(/\s+/g, ' ').trim();
     }
 
-    /** Khoá nhận ra một dòng giỏ: theo mã sản phẩm; dòng cũ chưa có mã thì theo tên. */
+    /**
+     * Số điện thoại khách hay gõ kèm khoảng trắng hoặc dấu chấm ("0912 345 678").
+     * Bỏ hết khoảng trắng + dấu chấm MỘT LẦN, rồi dùng đúng bản này cho cả ba việc:
+     * kiểm tra tại chỗ, gửi lên báo giá và gửi lên đơn hàng. Backend kiểm số gửi lên
+     * theo mẫu "0 rồi 9-11 chữ số", còn mã "chỉ khách mới" so số này với số điện thoại
+     * của các đơn cũ (lưu không có khoảng trắng) nên hai bên phải cùng một chuỗi.
+     */
+    function chuanHoaSdt(chuoi) {
+        return String(chuoi == null ? '' : chuoi).replace(/[\s.]/g, '');
+    }
+
+    /**
+     * Khoá nhận ra một dòng giỏ: theo mã PHÂN LOẠI trước (hai phân loại của cùng
+     * một sản phẩm là hai dòng khác nhau), rồi tới mã sản phẩm, cuối cùng là tên.
+     */
     function khoaDong(mh) {
+        if (mh.bienTheId) return 'bt:' + mh.bienTheId;
         return mh.sanPhamId ? 'id:' + mh.sanPhamId : 'ten:' + mh.ten;
     }
 
     /**
      * Các món gửi lên backend (báo giá và đặt hàng dùng chung).
      * Dòng mới chỉ gửi mã + số lượng, giá backend tự lấy trong database.
+     * Có bienTheId thì backend lấy đúng giá và kho của phân loại đó; không có thì
+     * backend dùng phân loại mặc định của sản phẩm.
      * Dòng cũ không có mã thì gửi tên + giá đã lưu như trước đây.
      */
     function matHangGui(gio) {
         return gio.map(function (mh) {
+            if (mh.bienTheId) {
+                return {
+                    bienTheId: mh.bienTheId,
+                    sanPhamId: mh.sanPhamId || null,
+                    ten: mh.ten,
+                    soLuong: mh.soLuong
+                };
+            }
             if (mh.sanPhamId) return { sanPhamId: mh.sanPhamId, ten: mh.ten, soLuong: mh.soLuong };
             return { ten: mh.ten, donGia: Number(mh.gia) || 0, soLuong: mh.soLuong };
         });
+    }
+
+    /** "Tên sản phẩm — Phân loại" (không có phân loại thì chỉ tên). */
+    function tenBienTheCuaDong(mh, d) {
+        // Tên phân loại của backend là mới nhất; chưa hỏi giá được thì dùng tên đã lưu trong giỏ
+        var ten = d && d.tenBienThe != null ? d.tenBienThe : mh.tenBienThe;
+        return ten ? String(ten) : '';
     }
 
     // Ảnh sản phẩm: ưu tiên ảnh thật admin đã tải lên, không có thì lấy ảnh minh hoạ theo tên.
@@ -161,8 +200,10 @@
     /** Hẹn hỏi giá sau khi khách dừng tay (bấm +/−, xoá món, gõ địa chỉ). */
     function henHoiBaoGia() {
         clearTimeout(henBaoGia);
-        // Giỏ hay địa chỉ đã đổi -> lý do từ chối mã gợi ý lần trước có thể không còn đúng
+        // Giỏ hay địa chỉ đã đổi -> lý do từ chối mã lần trước có thể không còn đúng
+        // (vd: "còn thiếu 50.000₫" sau khi khách thêm hàng), xoá đi chờ backend trả lời mới
         loiGoiY = {};
+        loiMaNhap = '';
         danhDauDangTinh(true);
         henBaoGia = setTimeout(hoiBaoGia, CHO_BAO_GIA_MS);
     }
@@ -205,7 +246,7 @@
                     matHang: matHang,
                     maKhuyenMai: ma || null,
                     diaChi: oDiaChi ? oDiaChi.value.trim() : '',
-                    soDienThoai: oSdt ? oSdt.value.trim() : ''
+                    soDienThoai: oSdt ? chuanHoaSdt(oSdt.value) : ''
                 }),
                 signal: dieuKhien ? dieuKhien.signal : undefined
             });
@@ -331,6 +372,15 @@
             if (!sanPhamId || card.getAttribute('data-co-the-dat') !== 'true') return;
 
             var ten = lamSachTen(tieuDe.textContent);
+            // Thẻ ngoài không cho chọn phân loại: bấm ĐẶT HÀNG là mua PHÂN LOẠI MẶC ĐỊNH
+            // (trang-chu.js đã gắn sẵn id của nó vào thẻ)
+            var mon = {
+                sanPhamId: sanPhamId,
+                bienTheId: Number(card.getAttribute('data-bien-the-id')) || null,
+                ten: ten,
+                tenBienThe: card.getAttribute('data-bien-the-ten') || null,
+                macDinh: true
+            };
 
             // Bấm vào tên sản phẩm -> mở trang chi tiết (ảnh và giá đã là link sẵn)
             var duongDanChiTiet = 'chi-tiet.html?id=' + sanPhamId;
@@ -342,7 +392,7 @@
             nut.className = 'btn-dat-hang';
             nut.textContent = '🛒 Đặt hàng';
             nut.addEventListener('click', function () {
-                themVaoGio(sanPhamId, ten);
+                themVaoGio(mon);
             });
             info.appendChild(nut);
         });
@@ -350,30 +400,68 @@
         // các khối đó đã bỏ khỏi trang chủ nên phần này không còn việc để làm.
     }
 
-    function themVaoGio(sanPhamId, ten) {
+    /**
+     * Thêm một món vào giỏ.
+     * mon = { sanPhamId, bienTheId?, ten, tenBienThe?, macDinh?, soLuong? }
+     *   - có bienTheId: gộp với dòng cùng phân loại. Không có dòng nào thì dòng CŨ của
+     *     đúng sản phẩm đó (chưa biết phân loại) chỉ được gộp khi đây là phân loại MẶC
+     *     ĐỊNH — vì backend hiểu dòng cũ chính là phân loại mặc định.
+     *   - không có bienTheId (sản phẩm chưa có phân loại): gộp theo mã sản phẩm như trước.
+     */
+    function themVaoGio(mon) {
         var gio = layGio();
-        // Cùng mã sản phẩm, hoặc dòng cũ cùng tên chưa có mã -> cộng dồn vào dòng đó
+        var sanPhamId = Number(mon.sanPhamId) || null;
+        var bienTheId = Number(mon.bienTheId) || null;
+        var them = Math.max(1, Number(mon.soLuong) || 1);
+
         var daCo = gio.find(function (mh) {
-            return mh.sanPhamId ? Number(mh.sanPhamId) === sanPhamId : mh.ten === ten;
+            if (bienTheId) {
+                if (mh.bienTheId) return Number(mh.bienTheId) === bienTheId;
+                if (!mon.macDinh) return false;
+                return mh.sanPhamId ? Number(mh.sanPhamId) === sanPhamId : mh.ten === mon.ten;
+            }
+            if (mh.bienTheId) return false;
+            return mh.sanPhamId ? Number(mh.sanPhamId) === sanPhamId : mh.ten === mon.ten;
         });
+
         if (daCo) {
-            daCo.soLuong += 1;
-            if (!daCo.sanPhamId) {
+            daCo.soLuong = (Number(daCo.soLuong) || 0) + them;
+            if (!daCo.sanPhamId && sanPhamId) {
                 // Dòng cũ lưu theo tên + giá chữ: gắn mã vào, từ giờ backend tính giá theo mã
                 daCo.sanPhamId = sanPhamId;
                 delete daCo.gia;
                 delete daCo.giaChu;
             }
+            if (bienTheId) {
+                daCo.bienTheId = bienTheId;
+                daCo.tenBienThe = mon.tenBienThe || null;
+            }
         } else {
-            gio.push({ sanPhamId: sanPhamId, ten: ten, soLuong: 1 });
+            gio.push({
+                sanPhamId: sanPhamId,
+                bienTheId: bienTheId,
+                ten: mon.ten,
+                tenBienThe: mon.tenBienThe || null,
+                soLuong: them
+            });
         }
         luuGio(gio);
-        hienThongBao('Đã thêm "' + ten + '" vào giỏ hàng');
+        hienThongBao('Đã thêm "' + mon.ten + (mon.tenBienThe ? ' — ' + mon.tenBienThe : '') +
+            '" vào giỏ hàng');
     }
 
     // Cho trang khác (vd: chi-tiet.html) thêm vào giỏ; moGioLuon = true thì sang trang giỏ hàng (Mua ngay)
     window.themVaoGioTuNgoai = function (sanPhamId, ten, moGioLuon) {
-        themVaoGio(Number(sanPhamId), ten);
+        themVaoGio({ sanPhamId: Number(sanPhamId), ten: ten, macDinh: true });
+        if (moGioLuon) window.location.href = 'gio-hang.html';
+    };
+
+    /**
+     * Thêm đúng một PHÂN LOẠI vào giỏ (trang chi tiết, sau khi khách chọn).
+     * mon = { sanPhamId, bienTheId, ten, tenBienThe, macDinh, soLuong }
+     */
+    window.themPhanLoaiVaoGio = function (mon, moGioLuon) {
+        themVaoGio(mon || {});
         if (moGioLuon) window.location.href = 'gio-hang.html';
     };
 
@@ -436,17 +524,21 @@
     }
 
     function duongDanChiTiet(mh) {
-        return mh.sanPhamId
-            ? 'chi-tiet.html?id=' + encodeURIComponent(mh.sanPhamId)
-            : 'chi-tiet.html?ten=' + encodeURIComponent(mh.ten);
+        if (!mh.sanPhamId) return 'chi-tiet.html?ten=' + encodeURIComponent(mh.ten);
+        // Kèm phân loại đã chọn để mở trang chi tiết là thấy đúng phân loại đó
+        return 'chi-tiet.html?id=' + encodeURIComponent(mh.sanPhamId) +
+            (mh.bienTheId ? '&bt=' + encodeURIComponent(mh.bienTheId) : '');
     }
 
     /** Phần giá của một dòng, lấy từ báo giá gần nhất của backend (chưa có thì để trống). */
     function phanGiaDong(mh) {
         var d = giaTheoDong[khoaDong(mh)];
+        var tenBienThe = tenBienTheCuaDong(mh, d);
+        var phanLoai = tenBienThe ? ' — ' + mh_esc(tenBienThe) : '';
         if (!d) {
             return {
                 anh: anhChoSanPham(mh.ten),
+                phanLoai: phanLoai,
                 // Dòng cũ còn chữ giá đã lưu thì hiện tạm trong lúc chờ backend
                 gia: mh.giaChu ? mh_esc(mh.giaChu) : '',
                 thanhTien: '',
@@ -455,6 +547,7 @@
         }
         return {
             anh: anhChoSanPham(mh.ten, d.hinhAnh),
+            phanLoai: phanLoai,
             gia: (d.donGia > 0 ? dinhDangGia(d.donGia) : 'Liên hệ') +
                  (d.giaGoc > d.donGia ? ' <s class="gia-goc-gio">' + dinhDangGia(d.giaGoc) + '</s>' : ''),
             thanhTien: '= ' + dinhDangGia(d.thanhTien),
@@ -467,7 +560,9 @@
         var link = mh_esc(duongDanChiTiet(mh));
         return '<div class="mat-hang">' +
             '  <a href="' + link + '"><img class="anh-mat-hang" src="' + mh_esc(p.anh) + '" alt=""></a>' +
-            '  <div class="ten"><a class="ten-lien-ket" href="' + link + '">' + mh_esc(mh.ten) + '</a><br><span class="gia">' + p.gia + '</span>' +
+            '  <div class="ten"><a class="ten-lien-ket" href="' + link + '">' + mh_esc(mh.ten) + '</a>' +
+            '<span class="ten-bien-the">' + p.phanLoai + '</span>' +
+            '<br><span class="gia">' + p.gia + '</span>' +
             '    <span class="thanh-tien">' + p.thanhTien + '</span>' +
             '    <span class="loi-dong">' + p.loi + '</span></div>' +
             '  <div class="so-luong-chinh">' +
@@ -570,6 +665,9 @@
             var anh = hang.querySelector('.anh-mat-hang');
             // Chỉ đổi src khi khác, tránh ảnh tải lại nhấp nháy mỗi lần tính giá
             if (anh && anh.getAttribute('src') !== p.anh) anh.setAttribute('src', p.anh);
+            // Shop đổi tên phân loại thì lấy theo tên backend vừa trả về
+            var oPhanLoai = hang.querySelector('.ten-bien-the');
+            if (oPhanLoai) oPhanLoai.innerHTML = p.phanLoai;
             hang.querySelector('.gia').innerHTML = p.gia;
             hang.querySelector('.thanh-tien').innerHTML = p.thanhTien;
             hang.querySelector('.loi-dong').innerHTML = p.loi;
@@ -703,6 +801,19 @@
         henHoiBaoGia();
     }
 
+    /**
+     * Khoá / mở lại các nút +, −, xoá của giỏ.
+     * Lúc đang gửi đơn phải khoá: khách bấm thêm một cái giữa đường thì đơn tạo ra
+     * sẽ khác giỏ đang hiện trên màn hình (nút "Xác nhận đặt hàng" đã khoá sẵn như vậy).
+     */
+    function khoaNutSuaGio(khoa) {
+        var than = document.getElementById('gio-than');
+        if (!than) return;
+        than.querySelectorAll('[data-tang],[data-giam],[data-xoa]').forEach(function (nut) {
+            nut.disabled = !!khoa;
+        });
+    }
+
     /* ---------- Gửi đơn hàng ---------- */
 
     // Lưu đơn qua backend Java. Trả về { ok, don } hoặc { ok:false, loi }
@@ -746,14 +857,17 @@
             return;
         }
         var ten = document.getElementById('dh-ten').value.trim();
-        var sdt = document.getElementById('dh-sdt').value.trim();
+        // Chuẩn hoá trước khi kiểm: số gửi lên đơn đúng bằng số vừa kiểm ở đây,
+        // nếu không khách gõ "0912 345 678" sẽ qua được kiểm tra rồi bị backend trả về
+        // đúng câu vừa chấp nhận, không bao giờ đặt được hàng
+        var sdt = chuanHoaSdt(document.getElementById('dh-sdt').value);
         var diaChi = document.getElementById('dh-diachi').value.trim();
         var ghiChu = document.getElementById('dh-ghichu').value.trim();
         var oLoi = document.getElementById('dh-loi');
         var nutGui = document.getElementById('dh-gui');
 
         if (!ten) { oLoi.textContent = 'Vui lòng nhập họ và tên.'; return; }
-        if (!/^0\d{8,10}$/.test(sdt.replace(/[\s.]/g, ''))) {
+        if (!/^0\d{8,10}$/.test(sdt)) {
             oLoi.textContent = 'Số điện thoại không hợp lệ (bắt đầu bằng 0, 9-11 chữ số).';
             return;
         }
@@ -765,10 +879,12 @@
 
         nutGui.disabled = true;
         nutGui.textContent = 'Đang gửi đơn...';
+        khoaNutSuaGio(true);
 
         function moLaiNut(chuLoi) {
             nutGui.disabled = false;
             nutGui.textContent = 'Xác nhận đặt hàng';
+            khoaNutSuaGio(false);
             oLoi.textContent = chuLoi;
         }
 
@@ -776,11 +892,17 @@
         // mã đang nhớ còn dùng được với giỏ + địa chỉ hiện tại không
         if (henBaoGia || dangHoi || !baoGia) await hoiBaoGia();
 
+        // Đọc lại giỏ SAU khi báo giá xong: báo giá tự đọc giỏ của nó, nên đơn phải
+        // gửi đúng giỏ đó, không phải giỏ đọc trước lúc chờ
+        gio = layGio();
+        if (!gio.length) { veGioHang(); return; }
+
         // Backend báo món nào không đặt được (ngừng bán, hàng mẫu...) thì dừng lại cho khách xoá
         var khongDat = baoGia ? (baoGia.dong || []).filter(function (d) { return d.coTheDat === false; }) : [];
         if (khongDat.length) {
             moLaiNut('Có món không đặt được: ' + khongDat.map(function (d) {
-                return d.ten + (d.loi ? ' (' + d.loi + ')' : '');
+                return d.ten + (d.tenBienThe ? ' — ' + d.tenBienThe : '') +
+                    (d.loi ? ' (' + d.loi + ')' : '');
             }).join(', ') + '. Bạn xoá món đó khỏi giỏ rồi đặt lại nhé.');
             return;
         }

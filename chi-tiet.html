@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
-    <link href="assets/css/order.css?v=10" rel="stylesheet">
+    <link href="assets/css/order.css?v=11" rel="stylesheet">
     <style>
         * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Chakra Petch', sans-serif; }
         body { background-color: #eee; }
@@ -48,7 +48,9 @@
             flex: 1 1 380px;
             min-width: 280px;
         }
-        /* SLIDE ẢNH: ảnh lớn trượt ngang + nút trái/phải + chấm + dải ảnh nhỏ bên dưới */
+        /* SLIDE ẢNH: ảnh lớn trượt ngang + nút trái/phải + chấm + dải ảnh nhỏ bên dưới.
+           Ảnh của MỌI phân loại cũng nằm trong dải này (backend gộp sẵn), chọn phân loại
+           thì slide nhảy tới ảnh của nó. */
         .slide { position: relative; border-radius: 12px; overflow: hidden; background: #f4f5f6; }
         .slide-khung { display: flex; transition: transform .45s ease; }
         .slide-khung img {
@@ -91,17 +93,72 @@
             padding: 3px 12px;
             margin-bottom: 12px;
         }
-        .gia-lon { color: #4c8a00; font-size: 34px; margin: 10px 0; }
+        /* Khối giá: giá của PHÂN LOẠI đang chọn (to), khoảng giá cả sản phẩm (mờ, nhỏ) */
+        .khoi-gia {
+            background: #f7f8f5;
+            border: 1px solid #eef0ec;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 12px 0 16px 0;
+        }
+        .gia-lon { color: #4c8a00; font-size: 34px; margin: 0; line-height: 1.2; }
         /* Đang giảm giá: giá gốc gạch ngang + nhãn % cạnh giá khách phải trả (giống thẻ trang chủ) */
         .gia-lon .gia-goc { color: #9a9a9a; font-size: 20px; text-decoration: line-through; margin-left: 8px; }
         .gia-lon .nhan-giam {
             display: inline-block; vertical-align: middle; margin-left: 6px;
             background: #e03131; color: #fff; font-size: 14px; padding: 3px 10px; border-radius: 999px;
         }
-        .ton-kho { font-size: 15px; margin-bottom: 14px; }
+        .khoang-gia { color: #8a8a8a; font-size: 14px; margin-top: 6px; }
+        .ton-kho { font-size: 15px; margin-bottom: 4px; }
         .ton-kho .con { color: #2e7d32; }
         .ton-kho .het { color: #c62828; }
+        .ton-kho .tong-kho { color: #777; }
         .mo-ta { color: #555; font-size: 15px; line-height: 1.65; margin-bottom: 18px; white-space: pre-wrap; }
+
+        /* ---- Hàng "Phân loại" và "Số lượng" kiểu trang bán hàng ---- */
+        .hang-chon {
+            display: flex; align-items: flex-start; gap: 14px;
+            flex-wrap: wrap; margin-bottom: 16px;
+        }
+        .nhan-chon { color: #777; font-size: 14.5px; min-width: 84px; padding-top: 9px; }
+        .ds-phan-loai { display: flex; gap: 10px; flex-wrap: wrap; flex: 1 1 240px; }
+        .nut-phan-loai {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid #d8dbe0; background: #fff; border-radius: 8px;
+            padding: 6px 13px; cursor: pointer; color: #333; font-size: 14.5px;
+            font-family: 'Chakra Petch', sans-serif; transition: 0.15s;
+        }
+        .nut-phan-loai:hover:not(:disabled) { border-color: #4c8a00; color: #4c8a00; }
+        .nut-phan-loai.dang-chon {
+            border-color: #4c8a00; background: #f2f9e9; color: #2e7d32;
+            box-shadow: inset 0 0 0 1px #4c8a00;
+        }
+        .nut-phan-loai:disabled {
+            opacity: .5; cursor: not-allowed; border-style: dashed; color: #999;
+        }
+        .nut-phan-loai img { width: 30px; height: 30px; object-fit: cover; border-radius: 5px; }
+        .nut-phan-loai .o-mau {
+            width: 15px; height: 15px; border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, .2); display: inline-block;
+        }
+        .bo-dem {
+            display: flex; align-items: center; background: #fff;
+            border: 1px solid #d8dbe0; border-radius: 8px; overflow: hidden;
+        }
+        .bo-dem button {
+            width: 36px; height: 38px; border: 0; background: #fff; cursor: pointer;
+            font-size: 18px; line-height: 1; color: #444;
+        }
+        .bo-dem button:hover:not(:disabled) { background: #f1f3ef; color: #4c8a00; }
+        .bo-dem button:disabled { color: #c7c7c7; cursor: not-allowed; }
+        .bo-dem input {
+            width: 58px; height: 38px; border: 0; text-align: center; font-size: 16px;
+            border-left: 1px solid #e6e8ec; border-right: 1px solid #e6e8ec;
+            font-family: 'Chakra Petch', sans-serif; color: #222;
+        }
+        .bo-dem input:focus { outline: none; background: #f7f8f5; }
+        .con-hang { color: #7a7a7a; font-size: 14px; align-self: center; }
+        .bao-het-hang { color: #c62828; font-size: 14.5px; margin-bottom: 12px; }
 
         /* Vài dòng thông số lấy thẳng từ database; thiếu ô nào thì giấu dòng đó */
         .bang-tt { margin-bottom: 22px; }
@@ -121,6 +178,15 @@
             border: 1px solid rgba(0,0,0,.18); display: inline-block;
         }
 
+        /* Bộ sưu tập món này nằm trong */
+        .hang-bo-suu-tap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+        .hang-bo-suu-tap .nhan-bo { color: #777; font-size: 14px; }
+        .chip-bo {
+            background: #eef7df; color: #4c8a00; border-radius: 20px;
+            padding: 4px 13px; font-size: 13px; text-decoration: none; transition: 0.2s;
+        }
+        .chip-bo:hover { background: #a3ff12; color: #151414; }
+
         .hang-nut { display: flex; gap: 12px; flex-wrap: wrap; }
         .nut {
             border: none;
@@ -135,6 +201,7 @@
         .nut-gio:hover { background: #000; }
         .nut-mua { background: #a3ff12; color: #151720; }
         .nut-mua:hover { background: #8ede00; }
+        .nut:disabled { background: #d5d7db; color: #8b8f96; cursor: not-allowed; }
 
         .goi-y { margin-top: 34px; }
         .goi-y h2 { font-size: 22px; margin-bottom: 14px; }
@@ -160,6 +227,7 @@
             .slide-khung img { height: 260px; }
             .chi-tiet h1 { font-size: 22px; }
             .gia-lon { font-size: 26px; }
+            .nhan-chon { min-width: 100%; padding-top: 0; }
         }
 
         * { font-weight: 700 !important; }
@@ -189,7 +257,7 @@
         </div>
     </div>
 
-    <script src="assets/js/order.js?v=11" defer></script>
+    <script src="assets/js/order.js?v=12" defer></script>
     <script>
         (function () {
             'use strict';
@@ -198,6 +266,9 @@
 
             var thamSo = new URLSearchParams(location.search);
             var idCanTim = (thamSo.get('id') || '').trim();
+            // Phân loại khách đã chọn (thẻ giỏ hàng, link chia sẻ). Không có / không còn
+            // thì trang tự chọn phân loại MẶC ĐỊNH.
+            var btCanTim = (thamSo.get('bt') || '').trim();
             // Link cũ dạng ?ten=...&gia=... (giỏ hàng cũ, trang đã lưu dấu) vẫn mở được
             var tenCanTim = (thamSo.get('ten') || '').trim();
 
@@ -209,8 +280,8 @@
             function giaVND(so) { return Number(so || 0).toLocaleString('vi-VN') + '₫'; }
 
             /* Hỏi backend đúng MỘT sản phẩm (kèm sẵn "sản phẩm liên quan"), không tải cả kho
-               về rồi dò tên như trước. Giá sau giảm, nhãn trạng thái, có đặt được không...
-               backend tính sẵn. Không có / đã ẩn -> 404. */
+               về rồi dò tên như trước. Giá sau giảm của từng phân loại, nhãn trạng thái, có
+               đặt được không... backend tính sẵn. Không có / đã ẩn -> 404. */
             var duongDan = /^\d+$/.test(idCanTim)
                 ? '/cua-hang/san-pham/' + idCanTim
                 : (tenCanTim ? '/cua-hang/san-pham/tim?ten=' + encodeURIComponent(tenCanTim) : '');
@@ -223,7 +294,7 @@
                 });
 
             // order.js nạp kiểu defer: chờ trang dựng xong (order.js đã chạy) rồi mới vẽ,
-            // vì phần vẽ dùng anhChoSanPham / themVaoGioTuNgoai của order.js.
+            // vì phần vẽ dùng anhChoSanPham / themPhanLoaiVaoGio của order.js.
             // Còn gọi backend thì bắt đầu ngay từ đây, không phải chờ.
             var trangSanSang = new Promise(function (xong) {
                 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', xong);
@@ -231,6 +302,7 @@
             });
 
             var khung = document.getElementById('noi-dung-chinh');
+            var chuyenAnhDen = null;   // ganSlide gắn vào: nhảy slide tới ảnh thứ k
 
             Promise.all([taiSanPham, trangSanSang]).then(function (kq) {
                 if (!kq[0]) {
@@ -243,37 +315,54 @@
                     'hoặc gọi 0901 234 567 nhé. <a href="Home.html">Quay lại cửa hàng</a>';
             });
 
+            /**
+             * Danh sách phân loại để khách chọn. Sản phẩm chưa có phân loại nào (chỉ xảy ra
+             * khi sửa tay trên database) thì coi CHÍNH SẢN PHẨM là một phân loại không tên,
+             * để cả trang chạy chung một đường.
+             */
+            function danhSachBienThe(sp) {
+                if (sp.bienThe && sp.bienThe.length) return sp.bienThe;
+                return [{
+                    id: null, ten: null, macDinh: true, mau: null, maMau: null,
+                    tonKho: sp.tonKho, gia: sp.gia,
+                    giaSauGiam: sp.giaSauGiam, phanTram: sp.phanTram,
+                    giaHien: sp.giaHien, giaHienChu: sp.giaHienChu,
+                    nhanTrangThai: sp.nhanTrangThai, coTheDat: sp.coTheDat,
+                    danhSachAnh: sp.danhSachAnh || [], hinhAnh: sp.hinhAnh
+                }];
+            }
+
+            /** Phân loại mở sẵn: theo ?bt= nếu còn bán, không thì cái mặc định (backend xếp đầu). */
+            function viTriChon(ds) {
+                var i;
+                for (i = 0; i < ds.length; i++) {
+                    if (ds[i].id != null && String(ds[i].id) === btCanTim) return i;
+                }
+                for (i = 0; i < ds.length; i++) if (ds[i].macDinh) return i;
+                return 0;
+            }
+
+            /** Tên hiện trên nút phân loại: tên đặt ở trang quản trị, không có thì tên màu. */
+            function tenBienThe(bt, k) {
+                return bt.ten || bt.mau || ('Phân loại ' + (k + 1));
+            }
+
             function ve(sp) {
                 document.title = sp.ten + ' - IN3D Shop';
                 document.getElementById('dd-ten').textContent = sp.ten;
-                // Mở bằng link cũ ?ten= thì đổi địa chỉ sang ?id= cho gọn, tải lại vẫn đúng món
-                if (!idCanTim && sp.id && window.history && history.replaceState) {
-                    history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(sp.id));
-                }
 
-                // Giá khách phải trả (đã trừ giảm giá sản phẩm nếu có) — cùng số với thẻ ở trang chủ.
-                // Hàng mẫu không bán nên không gắn giá gốc / nhãn giảm.
-                var giam = sp.coTheDat && sp.giaSauGiam != null;
-                var giaHtml = esc(sp.giaHienChu) + (giam
-                    ? ' <span class="gia-goc">' + giaVND(sp.giaGoc) + '</span>' +
-                      ' <span class="nhan-giam">-' + esc(sp.phanTram) + '%</span>'
-                    : '');
-
-                /* Tình trạng = đúng trạng thái đặt ở trang quản trị (cùng chữ với trang
-                   chủ), backend đổi sẵn ra chữ cho khách. */
-                var tonKhoHtml = !sp.nhanTrangThai ? '' :
-                    '<p class="ton-kho">Tình trạng: <span class="' + (sp.trangThai === 'het_hang' ? 'het' : 'con') + '">' +
-                    esc(sp.nhanTrangThai) + '</span></p>';
-
-                // Mã sản phẩm ghép từ id, đúng cách trang quản trị đang hiển thị
-                var maSp = sp.id ? 'SP-' + sp.id : '';
+                var dsBienThe = danhSachBienThe(sp);
+                var iChon = viTriChon(dsBienThe);
+                // Một phân loại duy nhất (hàng cũ chưa tách màu) thì không hiện hàng "Phân loại"
+                var coChonPhanLoai = dsBienThe.length > 1;
 
                 /* ---------- SLIDE ẢNH ----------
-                   Lấy tất cả ảnh admin đã thêm (ảnh đầu = ảnh bìa). Chỉ có một ảnh thì
-                   hiện ảnh tĩnh, không vẽ nút với chấm cho rối. */
-                var dsAnh = (sp.danhSachAnh && sp.danhSachAnh.length ? sp.danhSachAnh : [sp.hinhAnh]).map(function (u) {
-                    return anhChoSanPham(sp.ten, u);
-                });
+                   Danh sách ảnh của backend đã gồm ảnh sản phẩm + ảnh MỌI phân loại (phân
+                   loại mặc định trước), bỏ trùng. Giữ bản gốc để biết ảnh của phân loại
+                   nào nằm ở vị trí thứ mấy. Chỉ có một ảnh thì hiện ảnh tĩnh, không vẽ nút
+                   với chấm cho rối. */
+                var dsAnhGoc = (sp.danhSachAnh && sp.danhSachAnh.length ? sp.danhSachAnh : [sp.hinhAnh]);
+                var dsAnh = dsAnhGoc.map(function (u) { return anhChoSanPham(sp.ten, u); });
                 var anhLoi = anhChoSanPham(sp.ten);
                 var nhieuAnh = dsAnh.length > 1;
                 var htmlSlide =
@@ -298,17 +387,62 @@
                           }).join('') + '</div>'
                         : '');
 
+                // Mã sản phẩm ghép từ id, đúng cách trang quản trị đang hiển thị
+                var maSp = sp.id ? 'SP-' + sp.id : '';
+
+                /* ---------- HÀNG "PHÂN LOẠI" ----------
+                   Ảnh nhỏ nếu phân loại có ảnh riêng, không thì chấm màu; phân loại shop
+                   đánh dấu hết hàng thì khoá lại (viền đứt) chứ không giấu đi, để khách
+                   biết shop có mẫu đó. */
+                var htmlPhanLoai = !coChonPhanLoai ? '' :
+                    '<div class="hang-chon">' +
+                    '  <span class="nhan-chon">Phân loại</span>' +
+                    '  <div class="ds-phan-loai">' + dsBienThe.map(function (bt, k) {
+                        var anhBt = bt.hinhAnh ? anhChoSanPham(sp.ten, bt.hinhAnh) : '';
+                        var dau = anhBt
+                            ? '<img src="' + esc(anhBt) + '" alt="" onerror="this.style.display=\'none\'">'
+                            : (bt.maMau ? '<i class="o-mau" style="background:' + esc(bt.maMau) + '"></i>' : '');
+                        return '<button type="button" class="nut-phan-loai' + (k === iChon ? ' dang-chon' : '') + '"' +
+                            ' data-bt="' + k + '"' + (bt.coTheDat ? '' : ' disabled title="Phân loại này đang hết hàng"') + '>' +
+                            dau + '<span>' + esc(tenBienThe(bt, k)) + '</span></button>';
+                    }).join('') + '</div></div>';
+
+                /* ---------- HÀNG "SỐ LƯỢNG" ----------
+                   Chặn trên đúng bằng tồn kho của phân loại đang chọn. Tồn <= 0 mà shop
+                   vẫn nhận đặt (in theo đơn) thì không chặn và không khoe con số. */
+                var htmlSoLuong = !sp.coTheDat ? '' :
+                    '<div class="hang-chon">' +
+                    '  <span class="nhan-chon">Số lượng</span>' +
+                    '  <div class="bo-dem">' +
+                    '    <button type="button" id="sl-giam" aria-label="Bớt một">&minus;</button>' +
+                    '    <input type="number" id="sl-so" value="1" min="1" inputmode="numeric">' +
+                    '    <button type="button" id="sl-tang" aria-label="Thêm một">+</button>' +
+                    '  </div>' +
+                    '  <span class="con-hang" id="con-hang"></span>' +
+                    '</div>';
+
                 function dongTt(nhan, giaTri) {
                     if (!giaTri) return '';
                     return '<div class="dong-tt"><span class="nhan-tt">' + esc(nhan) + '</span>' +
                            '<span>' + giaTri + '</span></div>';
                 }
-                var thongSo =
+                // Có hàng phân loại rồi thì màu đã nằm ngay trên nút, khỏi lặp lại ở bảng
+                var thongSo = coChonPhanLoai ? '' :
                     dongTt('Màu', (sp.mauSac || []).map(function (m) {
                         return '<span class="chip-mau"><i style="background:' + esc(m.maMau || '#ddd') + '"></i>' +
                                esc(m.ten) + '</span>';
-                    }).join(' ')) +
-                    dongTt('Tồn kho', sp.tonKho ? esc(sp.tonKho) + ' sản phẩm' : '');
+                    }).join(' '));
+
+                // Bộ sưu tập: bấm vào mở trang bộ đó
+                var htmlBoSuuTap = !(sp.boSuuTap && sp.boSuuTap.length) ? '' :
+                    '<div class="hang-bo-suu-tap"><span class="nhan-bo">Bộ sưu tập:</span>' +
+                    sp.boSuuTap.map(function (b) {
+                        return '<a class="chip-bo" href="bo-suu-tap.html?duong-dan=' +
+                            encodeURIComponent(b.duongDan || '') + '">' + esc(b.ten) + '</a>';
+                    }).join('') + '</div>';
+
+                // Khoảng giá cả sản phẩm — chỉ có nghĩa khi các phân loại khác giá nhau
+                var coKhoangGia = sp.giaTuChu && sp.giaDenChu && sp.giaTuChu !== sp.giaDenChu;
 
                 khung.className = '';
                 khung.innerHTML =
@@ -317,10 +451,17 @@
                     '  <div class="noi-dung">' +
                     (maSp ? '    <span class="nhan-danh-muc">Mã ' + esc(maSp) + '</span>' : '') +
                     '    <h1>' + esc(sp.ten) + '</h1>' +
-                    '    <p class="gia-lon">' + giaHtml + '</p>' +
-                    tonKhoHtml +
-                    (sp.moTa ? '    <p class="mo-ta">' + esc(sp.moTa) + '</p>' : '') +
-                    (thongSo ? '    <div class="bang-tt">' + thongSo + '</div>' : '') +
+                    '    <p class="ton-kho" id="o-tinh-trang"></p>' +
+                    '    <div class="khoi-gia">' +
+                    '      <p class="gia-lon" id="o-gia"></p>' +
+                    (coKhoangGia
+                        ? '      <p class="khoang-gia">Khoảng giá các phân loại: ' +
+                          esc(sp.giaTuChu) + ' – ' + esc(sp.giaDenChu) + '</p>'
+                        : '') +
+                    '    </div>' +
+                    htmlPhanLoai +
+                    htmlSoLuong +
+                    '    <p class="bao-het-hang" id="bao-het-hang" style="display:none;"></p>' +
                     // Chỉ món backend cho đặt mới có nút (hàng mẫu chỉ để xem)
                     (sp.coTheDat
                         ? '    <div class="hang-nut">' +
@@ -328,30 +469,153 @@
                           '      <button class="nut nut-mua" id="nut-mua-ngay">Mua ngay</button>' +
                           '    </div>'
                         : '') +
+                    (sp.moTa ? '    <p class="mo-ta" style="margin-top:18px;">' + esc(sp.moTa) + '</p>' : '') +
+                    (thongSo ? '    <div class="bang-tt" style="margin-top:14px;">' + thongSo + '</div>' : '') +
+                    htmlBoSuuTap +
                     '  </div>' +
                     '</div>';
 
                 ganSlide(dsAnh.length);
 
-                if (sp.coTheDat) {
-                    // Giỏ lưu MÃ sản phẩm, giá do backend tính lúc xem giỏ và lúc đặt
-                    document.getElementById('nut-them-gio').addEventListener('click', function () {
-                        window.themVaoGioTuNgoai(sp.id, sp.ten, false);
-                    });
-                    document.getElementById('nut-mua-ngay').addEventListener('click', function () {
-                        window.themVaoGioTuNgoai(sp.id, sp.ten, true);
-                    });
+                var oGia = document.getElementById('o-gia');
+                var oTinhTrang = document.getElementById('o-tinh-trang');
+                var oConHang = document.getElementById('con-hang');
+                var oSoLuong = document.getElementById('sl-so');
+                var oGiam = document.getElementById('sl-giam');
+                var oTang = document.getElementById('sl-tang');
+                var oBaoHet = document.getElementById('bao-het-hang');
+                var nutThemGio = document.getElementById('nut-them-gio');
+                var nutMuaNgay = document.getElementById('nut-mua-ngay');
+                var dsNut = document.querySelectorAll('.nut-phan-loai');
+
+                /** Số lượng khách đang chọn, luôn nằm trong 1..tồn kho của phân loại. */
+                function soLuongDangChon() {
+                    if (!oSoLuong) return 1;
+                    var n = Math.floor(Number(oSoLuong.value) || 1);
+                    var toiDa = Number(oSoLuong.getAttribute('max')) || 0;
+                    if (n < 1) n = 1;
+                    if (toiDa > 0 && n > toiDa) n = toiDa;
+                    if (String(n) !== oSoLuong.value) oSoLuong.value = n;
+                    return n;
                 }
+
+                function capNhatNutDem() {
+                    if (!oSoLuong) return;
+                    var n = soLuongDangChon();
+                    var toiDa = Number(oSoLuong.getAttribute('max')) || 0;
+                    if (oGiam) oGiam.disabled = n <= 1;
+                    if (oTang) oTang.disabled = toiDa > 0 && n >= toiDa;
+                }
+
+                /** Vẽ lại mọi thứ phụ thuộc vào phân loại đang chọn. */
+                function chonBienThe(k) {
+                    iChon = k;
+                    var bt = dsBienThe[k];
+
+                    Array.prototype.forEach.call(dsNut, function (nut, j) {
+                        nut.classList.toggle('dang-chon', j === k);
+                    });
+
+                    // Giá của đúng phân loại này; hàng mẫu không bán nên không gắn nhãn giảm
+                    var giam = sp.coTheDat && bt.giaSauGiam != null;
+                    oGia.innerHTML = esc(bt.giaHienChu) + (giam
+                        ? ' <span class="gia-goc">' + giaVND(bt.gia) + '</span>' +
+                          ' <span class="nhan-giam">-' + esc(bt.phanTram) + '%</span>'
+                        : '');
+
+                    /* Tình trạng = trạng thái đặt ở trang quản trị cho phân loại này (cùng chữ
+                       với trang chủ), kèm tổng tồn cả sản phẩm khi có nhiều phân loại. */
+                    var het = bt.nhanTrangThai === 'Hết hàng';
+                    oTinhTrang.innerHTML = 'Tình trạng: <span class="' + (het ? 'het' : 'con') + '">' +
+                        esc(bt.nhanTrangThai || 'Sẵn hàng') + '</span>' +
+                        (coChonPhanLoai && Number(sp.tonKho) > 0
+                            ? ' <span class="tong-kho">· Cả sản phẩm còn ' + esc(sp.tonKho) + ' món</span>'
+                            : '');
+
+                    if (oSoLuong) {
+                        var kho = Number(bt.tonKho) || 0;
+                        // Tồn <= 0: shop vẫn in theo đơn nên không chặn số lượng
+                        if (kho > 0) oSoLuong.setAttribute('max', kho);
+                        else oSoLuong.removeAttribute('max');
+                        oConHang.textContent = kho > 0 ? kho + ' sản phẩm có sẵn' : '';
+                        capNhatNutDem();
+                    }
+
+                    if (nutThemGio) {
+                        nutThemGio.disabled = !bt.coTheDat;
+                        nutMuaNgay.disabled = !bt.coTheDat;
+                        oBaoHet.style.display = bt.coTheDat ? 'none' : '';
+                        oBaoHet.textContent = bt.coTheDat ? '' :
+                            'Phân loại "' + tenBienThe(bt, k) + '" đang hết hàng, bạn chọn phân loại khác nhé.';
+                    }
+
+                    // Nhảy slide tới ảnh riêng của phân loại (ảnh này nằm sẵn trong dải)
+                    if (chuyenAnhDen && bt.hinhAnh) {
+                        var viTri = dsAnhGoc.indexOf(bt.hinhAnh);
+                        if (viTri >= 0) chuyenAnhDen(viTri);
+                    }
+
+                    // Địa chỉ mang theo phân loại: tải lại trang hay gửi link cho bạn vẫn đúng mẫu
+                    if (window.history && history.replaceState) {
+                        history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(sp.id) +
+                            (bt.id != null ? '&bt=' + encodeURIComponent(bt.id) : ''));
+                    }
+                }
+
+                Array.prototype.forEach.call(dsNut, function (nut) {
+                    nut.addEventListener('click', function () {
+                        chonBienThe(Number(nut.getAttribute('data-bt')));
+                    });
+                });
+
+                if (oSoLuong) {
+                    oGiam.addEventListener('click', function () {
+                        oSoLuong.value = Math.max(1, soLuongDangChon() - 1);
+                        capNhatNutDem();
+                    });
+                    oTang.addEventListener('click', function () {
+                        var toiDa = Number(oSoLuong.getAttribute('max')) || 0;
+                        var n = soLuongDangChon() + 1;
+                        oSoLuong.value = toiDa > 0 ? Math.min(toiDa, n) : n;
+                        capNhatNutDem();
+                    });
+                    oSoLuong.addEventListener('change', capNhatNutDem);
+                    oSoLuong.addEventListener('input', capNhatNutDem);
+                }
+
+                if (nutThemGio) {
+                    // Giỏ lưu MÃ phân loại, giá do backend tính lúc xem giỏ và lúc đặt
+                    var themVaoGio = function (moGioLuon) {
+                        var bt = dsBienThe[iChon];
+                        if (!bt.coTheDat) return;
+                        window.themPhanLoaiVaoGio({
+                            sanPhamId: sp.id,
+                            bienTheId: bt.id,
+                            ten: sp.ten,
+                            tenBienThe: bt.ten,
+                            macDinh: !!bt.macDinh,
+                            soLuong: soLuongDangChon()
+                        }, moGioLuon);
+                    };
+                    nutThemGio.addEventListener('click', function () { themVaoGio(false); });
+                    nutMuaNgay.addEventListener('click', function () { themVaoGio(true); });
+                }
+
+                chonBienThe(iChon);
 
                 // Sản phẩm liên quan: backend chọn sẵn (cùng danh mục trước), tối đa 4
                 var goiY = sp.lienQuan || [];
                 if (goiY.length) {
                     document.getElementById('khu-goi-y').style.display = '';
                     document.getElementById('luoi-goi-y').innerHTML = goiY.map(function (s) {
+                        // Các phân loại khác giá nhau thì hiện "từ <giá rẻ nhất>" như thẻ trang chủ
+                        var chuGia = (s.giaTuChu && s.giaDenChu && s.giaTuChu !== s.giaDenChu)
+                            ? 'từ ' + s.giaTuChu
+                            : (s.giaTuChu || s.giaHienChu);
                         return '<a class="the-goi-y" href="chi-tiet.html?id=' + encodeURIComponent(s.id) + '">' +
                             '<img src="' + esc(anhChoSanPham(s.ten, s.hinhAnh)) + '" alt=""' +
                             ' onerror="this.src=\'' + anhChoSanPham(s.ten) + '\'"><div class="t">' + esc(s.ten) + '</div>' +
-                            '<div class="g">' + esc(s.giaHienChu) + '</div></a>';
+                            '<div class="g">' + esc(chuGia) + '</div></a>';
                     }).join('');
                 }
             }
@@ -406,6 +670,9 @@
                     if (e.key === 'ArrowRight') { den(hienTai + 1); tuChay(); }
                 });
                 tuChay();
+
+                // Chọn phân loại thì nhảy tới ảnh của nó (và dừng tự chạy một nhịp)
+                chuyenAnhDen = function (k) { den(k); tuChay(); };
             }
         })();
     </script>

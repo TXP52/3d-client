@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Bộ sưu tập - Bedecraft</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/logo/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
+    <link href="assets/vendor/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="assets/css/Home.css?v=19" rel="stylesheet">
+    <link href="assets/css/order.css?v=11" rel="stylesheet">
+    <style>
+        /* Đầu trang gọn như trang sản phẩm (đầu trang của trang chủ là thanh cố định kèm ô tìm kiếm) */
+        .dau-trang {
+            background-color: #151720;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .dau-trang a { color: #fff; text-decoration: none; }
+        .dau-trang a:hover { color: #a3ff12; }
+        .dau-trang .logo img { height: 56px; display: block; }
+        .dau-trang ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+        .dau-trang ul a { padding: 9px 12px; display: inline-block; }
+
+        .duong-dan { color: #666; font-size: 14px; margin: 24px 100px 0 100px; }
+        .duong-dan a { color: #4c8a00; text-decoration: none; }
+
+        /* Khối sản phẩm của trang chủ có margin-top 150px để chừa chỗ ảnh nền phía trên */
+        .trang-tat-ca { margin-top: 16px !important; margin-bottom: 60px !important; }
+        .gioi-thieu-bo { margin: 14px 100px 0 100px; }
+        .gioi-thieu-bo p { color: #666; font-size: 15px; line-height: 1.6; max-width: 760px; }
+
+        @media (max-width: 1300px) {
+            .duong-dan { margin: 20px 30px 0 30px; }
+            .gioi-thieu-bo { margin: 12px 30px 0 30px; }
+        }
+        @media (max-width: 560px) {
+            .dau-trang { padding: 10px 14px; gap: 10px; }
+            .dau-trang .logo img { height: 44px; }
+            .duong-dan { margin: 16px 16px 0 16px; }
+            .gioi-thieu-bo { margin: 10px 16px 0 16px; }
+        }
+    </style>
+    <link href="assets/css/anime.css?v=1" rel="stylesheet">
+</head>
+<body>
+
+    <header class="dau-trang">
+        <a class="logo" href="Home.html"><img src="assets/logo/logo.png" alt="Bedecraft"></a>
+        <nav>
+            <ul>
+                <li><a href="Home.html">TRANG CHỦ</a></li>
+                <li><a href="san-pham.html">SẢN PHẨM</a></li>
+                <li><a href="Home.html#khoi-bo-suu-tap">BỘ SƯU TẬP</a></li>
+                <li><a href="Home.html#tin-tuc">TIN TỨC</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <p class="duong-dan"><a href="Home.html">Trang chủ</a> ›
+        <a href="Home.html#khoi-bo-suu-tap">Bộ sưu tập</a> › <span id="dd-ten-bo">…</span></p>
+
+    <!-- Ảnh bìa của bộ: trang-chu.js điền nền và bỏ hidden khi bộ có ảnh -->
+    <div class="bia-bo-suu-tap" id="bia-bo-suu-tap" hidden></div>
+
+    <div class="gioi-thieu-bo">
+        <p id="mo-ta-bo-suu-tap" hidden></p>
+    </div>
+
+    <!-- ============================================================
+         MỘT BỘ SƯU TẬP — thẻ vẽ bằng CHÍNH trang-chu.js như khối Sản phẩm
+         ở trang chủ (cùng giá, cùng phân loại, cùng slide ảnh).
+         data-bo-suu-tap: gọi /api/cua-hang/bo-suu-tap/{đường dẫn trên địa chỉ},
+         hàng trong bộ giữ đúng thứ tự chủ shop xếp.
+         ============================================================ -->
+    <div class="games-free trang-tat-ca" id="khoi-san-pham">
+        <div class="icon-free">
+            <p id="ten-bo-suu-tap">Bộ sưu tập</p>
+            <a class="button-free" href="san-pham.html">TẤT CẢ</a>
+        </div>
+        <div class="game-free1" id="luoi-san-pham" data-bo-suu-tap>
+            <p class="bao-trong-luoi">Đang tải sản phẩm…</p>
+        </div>
+    </div>
+
+    <!-- defer: chạy theo đúng thứ tự sau khi trang dựng xong (order.js trước trang-chu.js) -->
+    <script src="assets/js/order.js?v=12" defer></script>
+    <script src="assets/js/trang-chu.js?v=8" defer></script>
+    <script src="assets/js/anime.js?v=1" defer></script>
+</body>
+</html>

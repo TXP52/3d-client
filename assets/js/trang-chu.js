@@ -1,19 +1,23 @@
 /* ============================================================
    TRANG CHỦ — vẽ các khối từ DỮ LIỆU THẬT trong database:
 
-     #luoi-km-home    Khuyến mãi (bảng khuyen_mai, chỉ mã đang chạy)
-     #luoi-san-pham   Sản phẩm   (loại "ban" và "mau")
-     #luoi-dich-vu    Dịch vụ    (loại "dich_vu")
-     #luoi-bai-viet   Bài viết   (bảng bai_viet)
+     #luoi-km-home     Khuyến mãi   (bảng khuyen_mai, chỉ mã đang chạy)
+     #luoi-san-pham    Sản phẩm     (loại "ban" và "mau")
+     #luoi-dich-vu     Dịch vụ      (loại "dich_vu")
+     #luoi-bai-viet    Bài viết     (bảng bai_viet)
+     #luoi-bo-suu-tap  Bộ sưu tập   (bảng bo_suu_tap, chỉ bộ đang hiện)
 
    Trước đây cả ba khối đều là thẻ viết cứng trong Home.html: thêm/xoá
    sản phẩm ở trang quản trị không đổi được gì ngoài trang chủ.
 
    Trang chủ gọi MỘT lần GET /api/cua-hang/trang-chu: backend trả sẵn cả bốn khối,
-   đã lọc loại và cắt đúng số lượng. Trang "Tất cả sản phẩm" (lưới có data-tat-ca)
-   gọi GET /api/cua-hang/san-pham.
-   Giá khách trả, % giảm, danh mục, nhãn trạng thái, có đặt được không... backend
-   tính sẵn trong từng sản phẩm — file này CHỈ VẼ, không tự tính hay tự đoán.
+   đã lọc loại và cắt đúng số lượng (khối bộ sưu tập hỏi thêm một câu vì backend
+   để riêng). Trang "Tất cả sản phẩm" (lưới có data-tat-ca) gọi
+   GET /api/cua-hang/san-pham; trang một bộ sưu tập (lưới có data-bo-suu-tap)
+   gọi GET /api/cua-hang/bo-suu-tap/{đường dẫn}.
+   Giá khách trả, khoảng giá các phân loại, % giảm, danh mục, nhãn trạng thái, có
+   đặt được không... backend tính sẵn trong từng sản phẩm — file này CHỈ VẼ, không
+   tự tính hay tự đoán.
    Chỉ lấy dữ liệu từ backend Java; không gọi được thì báo, khối dịch vụ giữ thẻ tĩnh.
    Giữ nguyên cấu trúc thẻ của theme để CSS và nút "Đặt hàng" chạy như cũ.
    ============================================================ */
@@ -29,6 +33,7 @@
     var oDichVu = document.querySelector('#luoi-dich-vu');
     var oBaiViet = document.querySelector('#luoi-bai-viet');
     var oKhuyenMai = document.querySelector('#luoi-km-home');
+    var oBoSuuTap = document.querySelector('#luoi-bo-suu-tap');
 
     /* ================= Tiện ích chung ================= */
 
@@ -116,9 +121,47 @@
         });
     }
 
-    /** Thuộc tính cho order.js gắn nút "Đặt hàng": mã sản phẩm + backend cho đặt hay không. */
+    /** Phân loại (biến thể) chọn sẵn của một sản phẩm — backend xếp mặc định lên đầu. */
+    function bienTheMacDinh(sp) {
+        var ds = sp.bienThe || [];
+        for (var i = 0; i < ds.length; i++) if (ds[i].macDinh) return ds[i];
+        return ds.length ? ds[0] : null;
+    }
+
+    /**
+     * Thuộc tính cho order.js gắn nút "Đặt hàng": mã sản phẩm, mã PHÂN LOẠI MẶC ĐỊNH
+     * (bấm ĐẶT HÀNG ngoài thẻ là mua đúng phân loại này) và backend cho đặt hay không.
+     * Phân loại mặc định đang hết hàng thì không gắn nút — khách mở trang chi tiết
+     * chọn phân loại khác, chứ giỏ không nhận món shop đang không bán.
+     */
     function thuocTinhDat(sp) {
-        return ' data-san-pham-id="' + esc(sp.id) + '" data-co-the-dat="' + (sp.coTheDat ? 'true' : 'false') + '"';
+        var bt = bienTheMacDinh(sp);
+        var datDuoc = bt ? (sp.coTheDat && bt.coTheDat) : sp.coTheDat;
+        return ' data-san-pham-id="' + esc(sp.id) + '"' +
+            (bt ? ' data-bien-the-id="' + esc(bt.id) + '"' +
+                  (bt.ten ? ' data-bien-the-ten="' + esc(bt.ten) + '"' : '') : '') +
+            ' data-co-the-dat="' + (datDuoc ? 'true' : 'false') + '"';
+    }
+
+    /**
+     * Chấm màu của các phân loại + số phân loại, hiện dưới tên sản phẩm.
+     * Chỉ vẽ khi sản phẩm CÓ phân loại thật (từ 2 cái trở lên) — hàng cũ đã dồn về
+     * một phân loại mặc định không tên nên thẻ trông y như trước.
+     */
+    function chamMauBienThe(sp) {
+        var ds = sp.bienThe || [];
+        if (ds.length < 2) return '';
+        var mau = [], daCo = {};
+        ds.forEach(function (bt) {
+            if (!bt.maMau || daCo[bt.maMau]) return;
+            daCo[bt.maMau] = true;
+            mau.push(bt);
+        });
+        var cham = mau.slice(0, 5).map(function (bt) {
+            return '<i style="background:' + esc(bt.maMau) + '" title="' + esc(bt.mau || bt.ten || '') + '"></i>';
+        }).join('');
+        return '<span class="cham-phan-loai">' + cham +
+            '<span class="so-phan-loai">' + ds.length + ' phân loại</span></span>';
     }
 
     function theSanPham(sp) {
@@ -127,6 +170,12 @@
         // Backend chỉ gửi giaSauGiam khi món đang có chương trình giảm giá chạy.
         // Hàng mẫu không bán nên không gắn nhãn giảm (giá đã hiện "Hàng mẫu").
         var giam = sp.coTheDat && sp.giaSauGiam != null;
+        // Các phân loại khác giá nhau -> "từ <giá rẻ nhất>"; cùng giá -> đúng một con số.
+        // Hai chữ giá backend tính sẵn (đã trừ khuyến mãi, hàng mẫu ra "Hàng mẫu").
+        var nhieuGia = sp.giaTuChu && sp.giaDenChu && sp.giaTuChu !== sp.giaDenChu;
+        var chuGia = nhieuGia
+            ? 'từ ' + sp.giaTuChu
+            : (sp.giaTuChu || sp.giaHienChu);
 
         var duongDan = 'chi-tiet.html?id=' + encodeURIComponent(sp.id);
         var nen = nenAnh(anh);
@@ -145,9 +194,11 @@
             // Danh mục lấy thẳng từ database (CSS tự viết hoa)
             '<span class="card__category"> ' + esc(sp.danhMuc || 'Sản phẩm') + '</span>' +
             '<h3 class="card__title">' + esc(sp.ten) + '</h3>' +
+            chamMauBienThe(sp) +
             '<span class="card__by"><a href="' + esc(duongDan) + '" class="card__author" title="giá bán">' +
-            '<h3>' + esc(sp.giaHienChu) + '</h3></a>' +
-            (giam ? '<span class="gia-goc">' + giaVND(sp.giaGoc) + '</span>' : '') +
+            '<h3>' + esc(chuGia) + '</h3></a>' +
+            // Giá gốc gạch ngang chỉ có nghĩa khi cả sản phẩm một giá
+            (giam && !nhieuGia ? '<span class="gia-goc">' + giaVND(sp.giaGoc) + '</span>' : '') +
             '</span>' +
             '</div></article>';
     }
@@ -273,6 +324,38 @@
         hetBao = setTimeout(function () { o.classList.remove('hien'); }, 2600);
     }
 
+    /* ================= BỘ SƯU TẬP ================= */
+
+    /**
+     * Thẻ banner một bộ sưu tập: ảnh bìa làm nền, tên + mô tả + số món đang bán.
+     * Bấm vào mở trang bo-suu-tap.html?duong-dan=...
+     */
+    function theBoSuuTap(b) {
+        var anh = duongDanAnh(b.hinhAnh);
+        var link = 'bo-suu-tap.html?duong-dan=' + encodeURIComponent(b.duongDan || '');
+        return '<a class="the-bo-suu-tap" href="' + esc(link) + '"' +
+            (anh ? ' style="' + nenAnh(anh) + '"' : ' data-khong-anh') + '>' +
+            '<span class="phu-bo"></span>' +
+            '<span class="than-bo">' +
+            '<span class="ten-bo">' + esc(b.ten) + '</span>' +
+            (b.moTa ? '<span class="mo-ta-bo">' + esc(b.moTa) + '</span>' : '') +
+            '<span class="dem-bo">' + esc(b.soSanPham) + ' sản phẩm</span>' +
+            '</span></a>';
+    }
+
+    function veBoSuuTap(ds) {
+        if (!oBoSuuTap) return;
+        // Shop chưa xếp bộ nào (hoặc đang ẩn hết) -> để nguyên hidden, đừng hiện khối trống
+        if (!ds || !ds.length) return;
+        oBoSuuTap.innerHTML = ds.map(theBoSuuTap).join('');
+        var khoi = document.getElementById('khoi-bo-suu-tap');
+        if (khoi) khoi.hidden = false;
+        // Mục menu để ẩn sẵn, có bộ rồi mới hiện (khỏi có link dẫn tới khối trống)
+        var menu = document.getElementById('menu-bo-suu-tap');
+        if (menu) menu.hidden = false;
+        if (window.console && console.info) console.info('[IN3D] Bộ sưu tập: ' + ds.length + ' bộ');
+    }
+
     /* ================= Vẽ ================= */
 
     function veVao(khung, ds, ham, chuKhiTrong, ten) {
@@ -348,9 +431,74 @@
             .catch(baoLoiSanPham);
     }
 
+    /** Khối "Bộ sưu tập" của trang chủ — backend để riêng nên hỏi thêm một câu. */
+    function napBoSuuTapTrangChu() {
+        layJson('/cua-hang/bo-suu-tap')
+            .then(veBoSuuTap)
+            .catch(function () {
+                // Không lấy được thì khối vẫn ẩn, trang chủ không lòi ra dải trống
+                if (window.console && console.warn) console.warn('[IN3D] Chưa lấy được bộ sưu tập.');
+            });
+    }
+
+    /**
+     * Trang MỘT bộ sưu tập (bo-suu-tap.html?duong-dan=...): banner của bộ + hàng
+     * trong bộ, theo đúng thứ tự chủ shop xếp. Bộ không có / đang ẩn -> backend 404.
+     */
+    function napMotBoSuuTap() {
+        var duongDan = (new URLSearchParams(location.search).get('duong-dan') || '').trim();
+        var oTen = document.getElementById('ten-bo-suu-tap');
+        var oMoTa = document.getElementById('mo-ta-bo-suu-tap');
+        var oBia = document.getElementById('bia-bo-suu-tap');
+        var oDuongDan = document.getElementById('dd-ten-bo');
+
+        function baoKhongCo(chu) {
+            if (oTen) oTen.textContent = chu;
+            if (oSanPham) {
+                oSanPham.innerHTML = '<p class="bao-trong-luoi">' +
+                    'Bộ sưu tập này không còn nữa. <a href="san-pham.html">Xem tất cả sản phẩm</a></p>';
+            }
+        }
+
+        if (!duongDan) { baoKhongCo('Không tìm thấy bộ sưu tập'); return; }
+
+        fetch(JAVA_API + '/cua-hang/bo-suu-tap/' + encodeURIComponent(duongDan))
+            .then(function (r) {
+                if (r.status === 404) return null;
+                return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status));
+            })
+            .then(function (bo) {
+                if (!bo) { baoKhongCo('Không tìm thấy bộ sưu tập'); return; }
+                document.title = bo.ten + ' - Bedecraft';
+                if (oTen) oTen.textContent = bo.ten;
+                if (oDuongDan) oDuongDan.textContent = bo.ten;
+                if (oMoTa) {
+                    oMoTa.textContent = bo.moTa || '';
+                    oMoTa.hidden = !bo.moTa;
+                }
+                var anh = duongDanAnh(bo.hinhAnh);
+                if (oBia && anh) {
+                    oBia.style.backgroundImage = 'url(\'' + anh.replace(/'/g, "\\'") + '\')';
+                    oBia.hidden = false;
+                }
+                if (!bo.sanPham || !bo.sanPham.length) {
+                    if (oSanPham) {
+                        oSanPham.innerHTML = '<p class="bao-trong-luoi">' +
+                            'Bộ này chưa có sản phẩm nào đang bán. ' +
+                            '<a href="san-pham.html">Xem tất cả sản phẩm</a></p>';
+                    }
+                    return;
+                }
+                veSanPham(bo.sanPham);
+            })
+            .catch(baoLoiSanPham);
+    }
+
     function batDau() {
-        if (oSanPham && oSanPham.hasAttribute('data-tat-ca')) napTatCaSanPham();
+        if (oSanPham && oSanPham.hasAttribute('data-bo-suu-tap')) napMotBoSuuTap();
+        else if (oSanPham && oSanPham.hasAttribute('data-tat-ca')) napTatCaSanPham();
         else if (oSanPham || oDichVu || oBaiViet || oKhuyenMai) napTrangChu();
+        if (oBoSuuTap) napBoSuuTapTrangChu();
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', batDau);

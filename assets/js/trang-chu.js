@@ -81,6 +81,15 @@
 
     var ANH_DU_PHONG = 'assets/img/pexels.avif';
 
+    /**
+     * Ảnh bìa của thẻ: ảnh bìa của sản phẩm; sản phẩm chỉ có ảnh ở các phân loại thì lấy
+     * ảnh đầu của bộ ảnh gộp danhSachAnh (backend xếp ảnh sản phẩm trước, rồi ảnh phân loại
+     * mặc định, rồi các phân loại khác). Không có ảnh nào thì trả chuỗi rỗng.
+     */
+    function anhBia(sp) {
+        return duongDanAnh(sp.hinhAnh || (sp.danhSachAnh || [])[0]);
+    }
+
     /** Các lớp ảnh chồng lên nhau để thẻ tự chuyển ảnh (ảnh bìa hiện trước), kèm chấm. */
     function lopSlide(sp) {
         var ds = (sp.danhSachAnh || []).map(duongDanAnh).filter(Boolean);
@@ -137,10 +146,23 @@
     function thuocTinhDat(sp) {
         var bt = bienTheMacDinh(sp);
         var datDuoc = bt ? (sp.coTheDat && bt.coTheDat) : sp.coTheDat;
+        // Tên ghi vào giỏ: tên phân loại; phân loại chỉ đặt màu thì tên màu (y như nút ở trang chi tiết)
+        var tenBt = bt ? (bt.ten || ((sp.bienThe || []).length > 1 ? bt.mau : '') || '') : '';
         return ' data-san-pham-id="' + esc(sp.id) + '"' +
             (bt ? ' data-bien-the-id="' + esc(bt.id) + '"' +
-                  (bt.ten ? ' data-bien-the-ten="' + esc(bt.ten) + '"' : '') : '') +
+                  (tenBt ? ' data-bien-the-ten="' + esc(tenBt) + '"' : '') : '') +
             ' data-co-the-dat="' + (datDuoc ? 'true' : 'false') + '"';
+    }
+
+    /**
+     * Chữ giá trên thẻ: các phân loại khác giá nhau -> "từ <giá rẻ nhất>"; cùng giá ->
+     * đúng một con số. Hai chữ giá backend tính sẵn (đã trừ khuyến mãi, hàng mẫu ra "Hàng mẫu").
+     */
+    function coNhieuGia(sp) {
+        return !!(sp.giaTuChu && sp.giaDenChu && sp.giaTuChu !== sp.giaDenChu);
+    }
+    function chuGiaThe(sp) {
+        return coNhieuGia(sp) ? 'từ ' + sp.giaTuChu : (sp.giaTuChu || sp.giaHienChu);
     }
 
     /**
@@ -165,23 +187,28 @@
     }
 
     function theSanPham(sp) {
-        var anh = duongDanAnh(sp.hinhAnh) ||
+        var anh = anhBia(sp) ||
             (typeof window.anhChoSanPham === 'function' ? window.anhChoSanPham(sp.ten) : ANH_DU_PHONG);
+        var nhieuGia = coNhieuGia(sp);
+        var chuGia = chuGiaThe(sp);
+        // Giá gạch ngang + nhãn -%: thẻ MỘT giá thì lấy của phân loại mặc định — con số in
+        // to trên thẻ là giá của nó và ĐẶT HÀNG cũng bỏ nó vào giỏ. Trường giaGoc/giaSauGiam/
+        // phanTram cấp sản phẩm tính trên san_pham.gia: phân loại có giá riêng thì lệch (thẻ
+        // in "22.500₫" mà lại gạch "19.000₫"). Thẻ khoảng giá, hoặc sản phẩm chưa có phân
+        // loại nào, giữ số cấp sản phẩm như trước.
+        var bt = bienTheMacDinh(sp);
+        var theoBt = !nhieuGia && bt;
+        var nguonGiam = theoBt ? bt : sp;
         // Backend chỉ gửi giaSauGiam khi món đang có chương trình giảm giá chạy.
         // Hàng mẫu không bán nên không gắn nhãn giảm (giá đã hiện "Hàng mẫu").
-        var giam = sp.coTheDat && sp.giaSauGiam != null;
-        // Các phân loại khác giá nhau -> "từ <giá rẻ nhất>"; cùng giá -> đúng một con số.
-        // Hai chữ giá backend tính sẵn (đã trừ khuyến mãi, hàng mẫu ra "Hàng mẫu").
-        var nhieuGia = sp.giaTuChu && sp.giaDenChu && sp.giaTuChu !== sp.giaDenChu;
-        var chuGia = nhieuGia
-            ? 'từ ' + sp.giaTuChu
-            : (sp.giaTuChu || sp.giaHienChu);
+        var giam = sp.coTheDat && nguonGiam.giaSauGiam != null;
+        var giaGach = theoBt ? bt.gia : sp.giaGoc;
 
         var duongDan = 'chi-tiet.html?id=' + encodeURIComponent(sp.id);
         var nen = nenAnh(anh);
 
         return '<article class="card' + (sp.loaiSanPham === 'mau' ? ' the-mau' : '') + '"' + thuocTinhDat(sp) + '>' +
-            (giam ? '<span class="nhan-giam">-' + esc(sp.phanTram) + '%</span>' : '') +
+            (giam ? '<span class="nhan-giam">-' + esc(nguonGiam.phanTram) + '%</span>' : '') +
             '<div class="card__info-hover">' + SVG_TIM +
             '<div class="card__clock-info">' + SVG_DONG_HO +
             '<span class="card__time">' + esc(sp.nhanTrangThai) + '</span></div></div>' +
@@ -198,7 +225,7 @@
             '<span class="card__by"><a href="' + esc(duongDan) + '" class="card__author" title="giá bán">' +
             '<h3>' + esc(chuGia) + '</h3></a>' +
             // Giá gốc gạch ngang chỉ có nghĩa khi cả sản phẩm một giá
-            (giam && !nhieuGia ? '<span class="gia-goc">' + giaVND(sp.giaGoc) + '</span>' : '') +
+            (giam && !nhieuGia ? '<span class="gia-goc">' + giaVND(giaGach) + '</span>' : '') +
             '</span>' +
             '</div></article>';
     }
@@ -208,7 +235,7 @@
     var BIEU_TUONG_DV = ['fa-cube', 'fa-pen-ruler', 'fa-brush', 'fa-gears', 'fa-cubes-stacked', 'fa-wand-magic-sparkles'];
 
     function theDichVu(dv, i) {
-        var anh = duongDanAnh(dv.hinhAnh);
+        var anh = anhBia(dv);
         var dau = anh
             ? '<div class="dv-anh" style="' + nenAnh(anh) + '"></div>'
             : '<div class="dv-anh dv-mau' + ((i % 3) + 1) + '">' +
@@ -222,7 +249,7 @@
             '<h3 class="card__title">' + esc(dv.ten) + '</h3>' +
             // Mô tả để dành cho trang chi tiết, thẻ ngoài chỉ tên + giá cho gọn
             '<span class="card__by"><a href="' + esc(duongDan) + '" class="card__author">' +
-            '<h3>' + esc(dv.giaHienChu) + '</h3></a></span>' +
+            '<h3>' + esc(chuGiaThe(dv)) + '</h3></a></span>' +
             '</div></article>';
     }
 
@@ -454,6 +481,8 @@
 
         function baoKhongCo(chu) {
             if (oTen) oTen.textContent = chu;
+            if (oDuongDan) oDuongDan.textContent = chu;
+            document.title = chu + ' - Bedecraft';
             if (oSanPham) {
                 oSanPham.innerHTML = '<p class="bao-trong-luoi">' +
                     'Bộ sưu tập này không còn nữa. <a href="san-pham.html">Xem tất cả sản phẩm</a></p>';

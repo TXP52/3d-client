@@ -414,15 +414,17 @@
         var bienTheId = Number(mon.bienTheId) || null;
         var them = Math.max(1, Number(mon.soLuong) || 1);
 
-        var daCo = gio.find(function (mh) {
-            if (bienTheId) {
-                if (mh.bienTheId) return Number(mh.bienTheId) === bienTheId;
-                if (!mon.macDinh) return false;
-                return mh.sanPhamId ? Number(mh.sanPhamId) === sanPhamId : mh.ten === mon.ten;
-            }
+        // Dòng giỏ đời trước của đúng sản phẩm này (chưa biết phân loại)
+        function laDongCu(mh) {
             if (mh.bienTheId) return false;
             return mh.sanPhamId ? Number(mh.sanPhamId) === sanPhamId : mh.ten === mon.ten;
-        });
+        }
+        // Dòng cùng phân loại luôn được ưu tiên: giỏ có cả dòng cũ lẫn dòng mới của phân
+        // loại mặc định thì cộng vào dòng mới, không gắn thêm mã cho dòng cũ thành hai dòng trùng
+        var daCo = bienTheId
+            ? (gio.find(function (mh) { return Number(mh.bienTheId) === bienTheId; }) ||
+               (mon.macDinh ? gio.find(laDongCu) : null))
+            : gio.find(laDongCu);
 
         if (daCo) {
             daCo.soLuong = (Number(daCo.soLuong) || 0) + them;

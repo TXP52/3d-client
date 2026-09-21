@@ -77,6 +77,8 @@
 #tin-tuc       .text-top-games::before { content: 'ニュース'; color: var(--am-tim);
                                          text-shadow: 0 0 12px rgba(168, 107, 255, .55); }
 #dai-khuyen-mai .text-top-games::before { content: 'セール'; }
+#khoi-bo-suu-tap .text-top-games::before { content: 'コレクション'; color: var(--am-xanh);
+                                           text-shadow: 0 0 12px rgba(94, 231, 255, .55); }
 
 /* Gạch chân kiểu vệt cọ: ngắn, bo tròn, chuyển màu */
 .text-top-games::after,
@@ -98,14 +100,16 @@
 .games-free,
 .list1-top-games,
 .khoi-bai-viet,
-.dai-khuyen-mai {
+.dai-khuyen-mai,
+.khoi-bo-suu-tap {
   position: relative;
   isolation: isolate;
 }
 .games-free::before,
 .list1-top-games::before,
 .khoi-bai-viet::before,
-.dai-khuyen-mai::before {
+.dai-khuyen-mai::before,
+.khoi-bo-suu-tap::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -177,6 +181,14 @@
 .card:hover::after {
   opacity: 1;
   transform: scale(1) rotate(0deg);
+}
+
+/* Banner bộ sưu tập: cùng quầng sáng neon như thẻ sản phẩm */
+.the-bo-suu-tap:hover {
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, .28),
+    0 0 0 2px rgba(94, 231, 255, .6),
+    0 0 26px rgba(168, 107, 255, .35);
 }
 
 /* ============================================================
@@ -258,7 +270,7 @@
 @media (prefers-reduced-motion: reduce) {
   .mua-hoa { display: none; }
   .card, .the-bai-viet, .ve-km-home { transition: none; }
-  .card:hover, .the-bai-viet:hover, .ve-km-home:hover { transform: none; }
+  .card:hover, .the-bai-viet:hover, .ve-km-home:hover, .the-bo-suu-tap:hover { transform: none; }
   .button-free:hover::after, .ct-nut:hover::after, .nut-dat-hang:hover::after { animation: none; }
 }
 

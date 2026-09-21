@@ -232,7 +232,7 @@
 
         * { font-weight: 700 !important; }
     </style>
-    <link href="assets/css/anime.css?v=1" rel="stylesheet">
+    <link href="assets/css/anime.css?v=2" rel="stylesheet">
 </head>
 <body>
 
@@ -257,7 +257,7 @@
         </div>
     </div>
 
-    <script src="assets/js/order.js?v=12" defer></script>
+    <script src="assets/js/order.js?v=13" defer></script>
     <script>
         (function () {
             'use strict';
@@ -353,8 +353,13 @@
 
                 var dsBienThe = danhSachBienThe(sp);
                 var iChon = viTriChon(dsBienThe);
-                // Một phân loại duy nhất (hàng cũ chưa tách màu) thì không hiện hàng "Phân loại"
-                var coChonPhanLoai = dsBienThe.length > 1;
+                // Khách mở link có ?bt= (từ giỏ hàng, link chia sẻ) thì slide nhảy ngay tới ảnh
+                // của phân loại đó; mở bình thường thì slide vẫn bắt đầu từ ảnh bìa
+                var chonTuLink = dsBienThe[iChon].id != null && String(dsBienThe[iChon].id) === btCanTim;
+                var nhieuPhanLoai = dsBienThe.length > 1;
+                // Một phân loại duy nhất không tên (hàng cũ chưa tách màu) thì không hiện hàng
+                // "Phân loại"; có đặt tên thì vẫn hiện một nút, để khách thấy đúng tên sẽ vào giỏ
+                var coChonPhanLoai = nhieuPhanLoai || !!dsBienThe[0].ten;
 
                 /* ---------- SLIDE ẢNH ----------
                    Danh sách ảnh của backend đã gồm ảnh sản phẩm + ảnh MỌI phân loại (phân
@@ -507,8 +512,8 @@
                     if (oTang) oTang.disabled = toiDa > 0 && n >= toiDa;
                 }
 
-                /** Vẽ lại mọi thứ phụ thuộc vào phân loại đang chọn. */
-                function chonBienThe(k) {
+                /** Vẽ lại mọi thứ phụ thuộc vào phân loại đang chọn; nhayAnh = kéo slide tới ảnh của nó. */
+                function chonBienThe(k, nhayAnh) {
                     iChon = k;
                     var bt = dsBienThe[k];
 
@@ -524,12 +529,16 @@
                         : '');
 
                     /* Tình trạng = trạng thái đặt ở trang quản trị cho phân loại này (cùng chữ
-                       với trang chủ), kèm tổng tồn cả sản phẩm khi có nhiều phân loại. */
+                       với trang chủ), kèm tổng tồn cả sản phẩm (backend cộng sẵn mọi phân
+                       loại). Tồn <= 0 là hàng in theo đơn: không khoe con số. Một phân loại
+                       mà đã có dòng "n sản phẩm có sẵn" cạnh ô số lượng thì khỏi lặp lại. */
                     var het = bt.nhanTrangThai === 'Hết hàng';
+                    var hienTongKho = Number(sp.tonKho) > 0 && (nhieuPhanLoai || !oSoLuong);
                     oTinhTrang.innerHTML = 'Tình trạng: <span class="' + (het ? 'het' : 'con') + '">' +
                         esc(bt.nhanTrangThai || 'Sẵn hàng') + '</span>' +
-                        (coChonPhanLoai && Number(sp.tonKho) > 0
-                            ? ' <span class="tong-kho">· Cả sản phẩm còn ' + esc(sp.tonKho) + ' món</span>'
+                        (hienTongKho
+                            ? ' <span class="tong-kho">· ' + (nhieuPhanLoai ? 'Tổng các phân loại còn ' : 'Còn ') +
+                              esc(sp.tonKho) + ' sản phẩm</span>'
                             : '');
 
                     if (oSoLuong) {
@@ -549,9 +558,10 @@
                             'Phân loại "' + tenBienThe(bt, k) + '" đang hết hàng, bạn chọn phân loại khác nhé.';
                     }
 
-                    // Nhảy slide tới ảnh riêng của phân loại (ảnh này nằm sẵn trong dải)
-                    if (chuyenAnhDen && bt.hinhAnh) {
-                        var viTri = dsAnhGoc.indexOf(bt.hinhAnh);
+                    // Nhảy slide tới ảnh riêng của phân loại (ảnh này nằm sẵn trong dải; backend
+                    // cắt khoảng trắng hai đầu đường dẫn khi gộp nên so bản đã cắt)
+                    if (nhayAnh && chuyenAnhDen && bt.hinhAnh) {
+                        var viTri = dsAnhGoc.indexOf(String(bt.hinhAnh).trim());
                         if (viTri >= 0) chuyenAnhDen(viTri);
                     }
 
@@ -564,7 +574,7 @@
 
                 Array.prototype.forEach.call(dsNut, function (nut) {
                     nut.addEventListener('click', function () {
-                        chonBienThe(Number(nut.getAttribute('data-bt')));
+                        chonBienThe(Number(nut.getAttribute('data-bt')), true);
                     });
                 });
 
@@ -580,7 +590,11 @@
                         capNhatNutDem();
                     });
                     oSoLuong.addEventListener('change', capNhatNutDem);
-                    oSoLuong.addEventListener('input', capNhatNutDem);
+                    // Khách xoá trắng ô để gõ số mới: đừng điền ngay số 1 vào (gõ "5" thành "15"),
+                    // rời ô mà vẫn trống thì 'change' mới đưa về 1
+                    oSoLuong.addEventListener('input', function () {
+                        if (oSoLuong.value !== '') capNhatNutDem();
+                    });
                 }
 
                 if (nutThemGio) {
@@ -592,7 +606,10 @@
                             sanPhamId: sp.id,
                             bienTheId: bt.id,
                             ten: sp.ten,
-                            tenBienThe: bt.ten,
+                            // Phân loại chỉ đặt màu, không đặt tên: giỏ ghi tên màu y như trên nút,
+                            // để hai màu của cùng một món không thành hai dòng giống hệt nhau
+                            // (cùng luật với nút ĐẶT HÀNG ngoài thẻ ở trang-chu.js)
+                            tenBienThe: bt.ten || (nhieuPhanLoai ? bt.mau : null) || null,
                             macDinh: !!bt.macDinh,
                             soLuong: soLuongDangChon()
                         }, moGioLuon);
@@ -601,7 +618,7 @@
                     nutMuaNgay.addEventListener('click', function () { themVaoGio(true); });
                 }
 
-                chonBienThe(iChon);
+                chonBienThe(iChon, chonTuLink);
 
                 // Sản phẩm liên quan: backend chọn sẵn (cùng danh mục trước), tối đa 4
                 var goiY = sp.lienQuan || [];
@@ -666,6 +683,9 @@
                     tuChay();
                 });
                 document.addEventListener('keydown', function (e) {
+                    // Đang gõ ô số lượng thì mũi tên là của ô đó, đừng lật ảnh
+                    var o = e.target;
+                    if (o && (o.tagName === 'INPUT' || o.tagName === 'TEXTAREA' || o.isContentEditable)) return;
                     if (e.key === 'ArrowLeft') { den(hienTai - 1); tuChay(); }
                     if (e.key === 'ArrowRight') { den(hienTai + 1); tuChay(); }
                 });

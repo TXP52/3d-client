@@ -28,6 +28,9 @@
 3. **Trang cửa hàng (`Home.html`):**
    - Hiển thị các sản phẩm nổi bật: máy in 3D FDM/resin, nhựa in, phụ kiện.
    - Khu vực khuyến mãi, mẫu 3D (file STL) miễn phí và dịch vụ in/scan 3D theo yêu cầu.
+   - Khối **Bộ sưu tập** (chỉ hiện khi shop có bộ đang khoe) dẫn tới `bo-suu-tap.html?duong-dan=...`.
+   - Sản phẩm nhiều **phân loại** (màu / mẫu): thẻ hiện "từ …₫" kèm chấm màu, nút ĐẶT HÀNG mua phân loại mặc định;
+     trang `chi-tiet.html?id=...&bt=...` cho chọn phân loại, giỏ hàng ghi "Tên sản phẩm — Phân loại".
 
 ---
 

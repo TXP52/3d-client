@@ -392,8 +392,9 @@
                           }).join('') + '</div>'
                         : '');
 
-                // Mã sản phẩm ghép từ id, đúng cách trang quản trị đang hiển thị
-                var maSp = sp.id ? 'SP-' + sp.id : '';
+                // Mã sản phẩm do shop đặt (backend tự sinh SP-<n> khi để trống);
+                // backend cũ chưa trả maSanPham thì ghép từ id như trước
+                var maSp = String(sp.maSanPham || '').trim() || (sp.id ? 'SP-' + sp.id : '');
 
                 /* ---------- HÀNG "PHÂN LOẠI" ----------
                    Ảnh nhỏ nếu phân loại có ảnh riêng, không thì chấm màu; phân loại shop
@@ -658,11 +659,28 @@
                     var n = nho[hienTai];
                     if (n && dai) dai.scrollLeft = n.offsetLeft - dai.clientWidth / 2 + n.clientWidth / 2;
                 }
+                var anhSlide = khungSlide.querySelectorAll('img');
                 function dung() { if (hen) { clearInterval(hen); hen = null; } }
                 function tuChay() {
                     dung();
                     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-                    hen = setInterval(function () { den(hienTai + 1); }, 4000);
+                    hen = setInterval(function () {
+                        // Ảnh đang hiện (nhất là ảnh bìa, ảnh gốc ở host ngoài có khi mất 10-30 giây)
+                        // chưa tải xong thì đứng chờ nó, tải xong mới đếm lại 4 giây rồi chuyển
+                        var a = anhSlide[hienTai];
+                        if (a && !a.complete) {
+                            dung();
+                            var chayLai = function () {
+                                a.removeEventListener('load', chayLai);
+                                a.removeEventListener('error', chayLai);
+                                if (!slide.matches(':hover')) tuChay();
+                            };
+                            a.addEventListener('load', chayLai);
+                            a.addEventListener('error', chayLai);
+                            return;
+                        }
+                        den(hienTai + 1);
+                    }, 4000);
                 }
 
                 document.querySelector('.slide-nut.trai').addEventListener('click', function () { den(hienTai - 1); tuChay(); });

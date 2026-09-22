@@ -26,7 +26,8 @@
 
     var JAVA_API = 'http://localhost:8090/api';
 
-    // Trang chủ hiện tối đa 6 sản phẩm / 6 dịch vụ / 6 bài viết (backend tự cắt)
+    // Trang chủ hiện HẾT sản phẩm (khách cuộn xuống là xem được cả, khỏi bấm "Xem thêm");
+    // dịch vụ và bài viết vẫn tối đa 6
     var SO_MUC_TRANG_CHU = 6;
 
     var oSanPham = document.querySelector('#luoi-san-pham');
@@ -95,7 +96,7 @@
         var ds = (sp.danhSachAnh || []).map(duongDanAnh).filter(Boolean);
         if (ds.length < 2) return '';
         return ds.map(function (u, k) {
-            return '<span class="lop-slide' + (k === 0 ? ' hien' : '') + '" style="' + nenAnh(u) + '"></span>';
+            return '<span class="lop-slide' + (k === 0 ? ' hien' : '') + '" data-anh="' + esc(u) + '" style="' + nenAnh(u) + '"></span>';
         }).join('') +
             '<span class="cham-slide">' + ds.map(function (u, k) {
                 return '<i' + (k === 0 ? ' class="dang"' : '') + '></i>';
@@ -115,14 +116,27 @@
             if (lop.length < 2) return;
             var cham = the.querySelectorAll('.cham-slide i');
             var i = 0, dung = false;
+            // Theo dõi ảnh nào đã tải xong: ảnh bìa ở host ngoài (ảnh gốc vài trăm KB) có khi
+            // mất 10-30 giây — chưa xong thì thẻ đứng ở ảnh bìa chờ, không lướt sang ảnh sau
+            // (khách sẽ tưởng sản phẩm không có ảnh bìa). Ảnh lỗi coi như xong để khỏi kẹt.
+            var daTai = Array.prototype.map.call(lop, function (l, k) {
+                var img = new Image();
+                img.onload = img.onerror = function () { daTai[k] = true; };
+                img.src = l.getAttribute('data-anh') || '';
+                return img.complete;
+            });
             the.addEventListener('mouseenter', function () { dung = true; });
             the.addEventListener('mouseleave', function () { dung = false; });
             setTimeout(function () {
                 setInterval(function () {
-                    if (dung) return;
+                    if (dung || !daTai[i]) return;
+                    // Ảnh kế chưa tải xong thì bỏ qua nó, lướt tới ảnh đã có (không có thì đứng yên)
+                    var j = (i + 1) % lop.length;
+                    while (j !== i && !daTai[j]) j = (j + 1) % lop.length;
+                    if (j === i) return;
                     lop[i].classList.remove('hien');
                     if (cham[i]) cham[i].classList.remove('dang');
-                    i = (i + 1) % lop.length;
+                    i = j;
                     lop[i].classList.add('hien');
                     if (cham[i]) cham[i].classList.add('dang');
                 }, 3500);
@@ -437,12 +451,13 @@
 
     /** Trang chủ: một lần gọi lấy đủ khuyến mãi + sản phẩm + dịch vụ + bài viết. */
     function napTrangChu() {
-        layJson('/cua-hang/trang-chu?gioiHan=' + SO_MUC_TRANG_CHU)
+        // gioiHan=0: backend trả hết (sản phẩm lấy đủ), còn dịch vụ / bài viết cắt ở đây
+        layJson('/cua-hang/trang-chu?gioiHan=0')
             .then(function (du) {
                 veKhuyenMai(du.khuyenMai);
                 veSanPham(du.sanPham);
-                veDichVu(du.dichVu);
-                veBaiViet(du.baiViet);
+                veDichVu((du.dichVu || []).slice(0, SO_MUC_TRANG_CHU));
+                veBaiViet((du.baiViet || []).slice(0, SO_MUC_TRANG_CHU));
             })
             .catch(function () {
                 // Dải khuyến mãi vẫn ẩn, khối dịch vụ giữ thẻ tĩnh

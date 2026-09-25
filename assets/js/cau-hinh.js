@@ -1,15 +1,19 @@
 /* ============================================================
    ĐỊA CHỈ BACKEND — SỬA MỘT CHỖ DUY NHẤT Ở ĐÂY
 
-   Mở trang bằng localhost (máy nhà) thì gọi backend đang chạy ở máy: cổng 8090.
-   Mở từ tên miền thật (Vercel) thì gọi địa chỉ backend đã triển khai.
+   Mở trang bằng localhost (máy đang chạy backend) thì gọi thẳng cổng 8090 cho
+   nhanh, khỏi vòng ra internet.
 
-   Chưa đưa backend lên mạng thì cứ để API_TRIEN_KHAI rỗng: trang trên Vercel vẫn
-   gọi về http://localhost:8090 — mở trên CHÍNH máy đang chạy backend thì chạy được,
-   mở từ máy khác / điện thoại thì báo "chưa kết nối được cửa hàng".
+   Mở từ địa chỉ thật (GitHub Pages, điện thoại, máy khách) thì gọi backend đặt
+   ở máy server. Máy đó nằm sau router nhà mạng nên không có địa chỉ riêng ra
+   internet; Tailscale Funnel dựng sẵn một đường https trỏ về nó.
+
+   Đổi địa chỉ backend sau này (mua tên miền riêng chẳng hạn) thì chỉ sửa đúng
+   dòng API_TRIEN_KHAI bên dưới, ở cả file này lẫn bản song sinh của nó bên
+   trang quản trị: 3d/public/assets/js/cau-hinh.js
    ============================================================ */
 (function () {
-    var API_TRIEN_KHAI = '';    // ví dụ: 'https://in3d-backend.onrender.com/api'
+    var API_TRIEN_KHAI = 'https://phucvh.tail260ea0.ts.net/api';
 
     var mayNha = location.protocol === 'file:' ||
         /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);

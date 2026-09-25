@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" href="assets/logo/logo.png">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="assets/css/order.css?v=11" rel="stylesheet">
     <style>
         * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'Chakra Petch', sans-serif; }
@@ -257,12 +257,13 @@
         </div>
     </div>
 
+    <script src="assets/js/cau-hinh.js"></script>
     <script src="assets/js/order.js?v=13" defer></script>
     <script>
         (function () {
             'use strict';
 
-            var JAVA_API = 'http://localhost:8090/api';
+            var JAVA_API = (window.IN3D_API || 'http://localhost:8090/api');
 
             var thamSo = new URLSearchParams(location.search);
             var idCanTim = (thamSo.get('id') || '').trim();

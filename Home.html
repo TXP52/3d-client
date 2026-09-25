@@ -4,7 +4,7 @@
 
     <!-- Basic Page Needs
 	================================================== -->
-    <title>Bedecraft - Trang chủ</title>
+    <title>Bedemaker - Trang chủ</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -23,18 +23,148 @@
     <!-- Google Web Fonts
 	================================================== -->
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/22a24d17be.js" crossorigin="anonymous"></script>
-
-    <!-- CSS
-	================================================== -->
-    <!-- Vendor CSS -->
-    <link href="assets/vendor/fontawesome/css/brands.css" rel="stylesheet">
+    <!-- Font Awesome 6 (CDN) — bộ kit cũ không tải được nên mọi icon hiện thành ô vuông.
+         Bản 6 có sẵn cả icon thương hiệu (facebook, tiktok, threads, instagram). -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <!-- Template CSS-->
     <link href="assets/css/Home.css?v=20" rel="stylesheet">
     <link href="assets/css/order.css?v=11" rel="stylesheet">
 
     <link href="assets/css/anime.css?v=3" rel="stylesheet">
+
+    <style>
+      /* ---- Banner đầu trang: slide khuyến mãi / sản phẩm ---- */
+      .background-home-page { position: relative; overflow: hidden; }
+      /* Các lớp ảnh chồng lên nhau, đổi bằng cách mờ dần. Không có ảnh thì
+         lớp này trong suốt và thấy ảnh nền sẵn có của trang. */
+      .bn-anh { position: absolute; inset: 0; }
+      .bn-anh .lop {
+        position: absolute; inset: 0;
+        background-size: cover; background-position: center;
+        opacity: 0; transition: opacity .8s ease;
+      }
+      .bn-anh .lop.hien { opacity: 1; }
+
+      .background-shadow-button {
+        position: relative;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        text-align: center;
+      }
+      /* Câu chào: giữa màn lúc mới vào, vài giây sau thu nhỏ lên góc trái */
+      .text-background {
+        padding-top: 0; width: auto; height: auto;
+        transition: transform .7s ease, opacity .5s ease, top .7s ease, left .7s ease;
+      }
+      .background-shadow-button .text-background p { padding-top: 0; }
+      .text-background.thu-nho {
+        position: absolute; top: 18px; left: 28px; text-align: left;
+      }
+      .text-background.thu-nho p { font-size: 15px; text-align: left; }
+      .text-background.thu-nho h1 { font-size: 34px; line-height: 1.1; text-align: left; }
+
+      /* Tên chương trình khuyến mãi / sản phẩm của slide đang chạy */
+      .bn-tt { max-width: 860px; padding: 0 20px; }
+      .bn-tt[hidden] { display: none; }
+      .bn-nhan {
+        display: inline-block; margin-bottom: 12px;
+        padding: 5px 14px; border-radius: 99px;
+        background: linear-gradient(92deg, #ff5fa2, #a86bff);
+        color: #fff; font-size: 12.5px; font-weight: 700; letter-spacing: 2px;
+      }
+      .bn-ten {
+        color: #fff; font-family: 'Chakra Petch', sans-serif;
+        font-size: 52px; line-height: 1.1; margin: 0 0 10px;
+        text-shadow: 0 6px 26px rgba(0, 0, 0, .6);
+      }
+      .bn-phu { color: #d7dae6; font-size: 17px; margin: 0; }
+      /* Nút GO nằm ngay dưới nội dung slide (bố cục cũ đẩy nút lên bằng transform) */
+      /* top: 374px là của theme cũ (nút từng đặt lệch xuống giữa nền) — đặt lại 0
+         để nút nằm ngay dưới nội dung slide */
+      .background-shadow-button .button-background { transform: none; top: 0; margin: 30px auto 0; }
+
+      .bn-cham { position: absolute; bottom: 22px; display: flex; gap: 9px; }
+      .bn-cham i {
+        width: 9px; height: 9px; border-radius: 50%;
+        background: rgba(255, 255, 255, .35); cursor: pointer; transition: .25s;
+      }
+      .bn-cham i.dang { background: #a3ff12; width: 26px; border-radius: 99px; }
+
+      @media (max-width: 900px) {
+        .bn-ten { font-size: 34px; }
+        .bn-phu { font-size: 15px; }
+        .text-background.thu-nho { top: 12px; left: 16px; }
+        .text-background.thu-nho h1 { font-size: 24px; }
+        .text-background.thu-nho p { font-size: 13px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .bn-anh .lop, .text-background { transition: none; }
+      }
+
+      /* ---- Hộp "Gửi yêu cầu báo giá" ở chân trang ---- */
+      .lop-phu-lh {
+        position: fixed; inset: 0; z-index: 1200;
+        background: rgba(8, 9, 14, .72);
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px; overflow-y: auto;
+      }
+      .lop-phu-lh[hidden] { display: none; }
+      .hop-lh {
+        position: relative;
+        width: 100%; max-width: 460px;
+        background: #1b1e29; color: #e8e9ef;
+        border: 1px solid rgba(255, 255, 255, .12); border-radius: 16px;
+        padding: 26px 24px 22px; box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+      }
+      .hop-lh h3 { font-size: 21px; font-weight: 700; margin: 0 0 6px; color: #fff; }
+      .hop-lh .lh-phu { font-size: 13.5px; line-height: 1.55; color: #a9adbd; margin: 0 0 16px; }
+      .lh-dong {
+        position: absolute; top: 12px; right: 12px;
+        width: 34px; height: 34px; border-radius: 9px;
+        background: rgba(255, 255, 255, .06); border: 0; color: #cfd2de;
+        font-size: 15px; cursor: pointer;
+      }
+      .lh-dong:hover { background: rgba(255, 255, 255, .14); color: #fff; }
+      .lh-o { margin-bottom: 12px; }
+      .lh-o label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 5px; color: #c7cad6; }
+      .lh-o input, .lh-o textarea {
+        width: 100%; box-sizing: border-box;
+        background: #12141d; color: #fff;
+        border: 1px solid rgba(255, 255, 255, .14); border-radius: 10px;
+        padding: 10px 12px; font: inherit; font-size: 14px; outline: none; resize: vertical;
+      }
+      .lh-o input:focus, .lh-o textarea:focus { border-color: #a3ff12; }
+      .lh-loi { color: #ff8a8a; font-size: 13px; min-height: 18px; }
+      .hop-lh .lh-gui { width: 100%; justify-content: center; text-align: center; }
+      .lh-chia {
+        text-align: center; font-size: 12.5px; color: #8f94a6;
+        margin: 18px 0 12px; position: relative;
+      }
+      .lh-chia::before, .lh-chia::after {
+        content: ''; position: absolute; top: 50%; width: 22%; height: 1px;
+        background: rgba(255, 255, 255, .14);
+      }
+      .lh-chia::before { left: 0; } .lh-chia::after { right: 0; }
+      .lh-nhanh { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 9px; }
+      .lh-nhanh li { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #c7cad6; }
+      .lh-nhanh i { width: 16px; text-align: center; color: #a3ff12; }
+      .lh-nhanh a { color: #fff; text-decoration: none; }
+      .lh-nhanh a:hover { color: #a3ff12; }
+      .lh-mxh { display: flex; flex-wrap: wrap; gap: 8px; }
+      .lh-mxh a {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 8px 12px; border-radius: 99px;
+        background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12);
+        color: #e8e9ef; text-decoration: none; font-size: 12.5px; font-weight: 600;
+      }
+      .lh-mxh a:hover { border-color: #a3ff12; color: #a3ff12; }
+      @media (max-width: 480px) {
+        .hop-lh { padding: 22px 16px 18px; }
+        .lh-mxh a span { display: none; }
+        .lh-mxh a { padding: 10px 13px; }
+      }
+    </style>
 </head>
 <body id="body2">
     <!-- Header
@@ -42,7 +172,7 @@
     <header class="header-home-page">
 
         <div class="header-logo-home">
-            <a href="index.html"><img src="assets/logo/logo.png" class="logo-chinh" alt="Bedecraft"></a>
+            <a href="index.html"><img src="assets/logo/logo.png" class="logo-chinh" alt="Bedemaker"></a>
         </div>
 
         <nav class="nav-bar-home-page">
@@ -78,18 +208,23 @@
 
 
     </header>
-
-    <div class="background-home-page">
+    <div class="background-home-page" id="banner">
+        <div class="bn-anh" id="bn-anh"></div>
         <div class="background-shadow-button">
-            <div class="text-background">
+            <div class="text-background" id="bn-chao">
                 <p>Chào mừng bạn đến với</p>
-                <h1>BEDECRAFT</h1>
-                <form action="#khoi-san-pham">
-                  <button  class="button-background">
-                      <div></div>
-                  </button>
-                </form>
+                <h1>BEDEMAKER</h1>
             </div>
+
+            <div class="bn-tt" id="bn-tt" hidden>
+                <span class="bn-nhan" id="bn-nhan"></span>
+                <h2 class="bn-ten" id="bn-ten"></h2>
+                <p class="bn-phu" id="bn-phu"></p>
+            </div>
+
+            <a class="button-background" id="bn-go" href="#khoi-san-pham"><div></div></a>
+
+            <div class="bn-cham" id="bn-cham"></div>
         </div>
     </div>
 
@@ -165,7 +300,6 @@
     <div class="khoi-bo-suu-tap" id="khoi-bo-suu-tap" hidden>
       <div class="dau-bo-suu-tap">
         <p class="text-top-games">BỘ SƯU TẬP</p>
-        <span class="phu-bo-suu-tap">Những món cùng một chủ đề, shop xếp sẵn cho bạn chọn nhanh.</span>
       </div>
       <div class="luoi-bo-suu-tap" id="luoi-bo-suu-tap"></div>
     </div>
@@ -220,7 +354,6 @@
     <div class="khoi-bai-viet" id="tin-tuc">
       <div class="dau-bai-viet">
         <p class="text-top-games">KIẾN THỨC IN 3D</p>
-        <span class="phu-bai-viet">Chọn nhựa, chỉnh máy, tính giá — ghi lại từ việc làm hằng ngày ở xưởng.</span>
       </div>
       <div class="luoi-bai-viet" id="luoi-bai-viet">
         <p class="bao-trong-luoi">Đang tải bài viết…</p>
@@ -239,13 +372,17 @@
         <div class="ct-luoi">
 
           <div class="ct-cot ct-thuong-hieu">
-            <a class="ct-logo" href="Home.html"><img src="assets/logo/logo.png" alt="Bedecraft"></a>
+            <a class="ct-logo" href="Home.html"><img src="assets/logo/logo.png" alt="Bedemaker"></a>
             <p class="ct-mo-ta">Xưởng in 3D nhận in theo yêu cầu. Tính tiền theo số gram nhựa,
               báo giá trước khi in, freeship nội thành Hà Nội.</p>
+            <!-- Đổi href="#" thành link trang của shop. Shopee không có icon trong Font Awesome
+                 nên dùng icon túi hàng. -->
             <div class="ct-mang-xa-hoi">
               <a href="#" aria-label="Facebook" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#" aria-label="Shopee" title="Shopee"><i class="fa-solid fa-bag-shopping"></i></a>
               <a href="#" aria-label="TikTok" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-              <a href="#" aria-label="YouTube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+              <a href="#" aria-label="Threads" title="Threads"><i class="fa-brands fa-threads"></i></a>
+              <a href="#" aria-label="Instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
             </div>
           </div>
 
@@ -264,10 +401,10 @@
           <div class="ct-cot">
             <h4 class="ct-tieu-de">Liên hệ</h4>
             <ul class="ct-lien-he">
-              <li><i class="fa-solid fa-location-dot"></i><span>123 Nguyễn Văn Cừ, Q.5, TP. Hồ Chí Minh</span></li>
-              <li><i class="fa-solid fa-phone"></i><a href="tel:0901234567">0901 234 567</a></li>
-              <li><i class="fa-solid fa-envelope"></i><a href="mailto:otpisrealimphake@gmail.com">otpisrealimphake@gmail.com</a></li>
-              <li><i class="fa-solid fa-clock"></i><span>8:00 – 21:00, tất cả các ngày</span></li>
+              <li><i class="fa-solid fa-location-dot"></i><span>Ngoại giao đoàn, Xuân Đỉnh, Hà Nội</span></li>
+              <li><i class="fa-solid fa-phone"></i><a href="tel:0346488538">0346 488 538</a></li>
+              <li><i class="fa-solid fa-envelope"></i><a href="mailto:bedemaker@gmail.com">bedemaker@gmail.com</a></li>
+              <li><i class="fa-solid fa-clock"></i><span>8:00 – 23:00, tất cả các ngày</span></li>
             </ul>
           </div>
 
@@ -275,23 +412,108 @@
             <div class="ct-bao-gia">
               <h4 class="ct-tieu-de">Nhận in theo yêu cầu</h4>
               <p>Gửi file STL hoặc mô tả món đồ, xưởng báo giá theo số gram nhựa trước khi in.</p>
-              <a class="ct-nut" href="mailto:otpisrealimphake@gmail.com?subject=B%C3%A1o%20gi%C3%A1%20in%203D">
+              <button type="button" class="ct-nut" onclick="moFormBaoGia()">
                 <i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu báo giá
-              </a>
+              </button>
             </div>
           </div>
 
         </div>
       </div>
 
-      <div class="ct-day">
-        <div class="ct-trong ct-day-trong">
-          <span>&copy; 2026 Bedecraft. Đã đăng ký bản quyền.</span>
-          <span class="ct-thanh-toan"><i class="fa-solid fa-truck-fast"></i> Giao toàn quốc &nbsp;·&nbsp;
-            <i class="fa-solid fa-money-bill-wave"></i> COD / chuyển khoản</span>
+    </footer>
+
+    <!-- ============================================================
+         HỘP LIÊN HỆ / BÁO GIÁ — nút "Gửi yêu cầu báo giá" ở chân trang mở cái này.
+         Khách điền tên, số điện thoại, mô tả món đồ rồi bấm gửi: máy tự mở phần mềm
+         email với nội dung điền sẵn, gửi tới hộp thư của shop. Bên dưới là các cách
+         liên hệ nhanh và trang mạng xã hội của shop.
+         ============================================================ -->
+    <div class="lop-phu-lh" id="hop-lien-he" hidden onclick="if (event.target === this) dongFormBaoGia()">
+      <div class="hop-lh" role="dialog" aria-modal="true" aria-labelledby="lh-tieu-de">
+        <button type="button" class="lh-dong" onclick="dongFormBaoGia()" aria-label="Đóng">
+          <i class="fa-solid fa-xmark"></i></button>
+
+        <h3 id="lh-tieu-de">Gửi yêu cầu báo giá</h3>
+        <p class="lh-phu">Mô tả món đồ (hoặc gửi kèm file STL qua email / tin nhắn),
+          xưởng báo giá theo số gram nhựa trước khi in.</p>
+
+        <div class="lh-o"><label for="lh-ten">Họ và tên</label>
+          <input type="text" id="lh-ten" autocomplete="name"></div>
+        <div class="lh-o"><label for="lh-sdt">Số điện thoại</label>
+          <input type="tel" id="lh-sdt" autocomplete="tel"></div>
+        <div class="lh-o"><label for="lh-noi-dung">Món đồ bạn muốn in</label>
+          <textarea id="lh-noi-dung" rows="4"></textarea></div>
+        <div class="lh-loi" id="lh-loi"></div>
+
+        <button type="button" class="ct-nut lh-gui" onclick="guiBaoGia()">
+          <i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
+
+        <div class="lh-chia">hoặc nhắn trực tiếp cho shop</div>
+
+        <ul class="lh-nhanh">
+          <li><i class="fa-solid fa-phone"></i><a href="tel:0346488538">0346 488 538</a></li>
+          <li><i class="fa-solid fa-envelope"></i><a href="mailto:bedemaker@gmail.com">bedemaker@gmail.com</a></li>
+          <li><i class="fa-solid fa-location-dot"></i><span>Ngoại giao đoàn, Xuân Đỉnh, Hà Nội</span></li>
+          <li><i class="fa-solid fa-clock"></i><span>8:00 – 23:00, tất cả các ngày</span></li>
+        </ul>
+
+        <!-- Đổi href="#" thành link trang của shop -->
+        <div class="lh-mxh">
+          <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></a>
+          <a href="#" title="Shopee"><i class="fa-solid fa-bag-shopping"></i><span>Shopee</span></a>
+          <a href="#" title="TikTok"><i class="fa-brands fa-tiktok"></i><span>TikTok</span></a>
+          <a href="#" title="Threads"><i class="fa-brands fa-threads"></i><span>Threads</span></a>
+          <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
         </div>
       </div>
-    </footer>
+    </div>
+
+    <script>
+      /* Hộp báo giá ở chân trang: mở / đóng và gửi nội dung qua email. */
+      (function () {
+        var EMAIL_SHOP = 'bedemaker@gmail.com';
+
+        window.moFormBaoGia = function () {
+          var hop = document.getElementById('hop-lien-he');
+          hop.hidden = false;
+          document.body.style.overflow = 'hidden';     // khoá cuộn nền cho khỏi rối
+          var o = document.getElementById('lh-ten');
+          if (o) o.focus();
+        };
+
+        window.dongFormBaoGia = function () {
+          document.getElementById('hop-lien-he').hidden = true;
+          document.body.style.overflow = '';
+          document.getElementById('lh-loi').textContent = '';
+        };
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && !document.getElementById('hop-lien-he').hidden) dongFormBaoGia();
+        });
+
+        /* Mở phần mềm email với nội dung điền sẵn — không cần backend, và khách vẫn
+           thấy đúng thư mình sắp gửi trước khi bấm Gửi. */
+        window.guiBaoGia = function () {
+          var ten = document.getElementById('lh-ten').value.trim();
+          var sdt = document.getElementById('lh-sdt').value.trim();
+          var noiDung = document.getElementById('lh-noi-dung').value.trim();
+          var loi = document.getElementById('lh-loi');
+          if (!noiDung) {
+            loi.textContent = 'Bạn mô tả giúp món đồ muốn in nhé.';
+            document.getElementById('lh-noi-dung').focus();
+            return;
+          }
+          loi.textContent = '';
+          var than = 'Món đồ muốn in:\n' + noiDung +
+            '\n\nHọ và tên: ' + (ten || '(chưa điền)') +
+            '\nSố điện thoại: ' + (sdt || '(chưa điền)');
+          window.location.href = 'mailto:' + EMAIL_SHOP +
+            '?subject=' + encodeURIComponent('Yêu cầu báo giá in 3D' + (ten ? ' — ' + ten : '')) +
+            '&body=' + encodeURIComponent(than);
+        };
+      })();
+    </script>
 
 
     <!-- Javascript Files
@@ -300,9 +522,10 @@
     <!-- defer: tải song song, chạy theo đúng thứ tự dưới đây sau khi trang dựng xong.
          order.js phải chạy trước trang-chu.js (trang-chu dùng anhChoSanPham / ganNutVaoThe). -->
     <script src="assets/vendor/jquery/jquery.min.js" defer></script>
+    <script src="assets/js/cau-hinh.js"></script>
     <script src="assets/js/init.js?v=5" defer></script>
     <script src="assets/js/order.js?v=13" defer></script>
-    <script src="assets/js/trang-chu.js?v=12" defer></script>
+    <script src="assets/js/trang-chu.js?v=13" defer></script>
 
 
     <script src="assets/js/anime.js?v=1" defer></script>

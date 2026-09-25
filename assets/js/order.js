@@ -15,7 +15,7 @@
     'use strict';
 
     // Địa chỉ backend Java (Spring Boot). Đổi khi deploy lên server thật.
-    var JAVA_API = 'http://localhost:8090/api';
+    var JAVA_API = (window.IN3D_API || 'http://localhost:8090/api');
 
     var KHOA_GIO = 'in3d_gio_hang';
     var KHOA_KM = 'in3d_ma_khuyen_mai';

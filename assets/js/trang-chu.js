@@ -24,7 +24,7 @@
 (function () {
     'use strict';
 
-    var JAVA_API = 'http://localhost:8090/api';
+    var JAVA_API = (window.IN3D_API || 'http://localhost:8090/api');
 
     // Trang chủ hiện HẾT sản phẩm (khách cuộn xuống là xem được cả, khỏi bấm "Xem thêm");
     // dịch vụ và bài viết vẫn tối đa 6
@@ -397,6 +397,100 @@
         if (window.console && console.info) console.info('[IN3D] Bộ sưu tập: ' + ds.length + ' bộ');
     }
 
+    /* ================= BANNER ĐẦU TRANG =================
+       Slide các CHƯƠNG TRÌNH KHUYẾN MÃI đang chạy; shop không chạy chương trình nào
+       thì slide sản phẩm. Câu chào "Chào mừng bạn đến với BEDECRAFT" hiện mấy giây
+       rồi thu nhỏ lên góc trái, nhường chỗ cho tên slide. Nút GO luôn dẫn tới đúng
+       trang của slide đang hiện (chương trình -> dải mã ở trang chủ, sản phẩm ->
+       trang chi tiết). */
+
+    var GIAY_CHAO = 3800;      // câu chào đứng giữa bao lâu trước khi thu nhỏ
+    var GIAY_SLIDE = 5500;     // mỗi slide hiện bao lâu
+
+    /** Slide của một chương trình khuyến mãi — nền giữ ảnh sẵn có của banner. */
+    function slideKhuyenMai(k) {
+        return {
+            anh: '',
+            nhan: 'ƯU ĐÃI ĐANG CHẠY',
+            ten: k.ten || moTaUuDai(k),
+            phu: moTaUuDai(k) + ' · ' + dieuKienKm(k) + (k.ma ? ' · mã ' + k.ma : ''),
+            link: '#dai-khuyen-mai'
+        };
+    }
+
+    /** Slide của một sản phẩm — nền là ảnh bìa, bấm GO là vào trang chi tiết. */
+    function slideSanPham(sp) {
+        return {
+            anh: anhBia(sp),
+            nhan: sp.danhMuc ? String(sp.danhMuc).toUpperCase() : 'SẢN PHẨM',
+            ten: sp.ten,
+            phu: chuGiaThe(sp) + (sp.nhanTrangThai ? ' · ' + sp.nhanTrangThai : ''),
+            link: 'chi-tiet.html?id=' + encodeURIComponent(sp.id)
+        };
+    }
+
+    function veBanner(dsKhuyenMai, dsSanPham) {
+        var khung = document.getElementById('banner');
+        if (!khung) return;
+        var km = (dsKhuyenMai || []).slice(0, 3);
+        var ds = km.length
+            ? km.map(slideKhuyenMai)
+            : (dsSanPham || []).filter(function (sp) { return sp.loaiSanPham !== 'dich_vu'; })
+                .slice(0, 5).map(slideSanPham);
+        if (!ds.length) return;      // chưa có gì để khoe: giữ nguyên câu chào như cũ
+
+        var oAnh = document.getElementById('bn-anh');
+        var oChao = document.getElementById('bn-chao');
+        var oTt = document.getElementById('bn-tt');
+        var oNhan = document.getElementById('bn-nhan');
+        var oTen = document.getElementById('bn-ten');
+        var oPhu = document.getElementById('bn-phu');
+        var oGo = document.getElementById('bn-go');
+        var oCham = document.getElementById('bn-cham');
+
+        oAnh.innerHTML = ds.map(function (s) {
+            return '<span class="lop"' + (s.anh ? ' style="' + nenAnh(s.anh) + '"' : '') + '></span>';
+        }).join('');
+        oCham.innerHTML = ds.length > 1
+            ? ds.map(function (s, k) { return '<i data-k="' + k + '" title="' + esc(s.ten) + '"></i>'; }).join('')
+            : '';
+        var lop = oAnh.querySelectorAll('.lop');
+        var cham = oCham.querySelectorAll('i');
+        var i = -1, hen = null, dung = false;
+
+        function den(k) {
+            i = (k + ds.length) % ds.length;
+            Array.prototype.forEach.call(lop, function (l, j) { l.classList.toggle('hien', j === i); });
+            Array.prototype.forEach.call(cham, function (c, j) { c.classList.toggle('dang', j === i); });
+            oNhan.textContent = ds[i].nhan;
+            oTen.textContent = ds[i].ten;
+            oPhu.textContent = ds[i].phu;
+            oGo.setAttribute('href', ds[i].link);
+        }
+
+        function tuChay() {
+            if (hen) clearInterval(hen);
+            if (ds.length < 2) return;
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            hen = setInterval(function () { if (!dung) den(i + 1); }, GIAY_SLIDE);
+        }
+
+        // Rê chuột vào banner thì dừng đổi slide cho khách đọc / bấm GO
+        khung.addEventListener('mouseenter', function () { dung = true; });
+        khung.addEventListener('mouseleave', function () { dung = false; });
+        Array.prototype.forEach.call(cham, function (c) {
+            c.addEventListener('click', function () { den(+c.getAttribute('data-k')); tuChay(); });
+        });
+
+        // Vài giây đầu vẫn là câu chào; hết giờ thì thu nhỏ nó lên góc và chạy slide
+        setTimeout(function () {
+            oChao.classList.add('thu-nho');
+            oTt.hidden = false;
+            den(0);
+            tuChay();
+        }, GIAY_CHAO);
+    }
+
     /* ================= Vẽ ================= */
 
     function veVao(khung, ds, ham, chuKhiTrong, ten) {
@@ -455,6 +549,8 @@
         layJson('/cua-hang/trang-chu?gioiHan=0')
             .then(function (du) {
                 veKhuyenMai(du.khuyenMai);
+                // Banner đầu trang: ưu tiên chương trình đang chạy, không có thì slide sản phẩm
+                veBanner(du.khuyenMai, du.sanPham);
                 veSanPham(du.sanPham);
                 veDichVu((du.dichVu || []).slice(0, SO_MUC_TRANG_CHU));
                 veBaiViet((du.baiViet || []).slice(0, SO_MUC_TRANG_CHU));

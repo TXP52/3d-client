@@ -79,7 +79,7 @@
         }
 
         // ---------- Đăng nhập / Đăng ký qua BACKEND JAVA (tài khoản lưu trong database) ----------
-        var JAVA_API = 'http://localhost:8090/api';
+        var JAVA_API = (window.IN3D_API || 'http://localhost:8090/api');
 
         function baoDN(chu, ok) {
             var o = document.getElementById('dn-thong-bao');
@@ -159,6 +159,7 @@
             }
         });
     </script>
+    <script src="assets/js/cau-hinh.js"></script>
     <script src="assets/js/anime.js?v=1" defer></script>
 </body>
 </html>

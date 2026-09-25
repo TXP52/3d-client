@@ -534,7 +534,7 @@
     function baoLoiSanPham() {
         if (oSanPham) {
             oSanPham.innerHTML = '<p class="bao-trong-luoi">' +
-                'Chưa kết nối được kho hàng. Gọi 0901 234 567 để đặt trực tiếp nhé!</p>';
+                'Chưa kết nối được kho hàng. Gọi 0346 488 538 để đặt trực tiếp nhé!</p>';
         }
         if (window.console && console.warn) {
             console.warn('[IN3D] Không lấy được dữ liệu cửa hàng từ backend.');
